@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Study App</string>
+    <string name="create_class_dialog_title">Create Class</string>
+    <string name="create_class_dialog_message">Enter class name</string>
+    <string name="create_class_dialog_negative_button">Cancel</string>
+    <string name="delete_class_dialog_title">Delete Class</string>
+    <string name="delete_class_dialog_message">Are you sure you want to delete?</string>
+    <string name="dialog_create">Create</string>
+    <string name="dialog_confirm">Confirm</string>
+    <string name="dialog_cancel">Cancel</string>
 </resources>

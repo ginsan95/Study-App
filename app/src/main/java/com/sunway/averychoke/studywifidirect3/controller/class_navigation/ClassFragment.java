@@ -2,15 +2,19 @@ package com.sunway.averychoke.studywifidirect3.controller.class_navigation;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.InputType;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.databinding.DataBindingUtil;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassBinding;
@@ -65,7 +69,7 @@ public class ClassFragment extends Fragment implements
         mBinding.plusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "floating button", Toast.LENGTH_SHORT).show();
+                createClass();
             }
         });
     }
@@ -93,14 +97,65 @@ public class ClassFragment extends Fragment implements
     public void onClassSelected(String className) {
         final CharSequence[] choices = new CharSequence[] {"Host Class", "Participate Class", "View/Edit Class"};
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setItems(choices, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getContext(), choices[which], Toast.LENGTH_SHORT).show();
-            }
-        });
-        builder.show();
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getContext())
+                .setItems(choices, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(getContext(), choices[which], Toast.LENGTH_SHORT).show();
+                    }
+                });
+        dialog.show();
     }
+
+    @Override
+    public void onClassLongClicked(@NonNull String className, @NonNull final int index) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getContext())
+                .setTitle(R.string.delete_class_dialog_title)
+                .setMessage(R.string.delete_class_dialog_message)
+                .setPositiveButton(R.string.dialog_confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mClassAdapter.removeClassName(index);
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        dialog.show();
+    }
+
     // endregion class view holder
+
+    private void createClass() {
+        final EditText editText = new EditText(getContext());
+        editText.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(getContext())
+                .setTitle(R.string.create_class_dialog_title)
+                .setMessage(R.string.create_class_dialog_message)
+                .setView(editText)
+                .setPositiveButton(R.string.dialog_create, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String className = editText.getText().toString();
+                        if (!TextUtils.isEmpty(className.trim())) {
+                            //// TODO: create Class object and save to database 
+                            
+                            mClassAdapter.addClassName(editText.getText().toString());
+                        } else {
+                            Toast.makeText(getContext(), "Failed to create class. Please try again.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        dialog.show();
+    }
 }

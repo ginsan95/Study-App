@@ -11,6 +11,7 @@ import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.databinding.CellClassBinding;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -51,8 +52,21 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHol
     public void setClassesName(List<String> classesName) {
         mClassesName.clear();
         mClassesName.addAll(classesName);
+        Collections.sort(mClassesName);
 
         notifyDataSetChanged();
+    }
+
+    public void addClassName(String className) {
+        mClassesName.add(className);
+        Collections.sort(mClassesName);
+
+        notifyItemInserted(mClassesName.indexOf(className));
+    }
+
+    public void removeClassName(int index) {
+        mClassesName.remove(index);
+        notifyItemRemoved(index);
     }
 
     // region view holder class
@@ -60,6 +74,8 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHol
 
         public interface OnClassSelectListener {
             void onClassSelected(@NonNull String className);
+
+            void onClassLongClicked(@NonNull String className, @NonNull int index);
         }
 
         private String mClassName;
@@ -77,6 +93,13 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHol
                     if (mClassName != null) {
                         listener.onClassSelected(mClassName);
                     }
+                }
+            });
+            mViewBinding.classNameTextView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    listener.onClassLongClicked(mClassName, getAdapterPosition());
+                    return true;
                 }
             });
         }
