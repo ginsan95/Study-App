@@ -35,7 +35,7 @@ public class Quiz implements Parcelable, Serializable {
     {
         mQuizId = quizId;
         mTitle = title;
-        mQuestions = new ArrayList<>();
+        mQuestions = questions;
         mMarks = marks;
         mVisible = visible;
     }

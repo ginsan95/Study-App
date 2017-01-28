@@ -19,6 +19,13 @@ public class Class {
         mStudyMaterials = new ArrayList<>();
     }
 
+    // for database
+    public Class(String name, List<Quiz> quizzes, List<StudyMaterial> studyMaterials) {
+        mName = name;
+        mQuizzes = quizzes;
+        mStudyMaterials = studyMaterials;
+    }
+
     // region get set
     public String getName() {
         return mName;

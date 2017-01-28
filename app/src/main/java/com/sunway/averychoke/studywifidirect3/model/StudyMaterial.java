@@ -14,7 +14,7 @@ public class StudyMaterial {
     private String mName;
     private boolean mVisible;
 
-    private File mFile;
+    private final File mFile;
 
     public StudyMaterial(String name, String path) {
         mStudyMaterialId = ++mCounter;
@@ -53,6 +53,10 @@ public class StudyMaterial {
 
     public void setVisible(boolean visible) {
         mVisible = visible;
+    }
+
+    public File getFile() {
+        return mFile;
     }
     // endregion get set
 }
