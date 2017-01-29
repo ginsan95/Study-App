@@ -7,20 +7,20 @@ import java.util.List;
  * Created by AveryChoke on 27/1/2017.
  */
 
-public class Class {
+public class StudyClass {
 
     private final String mName;
     private List<Quiz> mQuizzes;
     private List<StudyMaterial> mStudyMaterials;
 
-    public Class(String name) {
+    public StudyClass(String name) {
         mName = name;
         mQuizzes = new ArrayList<>();
         mStudyMaterials = new ArrayList<>();
     }
 
     // for database
-    public Class(String name, List<Quiz> quizzes, List<StudyMaterial> studyMaterials) {
+    public StudyClass(String name, List<Quiz> quizzes, List<StudyMaterial> studyMaterials) {
         mName = name;
         mQuizzes = quizzes;
         mStudyMaterials = studyMaterials;

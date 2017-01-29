@@ -146,7 +146,7 @@ public class ClassFragment extends Fragment implements
                             
                             mClassAdapter.addClassName(editText.getText().toString());
                         } else {
-                            Toast.makeText(getContext(), "Failed to create class. Please try again.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), R.string.create_class_failure_message, Toast.LENGTH_SHORT).show();
                         }
                     }
                 })

@@ -13,9 +13,9 @@ import java.util.List;
 
 public class Quiz implements Parcelable, Serializable {
 
-    public static int mCounter = 0;
+    public static long mCounter = 0;
 
-    private final int mQuizId;
+    private final long mQuizId;
     private String mTitle;
     private List<Question> mQuestions;
     private double mMarks;
@@ -31,7 +31,7 @@ public class Quiz implements Parcelable, Serializable {
     }
 
     //for database
-    public Quiz(int quizId, String title, List<Question> questions, double marks, boolean visible)
+    public Quiz(long quizId, String title, List<Question> questions, double marks, boolean visible)
     {
         mQuizId = quizId;
         mTitle = title;
@@ -52,7 +52,7 @@ public class Quiz implements Parcelable, Serializable {
     }
 
     // region get set
-    public int getQuizId()
+    public long getQuizId()
     {
         return mQuizId;
     }
@@ -102,7 +102,7 @@ public class Quiz implements Parcelable, Serializable {
     }
 
     public void writeToParcel(Parcel out, int flags) {
-        out.writeInt(mQuizId);
+        out.writeLong(mQuizId);
         out.writeString(mTitle);
         out.writeList(mQuestions);
         out.writeDouble(mMarks);
@@ -120,7 +120,7 @@ public class Quiz implements Parcelable, Serializable {
     };
 
     private Quiz(Parcel in) {
-        mQuizId = in.readInt();
+        mQuizId = in.readLong();
         mTitle = in.readString();
         mQuestions = in.readArrayList(Question.class.getClassLoader());
         mMarks = in.readDouble();

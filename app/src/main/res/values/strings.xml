@@ -8,4 +8,5 @@
     <string name="dialog_create">Create</string>
     <string name="dialog_confirm">Confirm</string>
     <string name="dialog_cancel">Cancel</string>
+    <string name="create_class_failure_message">Failed to create class. Please try again.</string>
 </resources>

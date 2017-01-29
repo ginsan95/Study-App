@@ -11,9 +11,9 @@ import java.io.Serializable;
 
 public class Question implements Parcelable, Serializable {
 
-    public static int mCounter = 0;
+    public static long mCounter = 0;
 
-    private final int mQuestionId;
+    private final long mQuestionId;
     private String mQuestion;
     private String mAnswer;
     private double mTotalMarks;
@@ -27,7 +27,7 @@ public class Question implements Parcelable, Serializable {
     }
 
     //for database
-    public Question(int questionId, String question, String answer, double totalMarks)
+    public Question(long questionId, String question, String answer, double totalMarks)
     {
         mQuestionId = questionId;
         mQuestion = question;
@@ -41,7 +41,7 @@ public class Question implements Parcelable, Serializable {
     }
 
     // region get set
-    public int getQuestionId()
+    public long getQuestionId()
     {
         return mQuestionId;
     }
@@ -83,7 +83,7 @@ public class Question implements Parcelable, Serializable {
     }
 
     public void writeToParcel(Parcel out, int flags) {
-        out.writeInt(mQuestionId);
+        out.writeLong(mQuestionId);
         out.writeString(mQuestion);
         out.writeString(mAnswer);
         out.writeDouble(mTotalMarks);
@@ -101,7 +101,7 @@ public class Question implements Parcelable, Serializable {
     };
 
     protected Question(Parcel in) {
-        mQuestionId = in.readInt();
+        mQuestionId = in.readLong();
         mQuestion = in.readString();
         mAnswer = in.readString();
         mTotalMarks = in.readDouble();

@@ -19,7 +19,7 @@ public class ChoiceQuestion extends Question {
     }
 
     //for database
-    public ChoiceQuestion(int questionId, String question, String answer, double totalMarks, List<String> choices)
+    public ChoiceQuestion(long questionId, String question, String answer, double totalMarks, List<String> choices)
     {
         super(questionId, question, answer, totalMarks);
         mChoices = choices;

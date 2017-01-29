@@ -8,9 +8,9 @@ import java.io.File;
 
 public class StudyMaterial {
 
-    public static int mCounter = 0;
+    public static long mCounter = 0;
 
-    private final int mStudyMaterialId;
+    private final long mStudyMaterialId;
     private String mName;
     private boolean mVisible;
 
@@ -24,7 +24,7 @@ public class StudyMaterial {
     }
 
     // for database
-    public StudyMaterial(int studyMaterialId, String name, String path, boolean visible) {
+    public StudyMaterial(long studyMaterialId, String name, String path, boolean visible) {
         mStudyMaterialId = studyMaterialId;
         mName = name;
         mFile = new File(path);
@@ -32,7 +32,7 @@ public class StudyMaterial {
     }
 
     // region get set
-    public int getStudyMaterialId()
+    public long getStudyMaterialId()
     {
         return mStudyMaterialId;
     }
