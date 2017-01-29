@@ -44,7 +44,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // columns names
     private static final String QUIZ_ID = "id";
     private static final String QUIZ_CLASS_NAME = "class_name";
-    private static final String QUIZ_TITLE = "title";
+    private static final String QUIZ_NAME = "name";
     private static final String QUIZ_MARKS = "marks";
     private static final String QUIZ_VISIBLE = "visible";
     //create table statement
@@ -52,7 +52,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + TABLE_QUIZ + "("
                     + QUIZ_ID + " INTEGER PRIMARY KEY,"
                     + QUIZ_CLASS_NAME + " TEXT NOT NULL,"
-                    + QUIZ_TITLE + " TEXT,"
+                    + QUIZ_NAME + " TEXT,"
                     + QUIZ_MARKS + " REAL,"
                     + QUIZ_VISIBLE + "BOOLEAN,"
                     + "FOREIGN KEY(" + QUIZ_CLASS_NAME + ") REFERENCES " + TABLE_CLASS + "(" + CLASS_NAME + ") ON DELETE CASCADE)";
@@ -241,7 +241,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(QUIZ_ID, quiz.getQuizId());
         values.put(QUIZ_CLASS_NAME, className);
-        values.put(QUIZ_TITLE, quiz.getTitle());
+        values.put(QUIZ_NAME, quiz.getName());
         values.put(QUIZ_MARKS, quiz.getMarks());
         values.put(QUIZ_VISIBLE, quiz.getVisible());
 
@@ -277,7 +277,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     List<Question> quizQuestions = getQuizQuestions(quizId);
                     Quiz quiz = new Quiz(
                             quizId,
-                            c.getString(c.getColumnIndex(QUIZ_TITLE)),
+                            c.getString(c.getColumnIndex(QUIZ_NAME)),
                             quizQuestions,
                             c.getDouble(c.getColumnIndex(QUIZ_MARKS)),
                             c.getInt(c.getColumnIndex(QUIZ_VISIBLE)) == 1
@@ -315,7 +315,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 Quiz quiz = new Quiz(
                         quizId,
-                        c.getString(c.getColumnIndex(QUIZ_TITLE)),
+                        c.getString(c.getColumnIndex(QUIZ_NAME)),
                         quizQuestions,
                         c.getDouble(c.getColumnIndex(QUIZ_MARKS)),
                         c.getInt(c.getColumnIndex(QUIZ_VISIBLE)) == 1
@@ -339,7 +339,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(QUIZ_TITLE, quiz.getTitle());
+        values.put(QUIZ_NAME, quiz.getName());
         values.put(QUIZ_MARKS, quiz.getMarks());
         values.put(QUIZ_VISIBLE, quiz.getVisible());
 

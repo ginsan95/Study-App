@@ -6,53 +6,31 @@ import java.io.File;
  * Created by AveryChoke on 27/1/2017.
  */
 
-public class StudyMaterial {
+public class StudyMaterial extends ClassMaterial{
 
     public static long mCounter = 0;
 
     private final long mStudyMaterialId;
-    private String mName;
-    private boolean mVisible;
 
     private final File mFile;
 
     public StudyMaterial(String name, String path) {
+        super(name, true);
         mStudyMaterialId = ++mCounter;
-        mName = name;
         mFile = new File(path);
-        mVisible = false;
     }
 
     // for database
     public StudyMaterial(long studyMaterialId, String name, String path, boolean visible) {
+        super(name, visible);
         mStudyMaterialId = studyMaterialId;
-        mName = name;
         mFile = new File(path);
-        mVisible = visible;
     }
 
     // region get set
     public long getStudyMaterialId()
     {
         return mStudyMaterialId;
-    }
-
-    public String getName()
-    {
-        return mName;
-    }
-
-    public void setName(String name)
-    {
-        mName = name;
-    }
-
-    public boolean getVisible() {
-        return mVisible;
-    }
-
-    public void setVisible(boolean visible) {
-        mVisible = visible;
     }
 
     public File getFile() {
