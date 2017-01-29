@@ -17,8 +17,12 @@ import android.databinding.DataBindingUtil;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.sunway.averychoke.studywifidirect3.controller.MainActivity;
+import com.sunway.averychoke.studywifidirect3.controller.teacher_class.TeacherClassFragment;
+import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassBinding;
 import com.sunway.averychoke.studywifidirect3.R;
+import com.sunway.averychoke.studywifidirect3.model.StudyClass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +36,7 @@ public class ClassFragment extends Fragment implements
         ClassAdapter.ClassViewHolder.OnClassSelectListener,
         SwipeRefreshLayout.OnRefreshListener {
 
+    private DatabaseHelper mDatabase;
     private ClassAdapter mClassAdapter;
 
     private FragmentClassBinding mBinding;
@@ -40,13 +45,10 @@ public class ClassFragment extends Fragment implements
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mDatabase = new DatabaseHelper(getContext());
         mClassAdapter = new ClassAdapter(this);
-        List<String> strings = new ArrayList<>();
-        strings.add("ali");
-        strings.add("abu");
-        strings.add("cacing");
-        strings.add("dada");
-        mClassAdapter.setClassesName(strings);
+
+        getActivity().setTitle("Classes");
     }
 
     @Override
@@ -55,18 +57,18 @@ public class ClassFragment extends Fragment implements
         mBinding = DataBindingUtil.bind(rootView);
         mBinding.classesSwipeRefreshLayout.setOnRefreshListener(this);
 
-        setHasOptionsMenu(true);
         return rootView;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        onRefresh();
 
         mBinding.classesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mBinding.classesRecyclerView.setAdapter(mClassAdapter);
 
-        mBinding.plusButton.setOnClickListener(new View.OnClickListener() {
+        mBinding.addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 createClass();
@@ -81,11 +83,7 @@ public class ClassFragment extends Fragment implements
         // // TODO: search for broadcasted classes
 
         // example
-        List<String> classesName = new ArrayList<>();
-        Random rand = new Random();
-        for (int i=0; i<50; i++) {
-            classesName.add(""+rand.nextInt(100));
-        }
+        List<String> classesName = mDatabase.getAllClassesName();
         mClassAdapter.setClassesName(classesName);
 
         mBinding.classesSwipeRefreshLayout.setRefreshing(false);
@@ -94,21 +92,46 @@ public class ClassFragment extends Fragment implements
 
     // region class view holder
     @Override
-    public void onClassSelected(String className) {
-        final CharSequence[] choices = new CharSequence[] {"Host Class", "Participate Class", "View/Edit Class"};
+    public void onClassSelected(final String className) {
+        // get class from database
+        final StudyClass studyClass = mDatabase.getClass(className);
+
+        final CharSequence[] choices = new CharSequence[] {
+                getString(R.string.option_host_class),
+                getString(R.string.option_participate_class),
+                getString(R.string.option_view_class)
+        };
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(getContext())
                 .setItems(choices, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(getContext(), choices[which], Toast.LENGTH_SHORT).show();
+                        switch (which) {
+                            case 0: // Host class
+                                TeacherClassFragment teacherClassFragment = TeacherClassFragment.newInstance(className);
+
+                                MainActivity mainActivity = (MainActivity) getActivity();
+                                mainActivity.changeFragment(teacherClassFragment);
+                                break;
+                            case 1: // Participate class
+
+                                break;
+                            case 2: // View edit class
+
+                                break;
+                        }
+
+//                        Toast.makeText(getContext(),
+//                                String.format("%s for %s with %d quizzes and %d materials",
+//                                        choices[which], studyClass.getName(), studyClass.getQuizzes().size(), studyClass.getStudyMaterials().size()),
+//                                Toast.LENGTH_SHORT).show();
                     }
                 });
         dialog.show();
     }
 
     @Override
-    public void onClassLongClicked(@NonNull String className, @NonNull final int index) {
+    public void onClassLongClicked(@NonNull final String className, @NonNull final int index) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(getContext())
                 .setTitle(R.string.delete_class_dialog_title)
                 .setMessage(R.string.delete_class_dialog_message)
@@ -116,6 +139,7 @@ public class ClassFragment extends Fragment implements
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mClassAdapter.removeClassName(index);
+                        mDatabase.deleteClass(className);
                     }
                 })
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
@@ -143,11 +167,15 @@ public class ClassFragment extends Fragment implements
                         String className = editText.getText().toString();
                         if (!TextUtils.isEmpty(className.trim())) {
                             //// TODO: create Class object and save to database 
-                            
-                            mClassAdapter.addClassName(editText.getText().toString());
-                        } else {
-                            Toast.makeText(getContext(), R.string.create_class_failure_message, Toast.LENGTH_SHORT).show();
+                            StudyClass studyClass = new StudyClass(className);
+                            long errorCode = mDatabase.addClass(studyClass);
+                            if (errorCode != -1) {
+                                mClassAdapter.addClassName(editText.getText().toString());
+                                return; // successfully exited the method
+                            }
                         }
+                        // return not called, means got error
+                        Toast.makeText(getContext(), R.string.create_class_failure_message, Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {

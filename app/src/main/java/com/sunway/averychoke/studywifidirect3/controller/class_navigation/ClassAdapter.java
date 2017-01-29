@@ -40,7 +40,7 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHol
         String className = null;
         className = mClassesName.get(position);
         if (className != null) {
-            holder.setString(className);
+            holder.setClassName(className);
         }
     }
 
@@ -80,14 +80,14 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHol
 
         private String mClassName;
 
-        private CellClassBinding mViewBinding;
+        private CellClassBinding mBinding;
 
         public ClassViewHolder(View itemView, final OnClassSelectListener listener) {
             super(itemView);
 
-            mViewBinding = DataBindingUtil.bind(itemView);
+            mBinding = DataBindingUtil.bind(itemView);
 
-            mViewBinding.classNameTextView.setOnClickListener(new View.OnClickListener() {
+            mBinding.classNameTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mClassName != null) {
@@ -95,19 +95,21 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHol
                     }
                 }
             });
-            mViewBinding.classNameTextView.setOnLongClickListener(new View.OnLongClickListener() {
+            mBinding.classNameTextView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    listener.onClassLongClicked(mClassName, getAdapterPosition());
+                    if (mClassName != null) {
+                        listener.onClassLongClicked(mClassName, getAdapterPosition());
+                    }
                     return true;
                 }
             });
         }
 
-        private void setString(String className) {
+        private void setClassName(String className) {
             mClassName = className;
 
-            mViewBinding.classNameTextView.setText(mClassName);
+            mBinding.classNameTextView.setText(mClassName);
         }
     }
     // endregion view holder class

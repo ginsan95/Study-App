@@ -9,4 +9,7 @@
     <string name="dialog_confirm">Confirm</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="create_class_failure_message">Failed to create class. Please try again.</string>
+    <string name="option_host_class">Host Class</string>
+    <string name="option_participate_class">Participate Class</string>
+    <string name="option_view_class">View/Edit Class</string>
 </resources>
