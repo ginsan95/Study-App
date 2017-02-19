@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/quiz_add_question"
+        android:icon="@drawable/add_question"
+        android:title="Add question"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/quiz_save_quiz"
+        android:icon="@drawable/save"
+        android:title="Save quiz"
+        app:showAsAction="ifRoom"/>
+
+</menu>

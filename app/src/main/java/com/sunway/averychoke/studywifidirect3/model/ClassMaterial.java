@@ -4,7 +4,7 @@ package com.sunway.averychoke.studywifidirect3.model;
  * Created by AveryChoke on 29/1/2017.
  */
 
-public abstract class ClassMaterial {
+public class ClassMaterial {
     private String mName;
     private boolean mVisible;
 

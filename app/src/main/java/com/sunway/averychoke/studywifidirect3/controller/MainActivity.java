@@ -11,8 +11,9 @@ import android.view.MenuItem;
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.class_navigation.ClassFragment;
 import com.sunway.averychoke.studywifidirect3.databinding.ActivityMainBinding;
+import com.sunway.averychoke.studywifidirect3.model.Quiz;
 
-public class MainActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener {
+public class MainActivity extends SWDBaseActivity implements FragmentManager.OnBackStackChangedListener {
 
     private ActivityMainBinding mBinding;
 
@@ -29,15 +30,6 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         getSupportFragmentManager().beginTransaction()
                 .add(mBinding.containerLayout.getId(), new ClassFragment(), ClassFragment.class.getSimpleName())
                 .commit();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

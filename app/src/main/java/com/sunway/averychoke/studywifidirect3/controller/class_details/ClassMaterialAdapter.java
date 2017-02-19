@@ -49,7 +49,7 @@ public class ClassMaterialAdapter extends RecyclerView.Adapter<ClassMaterialView
         return mClassMaterials.size();
     }
 
-    public void setClassMaterials(List<ClassMaterial> classMaterials) {
+    public void setClassMaterials(List<? extends ClassMaterial> classMaterials) {
         mClassMaterials.clear();
         mClassMaterials.addAll(classMaterials);
         // sort
@@ -62,7 +62,7 @@ public class ClassMaterialAdapter extends RecyclerView.Adapter<ClassMaterialView
         notifyItemInserted(mClassMaterials.size()-1);
     }
 
-    public void addClassMaterials(List<ClassMaterial> classMaterials) {
+    public void addClassMaterials(List<? extends ClassMaterial> classMaterials) {
         int startIndex = mClassMaterials.size();
 
         mClassMaterials.addAll(classMaterials);

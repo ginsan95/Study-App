@@ -22,7 +22,10 @@ import com.sunway.averychoke.studywifidirect3.controller.teacher_class.TeacherCl
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassBinding;
 import com.sunway.averychoke.studywifidirect3.R;
+import com.sunway.averychoke.studywifidirect3.model.Question;
+import com.sunway.averychoke.studywifidirect3.model.Quiz;
 import com.sunway.averychoke.studywifidirect3.model.StudyClass;
+import com.sunway.averychoke.studywifidirect3.model.StudyMaterial;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +51,10 @@ public class ClassFragment extends Fragment implements
         mDatabase = new DatabaseHelper(getContext());
         mClassAdapter = new ClassAdapter(this);
 
-        getActivity().setTitle("Classes");
+        // set the id counter for the model objects
+        Quiz.mCounter = mDatabase.getQuizMaxId();
+        Question.mCounter = mDatabase.getQuestionMaxId();
+        StudyMaterial.mCounter = mDatabase.getStudyMaterialMaxId();
     }
 
     @Override
@@ -56,7 +62,7 @@ public class ClassFragment extends Fragment implements
         View rootView = inflater.inflate(R.layout.fragment_class, container, false);
         mBinding = DataBindingUtil.bind(rootView);
         mBinding.classesSwipeRefreshLayout.setOnRefreshListener(this);
-
+        getActivity().setTitle("Classes");
         return rootView;
     }
 

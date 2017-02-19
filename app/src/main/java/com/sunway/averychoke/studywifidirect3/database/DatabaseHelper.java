@@ -54,7 +54,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     + QUIZ_CLASS_NAME + " TEXT NOT NULL,"
                     + QUIZ_NAME + " TEXT,"
                     + QUIZ_MARKS + " REAL,"
-                    + QUIZ_VISIBLE + "BOOLEAN,"
+                    + QUIZ_VISIBLE + " BOOLEAN,"
                     + "FOREIGN KEY(" + QUIZ_CLASS_NAME + ") REFERENCES " + TABLE_CLASS + "(" + CLASS_NAME + ") ON DELETE CASCADE)";
     // endregion Quiz Table
 
@@ -387,9 +387,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public long getQuizMaxID()
+    public long getQuizMaxId()
     {
-        return getMaxID(QUIZ_ID, TABLE_QUIZ);
+        return getMaxId(QUIZ_ID, TABLE_QUIZ);
     }
     // endregion Quiz Table
 
@@ -527,9 +527,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[] { String.valueOf(quizId)});
     }
 
-    public long getQuestionMaxID()
+    public long getQuestionMaxId()
     {
-        return getMaxID(QUESTION_ID, TABLE_QUESTION);
+        return getMaxId(QUESTION_ID, TABLE_QUESTION);
     }
     // endregion Question Table
 
@@ -709,12 +709,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[] { String.valueOf(studyMaterial.getStudyMaterialId()) });
     }
 
-    public void deleteStudyMaterial(long id) {
+    public void deleteStudyMaterial(StudyMaterial studyMaterial) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         //delete study material
         db.delete(TABLE_STUDY_MATERIAL, STUDY_MATERIAL_ID + " = ?",
-                new String[] { String.valueOf(id) });
+                new String[] { String.valueOf(studyMaterial.getStudyMaterialId()) });
+    }
+
+    public long getStudyMaterialMaxId() {
+        return getMaxId(STUDY_MATERIAL_ID, TABLE_STUDY_MATERIAL);
     }
     // endregion Study Material Table
 
@@ -741,7 +745,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    private long getMaxID(String columnID, String table)
+    private long getMaxId(String columnID, String table)
     {
         String selectQuery = "SELECT MAX(" + columnID + ") FROM " + table;
 

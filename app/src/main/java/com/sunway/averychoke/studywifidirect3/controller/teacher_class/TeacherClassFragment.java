@@ -21,7 +21,7 @@ import com.sunway.averychoke.studywifidirect3.model.StudyClass;
  */
 
 public class TeacherClassFragment extends Fragment {
-    private static final String CLASS_NAME_KEY = "classNameKey";
+    private static final String CLASS_NAME_KEY = "class_name_ley";
 
     private StudyClass mStudyClass;
     private DatabaseHelper mDatabase;
@@ -48,14 +48,13 @@ public class TeacherClassFragment extends Fragment {
         mStudyClass = mDatabase.getClass(className);
 
         mClassPagerFragmentAdapter = new ClassPagerFragmentAdapter(getChildFragmentManager());
-
-        getActivity().setTitle(mStudyClass.getName() + " (Teacher)");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_class_details, container, false);
         mBinding = DataBindingUtil.bind(rootView);
+        getActivity().setTitle(mStudyClass.getName() + " (T)");
         return rootView;
     }
 
@@ -68,7 +67,7 @@ public class TeacherClassFragment extends Fragment {
     }
 
     // adapter for the view pager
-    protected static class ClassPagerFragmentAdapter extends FragmentStatePagerAdapter {
+    class ClassPagerFragmentAdapter extends FragmentStatePagerAdapter {
         private String[] tabTitles = { "Quiz", "Study Material" };
 
         private ClassPagerFragmentAdapter(FragmentManager fm) {
@@ -82,7 +81,12 @@ public class TeacherClassFragment extends Fragment {
 
         @Override
         public Fragment getItem(int position) {
-            return new TeacherQuizFragment();
+            switch (position) {
+                case 0:
+                    return TeacherQuizFragment.newInstance(mStudyClass.getName(), mStudyClass.getQuizzes());
+                default:
+                    return TeacherStudyMaterialFragment.newInstance(mStudyClass.getName(), mStudyClass.getStudyMaterials());
+            }
         }
 
         @Override

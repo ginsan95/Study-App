@@ -2,6 +2,7 @@ package com.sunway.averychoke.studywifidirect3.model;
 
 import android.os.Parcel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,6 +24,17 @@ public class ChoiceQuestion extends Question {
     {
         super(questionId, question, answer, totalMarks);
         mChoices = choices;
+    }
+
+    // convert to choice question
+    public static ChoiceQuestion cloneFrom(Question question) {
+        ChoiceQuestion cloneQuestion = new ChoiceQuestion(
+                question.getQuestionId(),
+                question.getQuestion(),
+                "",
+                question.getTotalMarks(),
+                new ArrayList<String>());
+        return cloneQuestion;
     }
 
     // region get set

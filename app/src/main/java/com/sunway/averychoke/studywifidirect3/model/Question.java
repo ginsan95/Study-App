@@ -35,6 +35,21 @@ public class Question implements Parcelable, Serializable {
         mTotalMarks = totalMarks;
     }
 
+    // for create question
+    public Question() {
+        this("", "", 1);
+    }
+
+    // convert to question
+    public static Question cloneFrom(Question question) {
+        Question cloneQuestion = new Question(
+                question.getQuestionId(),
+                question.getQuestion(),
+                "",
+                question.getTotalMarks());
+        return cloneQuestion;
+    }
+
     public boolean checkAnswer(String userAnswer)
     {
         return mAnswer.equalsIgnoreCase(userAnswer);
