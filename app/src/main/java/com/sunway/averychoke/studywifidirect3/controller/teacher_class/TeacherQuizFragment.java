@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.sunway.averychoke.studywifidirect3.R;
+import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
 import com.sunway.averychoke.studywifidirect3.controller.class_details.ClassMaterialAdapter;
 import com.sunway.averychoke.studywifidirect3.controller.class_details.ClassMaterialViewHolder;
 import com.sunway.averychoke.studywifidirect3.controller.teacher_class.quiz.CreateQuizActivity;
@@ -35,7 +36,7 @@ import java.util.Random;
  * Created by AveryChoke on 29/1/2017.
  */
 
-public class TeacherQuizFragment extends Fragment implements
+public class TeacherQuizFragment extends SWDBaseFragment implements
         ClassMaterialViewHolder.OnClassMaterialSelectListener {
 
     private static final String CLASS_NAME_KEY = "class_name_key";

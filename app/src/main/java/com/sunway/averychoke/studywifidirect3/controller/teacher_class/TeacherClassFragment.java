@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sunway.averychoke.studywifidirect3.R;
+import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
 import com.sunway.averychoke.studywifidirect3.controller.class_navigation.ClassFragment;
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassDetailsBinding;
@@ -20,7 +21,7 @@ import com.sunway.averychoke.studywifidirect3.model.StudyClass;
  * Created by AveryChoke on 29/1/2017.
  */
 
-public class TeacherClassFragment extends Fragment {
+public class TeacherClassFragment extends SWDBaseFragment {
     private static final String CLASS_NAME_KEY = "class_name_ley";
 
     private StudyClass mStudyClass;

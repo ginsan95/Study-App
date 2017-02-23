@@ -2,6 +2,7 @@ package com.sunway.averychoke.studywifidirect3.controller.teacher_class.quiz;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseActivity;
@@ -34,6 +35,14 @@ public class CreateQuizActivity extends SWDBaseActivity {
         // display Create Quiz Fragment
         getSupportFragmentManager().beginTransaction()
                 .add(mBinding.containerLayout.getId(), CreateQuizFragment.newInstance(mClassName), CreateQuizFragment.class.getSimpleName())
+                .commit();
+    }
+
+    @Override
+    public void changeFragment(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(mBinding.containerLayout.getId(), fragment, fragment.getClass().getSimpleName())
+                .addToBackStack(fragment.getClass().getSimpleName())
                 .commit();
     }
 }

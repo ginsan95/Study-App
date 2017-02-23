@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.sunway.averychoke.studywifidirect3.R;
+import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentCreateQuizBinding;
 import com.sunway.averychoke.studywifidirect3.model.ChoiceQuestion;
@@ -33,7 +34,7 @@ import com.sunway.averychoke.studywifidirect3.model.StudyClass;
  * Created by AveryChoke on 11/2/2017.
  */
 
-public class CreateQuizFragment extends Fragment implements
+public class CreateQuizFragment extends SWDBaseFragment implements
         CreateQuestionAdapter.CreateQuestionViewHolder.OnQuestionChangeListener {
 
     public static final String NEW_QUIZ_KEY = "new_quiz_key";

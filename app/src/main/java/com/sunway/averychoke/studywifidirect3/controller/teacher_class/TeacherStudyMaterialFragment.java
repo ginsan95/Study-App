@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.sunway.averychoke.studywifidirect3.R;
+import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
 import com.sunway.averychoke.studywifidirect3.controller.class_details.ClassMaterialAdapter;
 import com.sunway.averychoke.studywifidirect3.controller.class_details.ClassMaterialViewHolder;
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
@@ -29,7 +30,7 @@ import java.util.Random;
  * Created by AveryChoke on 30/1/2017.
  */
 
-public class TeacherStudyMaterialFragment extends Fragment implements
+public class TeacherStudyMaterialFragment extends SWDBaseFragment implements
         ClassMaterialViewHolder.OnClassMaterialSelectListener {
 
     private static final String CLASS_NAME = "class_name";

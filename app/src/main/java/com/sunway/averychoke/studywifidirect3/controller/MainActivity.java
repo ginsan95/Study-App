@@ -41,6 +41,7 @@ public class MainActivity extends SWDBaseActivity implements FragmentManager.OnB
         }
     }
 
+    @Override
     public void changeFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
                 .replace(mBinding.containerLayout.getId(), fragment, fragment.getClass().getSimpleName())

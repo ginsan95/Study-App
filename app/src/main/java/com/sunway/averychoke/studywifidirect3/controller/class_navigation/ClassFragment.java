@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.sunway.averychoke.studywifidirect3.controller.MainActivity;
+import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
 import com.sunway.averychoke.studywifidirect3.controller.teacher_class.TeacherClassFragment;
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassBinding;
@@ -35,7 +36,7 @@ import java.util.Random;
  * Created by AveryChoke on 22/1/2017.
  */
 
-public class ClassFragment extends Fragment implements
+public class ClassFragment extends SWDBaseFragment implements
         ClassAdapter.ClassViewHolder.OnClassSelectListener,
         SwipeRefreshLayout.OnRefreshListener {
 
@@ -115,9 +116,7 @@ public class ClassFragment extends Fragment implements
                         switch (which) {
                             case 0: // Host class
                                 TeacherClassFragment teacherClassFragment = TeacherClassFragment.newInstance(className);
-
-                                MainActivity mainActivity = (MainActivity) getActivity();
-                                mainActivity.changeFragment(teacherClassFragment);
+                                getBaseActivity().changeFragment(teacherClassFragment);
                                 break;
                             case 1: // Participate class
 
