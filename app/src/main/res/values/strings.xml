@@ -9,6 +9,8 @@
     <string name="dialog_confirm">Confirm</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_ok">Ok</string>
+    <string name="dialog_yes">Yes</string>
+    <string name="dialog_no">No</string>
     <string name="create_class_failure_message">Failed to create class. Please try again.</string>
     <string name="option_host_class">Host Class</string>
     <string name="option_participate_class">Participate Class</string>
@@ -23,4 +25,6 @@
     <string name="delete_choice_dialog_message">Delete this choice?</string>
     <string name="add_choice_dialog_title">Add Choice</string>
     <string name="edit_choice_dialog_title">Edit Choice</string>
+    <string name="edit_text_error_message">This field cannot be empty</string>
+    <string name="unsaved_changes_message">Unsaved changes will not be saved. Are you sure to exit?</string>
 </resources>

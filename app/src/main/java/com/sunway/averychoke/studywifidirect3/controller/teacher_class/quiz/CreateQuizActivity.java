@@ -1,8 +1,10 @@
 package com.sunway.averychoke.studywifidirect3.controller.teacher_class.quiz;
 
+import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseActivity;
@@ -44,5 +46,24 @@ public class CreateQuizActivity extends SWDBaseActivity {
                 .replace(mBinding.containerLayout.getId(), fragment, fragment.getClass().getSimpleName())
                 .addToBackStack(fragment.getClass().getSimpleName())
                 .commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(this)
+                .setMessage(R.string.unsaved_changes_message)
+                .setPositiveButton(R.string.dialog_yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        CreateQuizActivity.super.onBackPressed();
+                    }
+                })
+                .setNegativeButton(R.string.dialog_no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        dialog.show();
     }
 }

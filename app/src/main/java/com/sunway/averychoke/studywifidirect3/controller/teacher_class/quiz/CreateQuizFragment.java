@@ -93,6 +93,7 @@ public class CreateQuizFragment extends SWDBaseFragment implements
         switch (item.getItemId()) {
             case R.id.quiz_add_question:
                 mCreateQuestionAdapter.addQuestion(new Question());
+                mBinding.quizzesRecyclerView.smoothScrollToPosition(mCreateQuestionAdapter.getItemCount()-1);
                 return true;
             case R.id.quiz_save_quiz:
                 saveQuiz();
@@ -102,10 +103,12 @@ public class CreateQuizFragment extends SWDBaseFragment implements
         }
     }
 
+
+
     private void saveQuiz() {
         EditText titleEditText = (EditText) getActivity().findViewById(R.id.title_edit_text);
-        String title = titleEditText.getText().toString();
-        if (!TextUtils.isEmpty(title.trim())) {
+        if (handleEmptyET(titleEditText)) {
+            String title = titleEditText.getText().toString();
             Quiz quiz = new Quiz(title);
             // add all the created questions into the quiz
             quiz.getQuestions().addAll(mCreateQuestionAdapter.getQuestions());

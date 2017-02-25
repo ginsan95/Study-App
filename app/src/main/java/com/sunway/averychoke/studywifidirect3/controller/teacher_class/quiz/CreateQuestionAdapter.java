@@ -119,7 +119,7 @@ public class CreateQuestionAdapter extends RecyclerView.Adapter<CreateQuestionAd
             for (QuestionType type : QuestionType.values()) {
                 questionTypesString.add(type.simpleName());
             }
-            ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(itemView.getContext(), R.layout.support_simple_spinner_dropdown_item, questionTypesString);
+            ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(itemView.getContext(), R.layout.custom_spinner_item, questionTypesString);
             mBinding.typeSpinner.setAdapter(dataAdapter);
 
             mBinding.typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
