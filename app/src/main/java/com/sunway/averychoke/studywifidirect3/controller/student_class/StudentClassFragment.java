@@ -1,12 +1,5 @@
 package com.sunway.averychoke.studywifidirect3.controller.student_class;
 
-<<<<<<< HEAD
-/**
- * Created by AveryChoke on 1/3/2017.
- */
-
-public class StudentClassFragment {
-=======
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -102,5 +95,4 @@ public class StudentClassFragment extends SWDBaseFragment {
             return tabTitles[position];
         }
     }
->>>>>>> Added basic Student Class component container
 }

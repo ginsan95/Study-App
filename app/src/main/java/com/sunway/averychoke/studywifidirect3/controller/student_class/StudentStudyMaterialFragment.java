@@ -1,12 +1,5 @@
 package com.sunway.averychoke.studywifidirect3.controller.student_class;
 
-<<<<<<< HEAD
-/**
- * Created by AveryChoke on 1/3/2017.
- */
-
-public class StudentStudyMaterialFragment {
-=======
 import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -123,5 +116,4 @@ public class StudentStudyMaterialFragment extends SWDBaseFragment implements
     public void onClassMaterialChecked(@NonNull ClassMaterial classMaterial, @NonNull boolean isChecked) {
     }
     // endregion class material view holder
->>>>>>> Added basic Student Class component container
 }

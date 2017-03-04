@@ -1,12 +1,5 @@
 package com.sunway.averychoke.studywifidirect3.controller.student_class;
 
-<<<<<<< HEAD
-/**
- * Created by AveryChoke on 1/3/2017.
- */
-
-public class StudentQuizFragment {
-=======
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -131,5 +124,4 @@ public class StudentQuizFragment extends SWDBaseFragment implements
 
     }
     // endregion class material view holder
->>>>>>> Added basic Student Class component container
 }
