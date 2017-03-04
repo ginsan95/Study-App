@@ -85,7 +85,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //create table statement
     private static final String CREATE_TABLE_CHOICE_QUESTION =
             "CREATE TABLE " + TABLE_CHOICE_QUESTION + "("
-                    + CHOICE_QUESTION_ID + " INTEGER NOT NULL,"
+                    + CHOICE_QUESTION_ID + " INTEGER PRIMARY KEY,"
                     + CHOICE_QUESTION_CHOICES + " TEXT,"
                     + "FOREIGN KEY(" + CHOICE_QUESTION_ID + ") REFERENCES " + TABLE_QUESTION + "(" + QUESTION_ID + ") ON DELETE CASCADE)";
     // endregion ChoiceQuestion table

@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.sunway.averychoke.studywifidirect3.controller.MainActivity;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
+import com.sunway.averychoke.studywifidirect3.controller.student_class.StudentClassFragment;
 import com.sunway.averychoke.studywifidirect3.controller.teacher_class.TeacherClassFragment;
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassBinding;
@@ -119,7 +120,8 @@ public class ClassFragment extends SWDBaseFragment implements
                                 getBaseActivity().changeFragment(teacherClassFragment);
                                 break;
                             case 1: // Participate class
-
+                                StudentClassFragment studentClassFragment = StudentClassFragment.newInstance(className);
+                                getBaseActivity().changeFragment(studentClassFragment);
                                 break;
                             case 2: // View edit class
 
