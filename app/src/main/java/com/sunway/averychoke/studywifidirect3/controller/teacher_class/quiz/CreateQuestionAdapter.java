@@ -6,6 +6,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -165,7 +166,13 @@ public class CreateQuestionAdapter extends RecyclerView.Adapter<CreateQuestionAd
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    mQuestion.setTotalMarks(Double.parseDouble(s.toString()));
+                    if (!TextUtils.isEmpty(s.toString().trim())) {
+                        try {
+                            mQuestion.setTotalMarks(Double.parseDouble(s.toString()));
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             });
 

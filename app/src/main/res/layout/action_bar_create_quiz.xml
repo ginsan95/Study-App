@@ -10,7 +10,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/title_edit_text"
             android:hint="Quiz Title"
-            android:inputType="text"/>
+            android:inputType="textCapWords"/>
 
     </LinearLayout>
 
