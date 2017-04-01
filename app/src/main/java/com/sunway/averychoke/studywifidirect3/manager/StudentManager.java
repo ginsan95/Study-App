@@ -16,11 +16,9 @@ import java.util.List;
 
 public class StudentManager {
 
-    public static final StudentManager sInstance = new StudentManager();
+    private static final StudentManager sInstance = new StudentManager();
 
-    private Context mContext;
     private DatabaseHelper mDatabase;
-
     private StudyClass mStudyClass;
 
     private StudentManager() {}
@@ -30,8 +28,7 @@ public class StudentManager {
     }
 
     public void initialize(String className, Context context) {
-        mContext = context;
-        mDatabase = new DatabaseHelper(mContext);
+        mDatabase = new DatabaseHelper(context);
 
         StudyClass studyClass = mDatabase.getClass(className);
         mStudyClass = studyClass != null ? studyClass : new StudyClass(className);
