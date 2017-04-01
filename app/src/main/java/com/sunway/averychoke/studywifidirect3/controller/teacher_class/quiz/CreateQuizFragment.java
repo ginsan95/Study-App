@@ -80,6 +80,8 @@ public class CreateQuizFragment extends SWDBaseFragment implements
 
         mBinding.quizzesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mBinding.quizzesRecyclerView.setAdapter(mCreateQuestionAdapter);
+        // add a single question
+        mCreateQuestionAdapter.addQuestion(new Question());
     }
 
     @Override
@@ -102,8 +104,6 @@ public class CreateQuizFragment extends SWDBaseFragment implements
                 return super.onOptionsItemSelected(item);
         }
     }
-
-
 
     private void saveQuiz() {
         EditText titleEditText = (EditText) getActivity().findViewById(R.id.title_edit_text);

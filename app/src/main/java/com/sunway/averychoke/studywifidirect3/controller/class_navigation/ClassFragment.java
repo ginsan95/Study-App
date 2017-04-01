@@ -1,6 +1,7 @@
 package com.sunway.averychoke.studywifidirect3.controller.class_navigation;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,7 +20,9 @@ import android.widget.Toast;
 
 import com.sunway.averychoke.studywifidirect3.controller.MainActivity;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
+import com.sunway.averychoke.studywifidirect3.controller.student_class.StudentClassActivity;
 import com.sunway.averychoke.studywifidirect3.controller.student_class.StudentClassFragment;
+import com.sunway.averychoke.studywifidirect3.controller.teacher_class.TeacherClassActivity;
 import com.sunway.averychoke.studywifidirect3.controller.teacher_class.TeacherClassFragment;
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassBinding;
@@ -116,12 +119,14 @@ public class ClassFragment extends SWDBaseFragment implements
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case 0: // Host class
-                                TeacherClassFragment teacherClassFragment = TeacherClassFragment.newInstance(className);
-                                getBaseActivity().changeFragment(teacherClassFragment);
+                                Intent teacherIntent = new Intent(getActivity(), TeacherClassActivity.class);
+                                teacherIntent.putExtra(TeacherClassActivity.CLASS_NAME_KEY, className);
+                                startActivity(teacherIntent);
                                 break;
                             case 1: // Participate class
-                                StudentClassFragment studentClassFragment = StudentClassFragment.newInstance(className);
-                                getBaseActivity().changeFragment(studentClassFragment);
+                                Intent studentIntent = new Intent(getActivity(), StudentClassActivity.class);
+                                studentIntent.putExtra(StudentClassActivity.CLASS_NAME_KEY, className);
+                                startActivity(studentIntent);
                                 break;
                             case 2: // View edit class
 

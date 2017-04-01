@@ -87,7 +87,7 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHol
 
             mBinding = DataBindingUtil.bind(itemView);
 
-            mBinding.classNameTextView.setOnClickListener(new View.OnClickListener() {
+            mBinding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mClassName != null) {
@@ -95,7 +95,7 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHol
                     }
                 }
             });
-            mBinding.classNameTextView.setOnLongClickListener(new View.OnLongClickListener() {
+            mBinding.getRoot().setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                     if (mClassName != null) {

@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
-    <LinearLayout android:orientation="vertical" android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <LinearLayout android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:background="?attr/selectableItemBackground">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -9,18 +12,18 @@
             android:orientation="horizontal">
 
             <CheckBox
+                android:id="@+id/visible_check_box"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/visible_check_box"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="10dp"
                 android:layout_marginStart="10dp"/>
 
             <TextView
+                android:id="@+id/name_text_view"
                 android:text="Class material name (SADP QUIZ 2)"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/name_text_view"
                 android:textSize="16sp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginStart="10dp"
@@ -29,7 +32,7 @@
                 android:paddingRight="10dp"
                 android:paddingEnd="10dp"
                 android:layout_gravity="center_vertical"
-                android:gravity="center_vertical"/>
+                android:gravity="center_vertical" />
 
         </LinearLayout>
 

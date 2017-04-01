@@ -27,10 +27,9 @@ public class CreateQuizActivity extends SWDBaseActivity {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_create_quiz);
 
-        getSupportActionBar().setHomeButtonEnabled(true);
+        setSupportActionBar(mBinding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowCustomEnabled(true);
-        getSupportActionBar().setCustomView(R.layout.action_bar_create_quiz);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         mClassName = getIntent().getStringExtra(CLASS_NAME_KEY);
 

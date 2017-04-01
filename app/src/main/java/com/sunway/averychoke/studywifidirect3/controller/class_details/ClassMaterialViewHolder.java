@@ -38,7 +38,7 @@ public class ClassMaterialViewHolder extends RecyclerView.ViewHolder {
             mBinding.visibleCheckBox.setVisibility(View.GONE);
         }
 
-        mBinding.nameTextView.setOnClickListener(new View.OnClickListener() {
+        mBinding.getRoot().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mClassMaterial != null) {
@@ -46,7 +46,7 @@ public class ClassMaterialViewHolder extends RecyclerView.ViewHolder {
                 }
             }
         });
-        mBinding.nameTextView.setOnLongClickListener(new View.OnLongClickListener() {
+        mBinding.getRoot().setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 if (mClassMaterial != null) {

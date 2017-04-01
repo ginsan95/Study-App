@@ -16,7 +16,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".controller.teacher_class.TeacherClassActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity android:name=".controller.teacher_class.quiz.CreateQuizActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
+        <activity android:name=".controller.student_class.StudentClassActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"/>
     </application>
 
