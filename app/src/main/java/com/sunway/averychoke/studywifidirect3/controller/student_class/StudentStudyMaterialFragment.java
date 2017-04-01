@@ -19,6 +19,7 @@ import com.sunway.averychoke.studywifidirect3.controller.class_details.ClassMate
 import com.sunway.averychoke.studywifidirect3.controller.class_details.ClassMaterialViewHolder;
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassMaterialBinding;
+import com.sunway.averychoke.studywifidirect3.manager.StudentManager;
 import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
 import com.sunway.averychoke.studywifidirect3.model.StudyMaterial;
 
@@ -33,33 +34,17 @@ import java.util.Random;
 public class StudentStudyMaterialFragment extends SWDBaseFragment implements
         ClassMaterialViewHolder.OnClassMaterialSelectListener {
 
-    private static final String CLASS_NAME = "class_name";
-    private static final String STUDY_MATERIALS_KEY = "study_materials_key";
-
+    private StudentManager mManager;
     private DatabaseHelper mDatabase;
     private ClassMaterialAdapter mClassMaterialAdapter;
-    private String mClassName;
-    private List<StudyMaterial> mStudyMaterials;
 
     private FragmentClassMaterialBinding mBinding;
-
-    public static final StudentStudyMaterialFragment newInstance(String className, List<StudyMaterial> studyMaterials) {
-        StudentStudyMaterialFragment studentStudyMaterialFragment = new StudentStudyMaterialFragment();
-        Bundle args = new Bundle();
-        args.putParcelableArrayList(STUDY_MATERIALS_KEY, (ArrayList<StudyMaterial>) studyMaterials);
-        args.putString(CLASS_NAME, className);
-
-        studentStudyMaterialFragment.setArguments(args);
-        return studentStudyMaterialFragment;
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mClassName = getArguments().getString(CLASS_NAME);
-        mStudyMaterials = getArguments().getParcelableArrayList(STUDY_MATERIALS_KEY);
-
+        mManager = StudentManager.getInstance();
         mDatabase = new DatabaseHelper(getContext());
         mClassMaterialAdapter = new ClassMaterialAdapter(true, this);
     }
@@ -79,7 +64,7 @@ public class StudentStudyMaterialFragment extends SWDBaseFragment implements
 
         mBinding.materialsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mBinding.materialsRecyclerView.setAdapter(mClassMaterialAdapter);
-        mClassMaterialAdapter.setClassMaterials(mStudyMaterials);
+        mClassMaterialAdapter.setClassMaterials(mManager.getStudyMaterials());
 
         mBinding.addButton.setVisibility(View.GONE);
     }

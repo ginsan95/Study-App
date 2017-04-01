@@ -27,6 +27,7 @@ import com.sunway.averychoke.studywifidirect3.controller.teacher_class.TeacherCl
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassBinding;
 import com.sunway.averychoke.studywifidirect3.R;
+import com.sunway.averychoke.studywifidirect3.manager.StudentManager;
 import com.sunway.averychoke.studywifidirect3.model.Question;
 import com.sunway.averychoke.studywifidirect3.model.Quiz;
 import com.sunway.averychoke.studywifidirect3.model.StudyClass;
@@ -124,19 +125,14 @@ public class ClassFragment extends SWDBaseFragment implements
                                 startActivity(teacherIntent);
                                 break;
                             case 1: // Participate class
+                                StudentManager.getInstance().initialize(className, getContext());
                                 Intent studentIntent = new Intent(getActivity(), StudentClassActivity.class);
-                                studentIntent.putExtra(StudentClassActivity.CLASS_NAME_KEY, className);
                                 startActivity(studentIntent);
                                 break;
                             case 2: // View edit class
 
                                 break;
                         }
-
-//                        Toast.makeText(getContext(),
-//                                String.format("%s for %s with %d quizzes and %d materials",
-//                                        choices[which], studyClass.getName(), studyClass.getQuizzes().size(), studyClass.getStudyMaterials().size()),
-//                                Toast.LENGTH_SHORT).show();
                     }
                 });
         dialog.show();

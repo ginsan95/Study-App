@@ -13,12 +13,7 @@ import com.sunway.averychoke.studywifidirect3.databinding.ActivityMainContainerB
  */
 
 public class StudentClassActivity extends SWDBaseActivity {
-
-    public static final String CLASS_NAME_KEY = "class_name_key";
-
     private ActivityMainContainerBinding mBinding;
-
-    private String mClassName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +24,8 @@ public class StudentClassActivity extends SWDBaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        mClassName = getIntent().getStringExtra(CLASS_NAME_KEY);
-
         getSupportFragmentManager().beginTransaction()
-                .add(mBinding.containerLayout.getId(), StudentClassFragment.newInstance(mClassName), StudentClassFragment.class.getSimpleName())
+                .add(mBinding.containerLayout.getId(), new StudentClassFragment(), StudentClassFragment.class.getSimpleName())
                 .commit();
     }
 

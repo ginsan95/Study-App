@@ -25,6 +25,7 @@ import com.sunway.averychoke.studywifidirect3.controller.teacher_class.quiz.Crea
 import com.sunway.averychoke.studywifidirect3.controller.teacher_class.quiz.CreateQuizFragment;
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassMaterialBinding;
+import com.sunway.averychoke.studywifidirect3.manager.StudentManager;
 import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
 import com.sunway.averychoke.studywifidirect3.model.Quiz;
 
@@ -39,33 +40,17 @@ import java.util.Random;
 public class StudentQuizFragment extends SWDBaseFragment implements
         ClassMaterialViewHolder.OnClassMaterialSelectListener {
 
-    private static final String CLASS_NAME_KEY = "class_name_key";
-    private static final String QUIZZES_KEY = "quizzes_key";
-
+    private StudentManager sManager;
     private DatabaseHelper mDatabase;
     private ClassMaterialAdapter mClassMaterialAdapter;
-    private String mClassName;
-    private List<Quiz> mQuizzes;
 
     private FragmentClassMaterialBinding mBinding;
-
-    public static StudentQuizFragment newInstance(String className, List<Quiz> quizzes) {
-        StudentQuizFragment studentQuizFragment = new StudentQuizFragment();
-        Bundle args = new Bundle();
-        args.putParcelableArrayList(QUIZZES_KEY, (ArrayList<Quiz>) quizzes);
-        args.putString(CLASS_NAME_KEY, className);
-
-        studentQuizFragment.setArguments(args);
-        return studentQuizFragment;
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mClassName = getArguments().getString(CLASS_NAME_KEY);
-        mQuizzes = getArguments().getParcelableArrayList(QUIZZES_KEY);
-
+        sManager = StudentManager.getInstance();
         mDatabase = new DatabaseHelper(getContext());
         mClassMaterialAdapter = new ClassMaterialAdapter(false, this);
     }
@@ -85,7 +70,7 @@ public class StudentQuizFragment extends SWDBaseFragment implements
 
         mBinding.materialsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mBinding.materialsRecyclerView.setAdapter(mClassMaterialAdapter);
-        mClassMaterialAdapter.setClassMaterials(mQuizzes);
+        mClassMaterialAdapter.setClassMaterials(sManager.getQuizzes());
 
         mBinding.addButton.setVisibility(View.GONE);
     }
