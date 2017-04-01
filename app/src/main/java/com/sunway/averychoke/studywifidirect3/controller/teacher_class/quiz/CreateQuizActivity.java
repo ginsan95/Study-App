@@ -16,11 +16,7 @@ import com.sunway.averychoke.studywifidirect3.databinding.ActivityCreateQuizBind
 
 public class CreateQuizActivity extends SWDBaseActivity {
 
-    public static final String CLASS_NAME_KEY = "class_name_key";
-
     private ActivityCreateQuizBinding mBinding;
-
-    private String mClassName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,11 +27,9 @@ public class CreateQuizActivity extends SWDBaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        mClassName = getIntent().getStringExtra(CLASS_NAME_KEY);
-
         // display Create Quiz Fragment
         getSupportFragmentManager().beginTransaction()
-                .add(mBinding.containerLayout.getId(), CreateQuizFragment.newInstance(mClassName), CreateQuizFragment.class.getSimpleName())
+                .add(mBinding.containerLayout.getId(), new CreateQuizFragment(), CreateQuizFragment.class.getSimpleName())
                 .commit();
     }
 

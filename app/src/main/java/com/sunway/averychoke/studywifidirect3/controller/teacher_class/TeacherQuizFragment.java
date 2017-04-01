@@ -25,6 +25,7 @@ import com.sunway.averychoke.studywifidirect3.controller.teacher_class.quiz.Crea
 import com.sunway.averychoke.studywifidirect3.controller.teacher_class.quiz.CreateQuizFragment;
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassMaterialBinding;
+import com.sunway.averychoke.studywifidirect3.manager.TeacherManager;
 import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
 import com.sunway.averychoke.studywifidirect3.model.Quiz;
 
@@ -39,34 +40,19 @@ import java.util.Random;
 public class TeacherQuizFragment extends SWDBaseFragment implements
         ClassMaterialViewHolder.OnClassMaterialSelectListener {
 
-    private static final String CLASS_NAME_KEY = "class_name_key";
-    private static final String QUIZZES_KEY = "quizzes_key";
     private static final int CREATE_QUIZ_CODE = 1;
 
+    private TeacherManager sManager;
     private DatabaseHelper mDatabase;
     private ClassMaterialAdapter mClassMaterialAdapter;
-    private String mClassName;
-    private List<Quiz> mQuizzes;
 
     private FragmentClassMaterialBinding mBinding;
-
-    public static TeacherQuizFragment newInstance(String className, List<Quiz> quizzes) {
-        TeacherQuizFragment teacherQuizFragment = new TeacherQuizFragment();
-        Bundle args = new Bundle();
-        args.putParcelableArrayList(QUIZZES_KEY, (ArrayList<Quiz>) quizzes);
-        args.putString(CLASS_NAME_KEY, className);
-
-        teacherQuizFragment.setArguments(args);
-        return teacherQuizFragment;
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mClassName = getArguments().getString(CLASS_NAME_KEY);
-        mQuizzes = getArguments().getParcelableArrayList(QUIZZES_KEY);
-
+        sManager = TeacherManager.getInstance();
         mDatabase = new DatabaseHelper(getContext());
         mClassMaterialAdapter = new ClassMaterialAdapter(true, this);
     }
@@ -86,24 +72,13 @@ public class TeacherQuizFragment extends SWDBaseFragment implements
 
         mBinding.materialsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mBinding.materialsRecyclerView.setAdapter(mClassMaterialAdapter);
-        mClassMaterialAdapter.setClassMaterials(mQuizzes);
+        mClassMaterialAdapter.setClassMaterials(sManager.getQuizzes());
 
         mBinding.addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), CreateQuizActivity.class);
-                intent.putExtra(CreateQuizActivity.CLASS_NAME_KEY, mClassName);
                 startActivityForResult(intent, CREATE_QUIZ_CODE);
-
-
-//                String[] strings = {"babi", "cina", "sohai"};
-//                Random rand = new Random();
-//                Quiz quiz = new Quiz(strings[rand.nextInt(3)]);
-//
-//                long errorCode = mDatabase.addQuiz(quiz, mClassName);
-//                if (errorCode != -1) {
-//                    mClassMaterialAdapter.addClassMaterial(quiz);
-//                }
             }
         });
     }

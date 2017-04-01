@@ -28,6 +28,7 @@ import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassBinding;
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.manager.StudentManager;
+import com.sunway.averychoke.studywifidirect3.manager.TeacherManager;
 import com.sunway.averychoke.studywifidirect3.model.Question;
 import com.sunway.averychoke.studywifidirect3.model.Quiz;
 import com.sunway.averychoke.studywifidirect3.model.StudyClass;
@@ -105,9 +106,6 @@ public class ClassFragment extends SWDBaseFragment implements
     // region class view holder
     @Override
     public void onClassSelected(final String className) {
-        // get class from database
-        final StudyClass studyClass = mDatabase.getClass(className);
-
         final CharSequence[] choices = new CharSequence[] {
                 getString(R.string.option_host_class),
                 getString(R.string.option_participate_class),
@@ -120,8 +118,8 @@ public class ClassFragment extends SWDBaseFragment implements
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case 0: // Host class
+                                TeacherManager.getInstance().initialize(className, getContext());
                                 Intent teacherIntent = new Intent(getActivity(), TeacherClassActivity.class);
-                                teacherIntent.putExtra(TeacherClassActivity.CLASS_NAME_KEY, className);
                                 startActivity(teacherIntent);
                                 break;
                             case 1: // Participate class

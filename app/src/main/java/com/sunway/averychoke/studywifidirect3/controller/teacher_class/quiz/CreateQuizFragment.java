@@ -25,6 +25,7 @@ import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentCreateQuizBinding;
+import com.sunway.averychoke.studywifidirect3.manager.TeacherManager;
 import com.sunway.averychoke.studywifidirect3.model.ChoiceQuestion;
 import com.sunway.averychoke.studywifidirect3.model.Question;
 import com.sunway.averychoke.studywifidirect3.model.Quiz;
@@ -39,27 +40,16 @@ public class CreateQuizFragment extends SWDBaseFragment implements
 
     public static final String NEW_QUIZ_KEY = "new_quiz_key";
 
+    private TeacherManager sManager;
     private DatabaseHelper mDatabase;
     private FragmentCreateQuizBinding mBinding;
     private CreateQuestionAdapter mCreateQuestionAdapter;
-
-    private String mClassName;
-
-    public static CreateQuizFragment newInstance(String className) {
-        Bundle args = new Bundle();
-        args.putString(CreateQuizActivity.CLASS_NAME_KEY, className);
-
-        CreateQuizFragment fragment = new CreateQuizFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mClassName = getArguments().getString(CreateQuizActivity.CLASS_NAME_KEY);
-
+        sManager = TeacherManager.getInstance();
         mDatabase = new DatabaseHelper(getContext());
         mCreateQuestionAdapter = new CreateQuestionAdapter(this);
     }
@@ -113,14 +103,14 @@ public class CreateQuizFragment extends SWDBaseFragment implements
             // add all the created questions into the quiz
             quiz.getQuestions().addAll(mCreateQuestionAdapter.getQuestions());
 
-            // save the quiz to database
-            mDatabase.addQuiz(quiz, mClassName);
-
-            // send data back
-            Intent intent = new Intent();
-            intent.putExtra(NEW_QUIZ_KEY, (Parcelable) quiz);
-            getActivity().setResult(Activity.RESULT_OK, intent);
-            getActivity().finish();
+            // check if add successfully
+            if (sManager.addQuiz(quiz)) {
+                // send data back
+                Intent intent = new Intent();
+                intent.putExtra(NEW_QUIZ_KEY, (Parcelable) quiz);
+                getActivity().setResult(Activity.RESULT_OK, intent);
+                getActivity().finish();
+            }
         }
     }
 

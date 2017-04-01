@@ -15,6 +15,7 @@ import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
 import com.sunway.averychoke.studywifidirect3.controller.class_navigation.ClassFragment;
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassDetailsBinding;
+import com.sunway.averychoke.studywifidirect3.manager.TeacherManager;
 import com.sunway.averychoke.studywifidirect3.model.StudyClass;
 
 /**
@@ -22,31 +23,19 @@ import com.sunway.averychoke.studywifidirect3.model.StudyClass;
  */
 
 public class TeacherClassFragment extends SWDBaseFragment {
-    private static final String CLASS_NAME_KEY = "class_name_ley";
 
-    private StudyClass mStudyClass;
+    private TeacherManager sManager;
     private DatabaseHelper mDatabase;
 
     private FragmentClassDetailsBinding mBinding;
     private ClassPagerFragmentAdapter mClassPagerFragmentAdapter;
 
-    public static final TeacherClassFragment newInstance(String className) {
-        TeacherClassFragment teacherClassFragment = new TeacherClassFragment();
-        Bundle args = new Bundle();
-        args.putString(CLASS_NAME_KEY, className);
-
-        teacherClassFragment.setArguments(args);
-        return teacherClassFragment;
-    }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        String className = getArguments().getString(CLASS_NAME_KEY);
-
+        sManager = TeacherManager.getInstance();
         mDatabase = new DatabaseHelper(getContext());
-        mStudyClass = mDatabase.getClass(className);
 
         mClassPagerFragmentAdapter = new ClassPagerFragmentAdapter(getChildFragmentManager());
     }
@@ -55,7 +44,7 @@ public class TeacherClassFragment extends SWDBaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_class_details, container, false);
         mBinding = DataBindingUtil.bind(rootView);
-        getActivity().setTitle(mStudyClass.getName() + " (T)");
+        getActivity().setTitle(sManager.getClassName() + " (T)");
         return rootView;
     }
 
@@ -84,9 +73,9 @@ public class TeacherClassFragment extends SWDBaseFragment {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return TeacherQuizFragment.newInstance(mStudyClass.getName(), mStudyClass.getQuizzes());
+                    return new TeacherQuizFragment();
                 default:
-                    return TeacherStudyMaterialFragment.newInstance(mStudyClass.getName(), mStudyClass.getStudyMaterials());
+                    return new TeacherStudyMaterialFragment();
             }
         }
 
