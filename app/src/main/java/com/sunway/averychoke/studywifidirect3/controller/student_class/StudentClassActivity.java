@@ -6,8 +6,7 @@ import android.support.v4.app.Fragment;
 
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseActivity;
-import com.sunway.averychoke.studywifidirect3.controller.student_class.StudentClassFragment;
-import com.sunway.averychoke.studywifidirect3.databinding.ActivityClassBinding;
+import com.sunway.averychoke.studywifidirect3.databinding.ActivityMainContainerBinding;
 
 /**
  * Created by AveryChoke on 1/4/2017.
@@ -17,14 +16,14 @@ public class StudentClassActivity extends SWDBaseActivity {
 
     public static final String CLASS_NAME_KEY = "class_name_key";
 
-    private ActivityClassBinding mBinding;
+    private ActivityMainContainerBinding mBinding;
 
     private String mClassName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_class);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main_container);
 
         setSupportActionBar(mBinding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
