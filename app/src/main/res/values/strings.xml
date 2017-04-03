@@ -27,4 +27,7 @@
     <string name="edit_choice_dialog_title">Edit Choice</string>
     <string name="edit_text_error_message">This field cannot be empty</string>
     <string name="unsaved_changes_message">Unsaved changes will not be saved. Are you sure to exit?</string>
+    <string name="submit_button">Submit</string>
+    <string name="dialog_quiz_submisson_title">Quiz Submission</string>
+    <string name="dialog_quiz_submission_message">You are about to submit your answer. Please ensure you answered all questions correctly. Continue to submission?</string>
 </resources>

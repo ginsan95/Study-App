@@ -21,6 +21,7 @@ import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
 import com.sunway.averychoke.studywifidirect3.controller.class_details.ClassMaterialAdapter;
 import com.sunway.averychoke.studywifidirect3.controller.class_details.ClassMaterialViewHolder;
+import com.sunway.averychoke.studywifidirect3.controller.student_class.quiz.AnswerQuizActivity;
 import com.sunway.averychoke.studywifidirect3.controller.teacher_class.quiz.CreateQuizActivity;
 import com.sunway.averychoke.studywifidirect3.controller.teacher_class.quiz.CreateQuizFragment;
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
@@ -79,7 +80,9 @@ public class StudentQuizFragment extends SWDBaseFragment implements
     @Override
     public void onClassMaterialSelected(@NonNull ClassMaterial classMaterial) {
         Quiz quiz = (Quiz) classMaterial;
-        Toast.makeText(getContext(), quiz.getName(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getActivity(), AnswerQuizActivity.class);
+        intent.putExtra(AnswerQuizActivity.ARGS_QUIZ_KEY, (Parcelable) quiz);
+        startActivity(intent);
     }
 
     @Override

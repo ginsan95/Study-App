@@ -18,6 +18,7 @@
             android:minHeight="0dp"
             android:minWidth="0dp"
             android:text="@string/add_choice_button"
+            android:textAllCaps="false"
             android:textSize="14sp"
             android:id="@+id/add_choices_button"/>
     </LinearLayout>
