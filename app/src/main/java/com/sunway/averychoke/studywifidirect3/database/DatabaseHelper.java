@@ -74,7 +74,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     + QUESTION_QUIZ_ID + " INTEGER NOT NULL,"
                     + QUESTION_QUESTION + " TEXT,"
                     + QUESTION_CORRECT_ANSWER + " TEXT,"
-                    + QUESTION_MARKS + " REAL,"
+                    + QUESTION_MARKS + " INTEGER,"
                     + QUESTION_USER_ANSWER + " TEXT,"
                     + "FOREIGN KEY(" + QUESTION_QUIZ_ID + ") REFERENCES " + TABLE_QUIZ + "(" + QUIZ_ID + ") ON DELETE CASCADE)";
     // endregion Question Table
@@ -445,7 +445,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                             c.getLong(c.getColumnIndex(QUESTION_ID)),
                             c.getString(c.getColumnIndex(QUESTION_QUESTION)),
                             c.getString(c.getColumnIndex(QUESTION_CORRECT_ANSWER)),
-                            c.getDouble(c.getColumnIndex(QUESTION_MARKS)),
+                            c.getInt(c.getColumnIndex(QUESTION_MARKS)),
                             c.getString(c.getColumnIndex(QUESTION_USER_ANSWER))
                     );
                 } else {
@@ -585,7 +585,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         c.getLong(c.getColumnIndex(QUESTION_ID)),
                         c.getString(c.getColumnIndex(QUESTION_QUESTION)),
                         c.getString(c.getColumnIndex(QUESTION_CORRECT_ANSWER)),
-                        c.getDouble(c.getColumnIndex(QUESTION_MARKS)),
+                        c.getInt(c.getColumnIndex(QUESTION_MARKS)),
                         c.getString(c.getColumnIndex(QUESTION_USER_ANSWER)),
                         choices
                 );

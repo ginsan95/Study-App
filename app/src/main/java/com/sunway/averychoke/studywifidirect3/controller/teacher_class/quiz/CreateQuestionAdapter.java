@@ -168,7 +168,7 @@ public class CreateQuestionAdapter extends RecyclerView.Adapter<CreateQuestionAd
                 public void afterTextChanged(Editable s) {
                     if (!TextUtils.isEmpty(s.toString().trim())) {
                         try {
-                            mQuestion.setTotalMarks(Double.parseDouble(s.toString()));
+                            mQuestion.setTotalMarks(Integer.parseInt(s.toString()));
                         } catch (NumberFormatException e) {
                             e.printStackTrace();
                         }

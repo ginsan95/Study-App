@@ -112,7 +112,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
             if (question != null) {
                 mBinding.questionTextView.setText(question.getQuestion());
-                mBinding.marksTextView.setText(String.format("0/%.1f", question.getTotalMarks()));
+                mBinding.marksTextView.setText(String.format("0/%d", question.getTotalMarks()));
                 mBinding.shortQuestion.containerLayout.setVisibility(View.GONE);
                 mBinding.mcq.containerLayout.setVisibility(View.GONE);
 

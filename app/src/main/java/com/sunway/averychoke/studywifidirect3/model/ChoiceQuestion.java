@@ -13,13 +13,13 @@ public class ChoiceQuestion extends Question {
 
     private List<String> mChoices;
 
-    public ChoiceQuestion(String question, String answer, double totalMarks, List<String> choices) {
+    public ChoiceQuestion(String question, String answer, int totalMarks, List<String> choices) {
         super(question, answer, totalMarks);
         mChoices = choices;
     }
 
     //for database
-    public ChoiceQuestion(long questionId, String question, String correctAnswer, double totalMarks, String userAnswer, List<String> choices) {
+    public ChoiceQuestion(long questionId, String question, String correctAnswer, int totalMarks, String userAnswer, List<String> choices) {
         super(questionId, question, correctAnswer, totalMarks, userAnswer);
         mChoices = choices;
     }

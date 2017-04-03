@@ -16,10 +16,10 @@ public class Question implements Parcelable, Serializable {
     private final long mQuestionId;
     private String mQuestion;
     private String mCorrectAnswer;
-    private double mTotalMarks;
+    private int mTotalMarks;
     private String mUserAnswer;
 
-    public Question(String question, String correctAnswer, double totalMarks) {
+    public Question(String question, String correctAnswer, int totalMarks) {
         mQuestionId = ++mCounter;
         mQuestion = question;
         mCorrectAnswer = correctAnswer;
@@ -28,7 +28,7 @@ public class Question implements Parcelable, Serializable {
     }
 
     //for database
-    public Question(long questionId, String question, String correctAnswer, double totalMarks, String userAnswer) {
+    public Question(long questionId, String question, String correctAnswer, int totalMarks, String userAnswer) {
         mQuestionId = questionId;
         mQuestion = question;
         mCorrectAnswer = correctAnswer;
@@ -86,12 +86,12 @@ public class Question implements Parcelable, Serializable {
         mCorrectAnswer = correctAnswer;
     }
 
-    public double getTotalMarks()
+    public int getTotalMarks()
     {
         return mTotalMarks;
     }
 
-    public void setTotalMarks(double totalMarks)
+    public void setTotalMarks(int totalMarks)
     {
         mTotalMarks = totalMarks;
     }
@@ -114,7 +114,7 @@ public class Question implements Parcelable, Serializable {
         out.writeLong(mQuestionId);
         out.writeString(mQuestion);
         out.writeString(mCorrectAnswer);
-        out.writeDouble(mTotalMarks);
+        out.writeInt(mTotalMarks);
         out.writeString(mUserAnswer);
     }
 
@@ -133,7 +133,7 @@ public class Question implements Parcelable, Serializable {
         mQuestionId = in.readLong();
         mQuestion = in.readString();
         mCorrectAnswer = in.readString();
-        mTotalMarks = in.readDouble();
+        mTotalMarks = in.readInt();
         mUserAnswer = in.readString();
     }
     // endregion Parcelable
