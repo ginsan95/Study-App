@@ -64,16 +64,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String QUESTION_ID = "id";
     private static final String QUESTION_QUIZ_ID = "quiz_id";
     private static final String QUESTION_QUESTION = "question";
-    private static final String QUESTION_ANSWER = "answer";
+    private static final String QUESTION_CORRECT_ANSWER = "correct_answer";
     private static final String QUESTION_MARKS = "marks";
+    private static final String QUESTION_USER_ANSWER = "user_answer";
     //create table statement
     private static final String CREATE_TABLE_QUESTION =
             "CREATE TABLE " + TABLE_QUESTION + "("
                     + QUESTION_ID + " INTEGER PRIMARY KEY,"
                     + QUESTION_QUIZ_ID + " INTEGER NOT NULL,"
                     + QUESTION_QUESTION + " TEXT,"
-                    + QUESTION_ANSWER + " TEXT,"
+                    + QUESTION_CORRECT_ANSWER + " TEXT,"
                     + QUESTION_MARKS + " REAL,"
+                    + QUESTION_USER_ANSWER + " TEXT,"
                     + "FOREIGN KEY(" + QUESTION_QUIZ_ID + ") REFERENCES " + TABLE_QUIZ + "(" + QUIZ_ID + ") ON DELETE CASCADE)";
     // endregion Question Table
 
@@ -402,8 +404,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(QUESTION_ID, question.getQuestionId());
         values.put(QUESTION_QUIZ_ID, quizId);
         values.put(QUESTION_QUESTION, question.getQuestion());
-        values.put(QUESTION_ANSWER, question.getAnswer());
+        values.put(QUESTION_CORRECT_ANSWER, question.getCorrectAnswer());
         values.put(QUESTION_MARKS, question.getTotalMarks());
+        values.put(QUESTION_USER_ANSWER, question.getUserAnswer());
 
         // insert row
         long id = db.insert(TABLE_QUESTION, null, values);
@@ -441,8 +444,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     question = new Question(
                             c.getLong(c.getColumnIndex(QUESTION_ID)),
                             c.getString(c.getColumnIndex(QUESTION_QUESTION)),
-                            c.getString(c.getColumnIndex(QUESTION_ANSWER)),
-                            c.getDouble(c.getColumnIndex(QUESTION_MARKS))
+                            c.getString(c.getColumnIndex(QUESTION_CORRECT_ANSWER)),
+                            c.getDouble(c.getColumnIndex(QUESTION_MARKS)),
+                            c.getString(c.getColumnIndex(QUESTION_USER_ANSWER))
                     );
                 } else {
                     return null;
@@ -496,7 +500,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(QUESTION_QUESTION, question.getQuestion());
-        values.put(QUESTION_ANSWER, question.getAnswer());
+        values.put(QUESTION_CORRECT_ANSWER, question.getCorrectAnswer());
         values.put(QUESTION_MARKS, question.getTotalMarks());
 
         if(existInTable(question.getQuestionId(), TABLE_CHOICE_QUESTION, CHOICE_QUESTION_ID)) //this is a choice question
@@ -539,18 +543,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         //Convert the choices to string
-        JSONObject json = null;
-        try {
-            json = new JSONObject();
-            json.put("choices", new JSONArray(choiceQuestion.getChoices()));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        JSONArray jsonArray = new JSONArray(choiceQuestion.getChoices());
 
         //Store data into choice question table
         ContentValues values = new ContentValues();
         values.put(CHOICE_QUESTION_ID, choiceQuestion.getQuestionId());
-        values.put(CHOICE_QUESTION_CHOICES, json.toString());
+        values.put(CHOICE_QUESTION_CHOICES, jsonArray.toString());
 
         // insert row
         long id = db.insert(TABLE_CHOICE_QUESTION, null, values);
@@ -572,14 +570,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             c = db.rawQuery(selectQuery, new String[]{String.valueOf(id)});
 
             if (c.moveToFirst()) {
-                //Convert the string back to arraylist
-                JSONObject json = null;
+                //Convert the string back to list
                 List<String> choices = new ArrayList<>();
                 try {
-                    json = new JSONObject(c.getString(c.getColumnIndex(CHOICE_QUESTION_CHOICES)));
-                    JSONArray jArray = json.optJSONArray("choices");
-                    for (int i = 0; i < jArray.length(); i++) {
-                        choices.add(jArray.getString(i));
+                    JSONArray jsonArray = new JSONArray(c.getString(c.getColumnIndex(CHOICE_QUESTION_CHOICES)));
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        choices.add(jsonArray.optString(i));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -588,8 +584,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 ChoiceQuestion choiceQuestion = new ChoiceQuestion(
                         c.getLong(c.getColumnIndex(QUESTION_ID)),
                         c.getString(c.getColumnIndex(QUESTION_QUESTION)),
-                        c.getString(c.getColumnIndex(QUESTION_ANSWER)),
+                        c.getString(c.getColumnIndex(QUESTION_CORRECT_ANSWER)),
                         c.getDouble(c.getColumnIndex(QUESTION_MARKS)),
+                        c.getString(c.getColumnIndex(QUESTION_USER_ANSWER)),
                         choices
                 );
 
@@ -608,16 +605,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         //Convert the choices to string
-        JSONObject json = null;
-        try {
-            json = new JSONObject();
-            json.put("choices", new JSONArray(choiceQuestion.getChoices()));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        JSONArray jsonArray = new JSONArray(choiceQuestion.getChoices());
 
         ContentValues values = new ContentValues();
-        values.put(CHOICE_QUESTION_CHOICES, json.toString());
+        values.put(CHOICE_QUESTION_CHOICES, jsonArray.toString());
 
         // updating row
         return db.update(TABLE_CHOICE_QUESTION, values, CHOICE_QUESTION_ID + " = ?",

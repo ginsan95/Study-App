@@ -15,24 +15,25 @@ public class Question implements Parcelable, Serializable {
 
     private final long mQuestionId;
     private String mQuestion;
-    private String mAnswer;
+    private String mCorrectAnswer;
     private double mTotalMarks;
+    private String mUserAnswer;
 
-    public Question(String question, String answer, double totalMarks)
-    {
+    public Question(String question, String correctAnswer, double totalMarks) {
         mQuestionId = ++mCounter;
         mQuestion = question;
-        mAnswer = answer;
+        mCorrectAnswer = correctAnswer;
         mTotalMarks = totalMarks;
+        mUserAnswer = "";
     }
 
     //for database
-    public Question(long questionId, String question, String answer, double totalMarks)
-    {
+    public Question(long questionId, String question, String correctAnswer, double totalMarks, String userAnswer) {
         mQuestionId = questionId;
         mQuestion = question;
-        mAnswer = answer;
+        mCorrectAnswer = correctAnswer;
         mTotalMarks = totalMarks;
+        mUserAnswer = userAnswer;
     }
 
     // for create question
@@ -46,13 +47,17 @@ public class Question implements Parcelable, Serializable {
                 question.getQuestionId(),
                 question.getQuestion(),
                 "",
-                question.getTotalMarks());
+                question.getTotalMarks(),
+                "");
         return cloneQuestion;
     }
 
-    public boolean checkAnswer(String userAnswer)
-    {
-        return mAnswer.equalsIgnoreCase(userAnswer);
+    public boolean checkAnswer() {
+        return checkAnswer(mUserAnswer);
+    }
+
+    public boolean checkAnswer(String userAnswer) {
+        return mCorrectAnswer.equalsIgnoreCase(userAnswer);
     }
 
     // region get set
@@ -71,14 +76,14 @@ public class Question implements Parcelable, Serializable {
         mQuestion = question;
     }
 
-    public String getAnswer()
+    public String getCorrectAnswer()
     {
-        return mAnswer;
+        return mCorrectAnswer;
     }
 
-    public void setAnswer(String answer)
+    public void setCorrectAnswer(String correctAnswer)
     {
-        mAnswer = answer;
+        mCorrectAnswer = correctAnswer;
     }
 
     public double getTotalMarks()
@@ -90,6 +95,14 @@ public class Question implements Parcelable, Serializable {
     {
         mTotalMarks = totalMarks;
     }
+
+    public String getUserAnswer() {
+        return mUserAnswer;
+    }
+
+    public void setUserAnswer(String userAnswer) {
+        mUserAnswer = userAnswer;
+    }
     // endregion get set
 
     // region Parcelable
@@ -100,8 +113,9 @@ public class Question implements Parcelable, Serializable {
     public void writeToParcel(Parcel out, int flags) {
         out.writeLong(mQuestionId);
         out.writeString(mQuestion);
-        out.writeString(mAnswer);
+        out.writeString(mCorrectAnswer);
         out.writeDouble(mTotalMarks);
+        out.writeString(mUserAnswer);
     }
 
 
@@ -118,8 +132,9 @@ public class Question implements Parcelable, Serializable {
     protected Question(Parcel in) {
         mQuestionId = in.readLong();
         mQuestion = in.readString();
-        mAnswer = in.readString();
+        mCorrectAnswer = in.readString();
         mTotalMarks = in.readDouble();
+        mUserAnswer = in.readString();
     }
     // endregion Parcelable
 }

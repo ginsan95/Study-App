@@ -149,7 +149,7 @@ public class CreateQuizFragment extends SWDBaseFragment implements
                         if (!TextUtils.isEmpty(choice.trim())) {
                             choiceQuestion.getChoices().add(choice);
                             if (choiceQuestion.getChoices().size() == 1) {
-                                choiceQuestion.setAnswer(choice);
+                                choiceQuestion.setCorrectAnswer(choice);
                             }
                             mCreateQuestionAdapter.notifyItemChanged(index);
                         }
@@ -178,7 +178,7 @@ public class CreateQuizFragment extends SWDBaseFragment implements
                         String choice = editText.getText().toString();
                         if (!TextUtils.isEmpty(choice.trim())) {
                             if (choiceQuestion.checkAnswer(choiceQuestion.getChoices().get(choiceIndex))) {
-                                choiceQuestion.setAnswer(choice);
+                                choiceQuestion.setCorrectAnswer(choice);
                             }
                             choiceQuestion.getChoices().set(choiceIndex, choice);
                             mCreateQuestionAdapter.notifyItemChanged(index);
@@ -205,9 +205,9 @@ public class CreateQuizFragment extends SWDBaseFragment implements
                         String choice = choiceQuestion.getChoices().get(choiceIndex);
                         choiceQuestion.getChoices().remove(choiceIndex);
                         if (choiceQuestion.getChoices().size() <= 0) {
-                            choiceQuestion.setAnswer("");
+                            choiceQuestion.setCorrectAnswer("");
                         } else if (choiceQuestion.checkAnswer(choice)) {
-                            choiceQuestion.setAnswer(choiceQuestion.getChoices().get(0));
+                            choiceQuestion.setCorrectAnswer(choiceQuestion.getChoices().get(0));
                         }
                         mCreateQuestionAdapter.notifyItemChanged(index);
                     }

@@ -195,7 +195,7 @@ public class CreateQuestionAdapter extends RecyclerView.Adapter<CreateQuestionAd
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    mQuestion.setAnswer(s.toString());
+                    mQuestion.setCorrectAnswer(s.toString());
                 }
             });
         }
@@ -217,7 +217,7 @@ public class CreateQuestionAdapter extends RecyclerView.Adapter<CreateQuestionAd
                         int index = mBinding.mcq.choicesRadioGroup.indexOfChild(itemView.findViewById(checkedId));
                         if (index > 0) {
                             RadioButton radioButton = (RadioButton) mBinding.mcq.choicesRadioGroup.getChildAt(index);
-                            mQuestion.setAnswer(radioButton.getText().toString());
+                            mQuestion.setCorrectAnswer(radioButton.getText().toString());
                         }
                     }
                 }
@@ -247,7 +247,7 @@ public class CreateQuestionAdapter extends RecyclerView.Adapter<CreateQuestionAd
                 mBinding.typeSpinner.setSelection(QuestionType.SHORT_QUESTION.ordinal());
                 mBinding.shortQuestion.containerLayout.setVisibility(View.VISIBLE);
 
-                mBinding.shortQuestion.answerEditText.setText(mQuestion.getAnswer());
+                mBinding.shortQuestion.answerEditText.setText(mQuestion.getCorrectAnswer());
             }
         }
 
@@ -259,9 +259,9 @@ public class CreateQuestionAdapter extends RecyclerView.Adapter<CreateQuestionAd
 
             String choice = choiceQuestion.getChoices().get(index);
             radioButton.setText(choice);
-            if (choiceQuestion.getAnswer().equals(choice)) {
+            if (choiceQuestion.checkAnswer(choice)) {
                 radioButton.setChecked(true);
-            } else if (choiceQuestion.getAnswer().equals("") && index == 0) {
+            } else if (choiceQuestion.checkAnswer("") && index == 0) {
                 radioButton.setChecked(true);
             }
 
