@@ -1,8 +1,11 @@
 package com.sunway.averychoke.studywifidirect3.controller.student_class.quiz.adapter;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
+import android.support.v4.widget.CompoundButtonCompat;
+import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,6 +64,7 @@ public class ResultQuestionsAdapter extends QuestionsAdapter {
 
     // region View Holder
     static class ResultQuestionViewHolder extends QuestionViewHolder {
+
         public ResultQuestionViewHolder(View itemView) {
             super(itemView);
         }
@@ -96,15 +100,27 @@ public class ResultQuestionsAdapter extends QuestionsAdapter {
         }
 
         @Override
-        protected RadioButton choicesRadioButton(ChoiceQuestion choiceQuestion, int index) {
-            RadioButton radioButton = super.choicesRadioButton(choiceQuestion, index);
+        protected AppCompatRadioButton choicesRadioButton(ChoiceQuestion choiceQuestion, int index) {
+            AppCompatRadioButton radioButton = super.choicesRadioButton(choiceQuestion, index);
             radioButton.setEnabled(false);
 
             String choice = choiceQuestion.getChoices().get(index);
             if (choiceQuestion.checkAnswer(choice)) {
-                radioButton.setTextColor(choiceQuestion.checkAnswer() ? Color.GREEN : Color.RED);
+                changeColor(radioButton, choiceQuestion.checkAnswer() ? Color.GREEN : Color.RED);
             }
             return radioButton;
+        }
+
+        private void changeColor(AppCompatRadioButton radioButton, int color) {
+            ColorStateList colorStateList = new ColorStateList(
+                    new int[][]{
+                            new int[]{-android.R.attr.state_checked},
+                            new int[]{android.R.attr.state_checked}
+                    },
+                    new int[]{color, color}
+            );
+            CompoundButtonCompat.setButtonTintList(radioButton, colorStateList);
+            radioButton.setTextColor(color);
         }
     }
     // endregion

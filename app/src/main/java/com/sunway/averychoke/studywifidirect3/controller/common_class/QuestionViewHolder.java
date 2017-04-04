@@ -1,6 +1,7 @@
 package com.sunway.averychoke.studywifidirect3.controller.common_class;
 
 import android.databinding.DataBindingUtil;
+import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -94,8 +95,8 @@ public class QuestionViewHolder extends RecyclerView.ViewHolder implements HasQu
         }
     }
 
-    protected RadioButton choicesRadioButton(final ChoiceQuestion choiceQuestion, final int index) {
-        final RadioButton radioButton = new RadioButton(itemView.getContext());
+    protected AppCompatRadioButton choicesRadioButton(final ChoiceQuestion choiceQuestion, final int index) {
+        final AppCompatRadioButton radioButton = new AppCompatRadioButton(itemView.getContext());
         // example - question no.1, 2nd choice - 101
         radioButton.setId((getAdapterPosition() + 1) * 100 + index);
         radioButton.setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
