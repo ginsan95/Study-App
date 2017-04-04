@@ -1,5 +1,6 @@
 package com.sunway.averychoke.studywifidirect3.controller.student_class.quiz;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -9,11 +10,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
+import com.sunway.averychoke.studywifidirect3.controller.student_class.quiz.adapter.AnswerQuestionsAdapter;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentAnswerQuizBinding;
-import com.sunway.averychoke.studywifidirect3.manager.StudentManager;
 import com.sunway.averychoke.studywifidirect3.model.Quiz;
 
 /**
@@ -62,6 +64,13 @@ public class AnswerQuizFragment extends SWDBaseFragment implements AnswerQuestio
         mAdapter.setQuestions(mQuiz.getQuestions());
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).
+                hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+    }
+
     // region View Holder Listener
     @Override
     public void onSubmit() {
@@ -72,6 +81,7 @@ public class AnswerQuizFragment extends SWDBaseFragment implements AnswerQuestio
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // todo Update quiz in database and goto next screen
+                        getBaseActivity().changeFragment(QuizResultFragment.newInstance(mQuiz));
                     }
                 })
                 .setNegativeButton(R.string.dialog_no, new DialogInterface.OnClickListener() {

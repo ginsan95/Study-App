@@ -48,20 +48,24 @@ public class AnswerQuizActivity extends SWDBaseActivity {
 
     @Override
     public void onBackPressed() {
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(this)
-                .setMessage(R.string.unsaved_changes_message)
-                .setPositiveButton(R.string.dialog_yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        AnswerQuizActivity.super.onBackPressed();
-                    }
-                })
-                .setNegativeButton(R.string.dialog_no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-        dialog.show();
+        if (getSupportFragmentManager().getBackStackEntryCount() <= 0) {
+            final AlertDialog.Builder dialog = new AlertDialog.Builder(this)
+                    .setMessage(R.string.unsaved_changes_message)
+                    .setPositiveButton(R.string.dialog_yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            AnswerQuizActivity.super.onBackPressed();
+                        }
+                    })
+                    .setNegativeButton(R.string.dialog_no, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+            dialog.show();
+        } else {
+            finish();
+        }
     }
 }

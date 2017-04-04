@@ -30,4 +30,6 @@
     <string name="submit_button">Submit</string>
     <string name="dialog_quiz_submisson_title">Quiz Submission</string>
     <string name="dialog_quiz_submission_message">You are about to submit your answer. Please ensure you answered all questions correctly. Continue to submission?</string>
+    <string name="total_marks">Total Marks : </string>
+    <string name="short_question_correct_answer">Correct answer : %1$s</string>
 </resources>

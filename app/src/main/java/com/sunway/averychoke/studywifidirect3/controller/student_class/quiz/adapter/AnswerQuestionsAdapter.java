@@ -1,4 +1,4 @@
-package com.sunway.averychoke.studywifidirect3.controller.student_class.quiz;
+package com.sunway.averychoke.studywifidirect3.controller.student_class.quiz.adapter;
 
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
@@ -58,7 +58,7 @@ public class AnswerQuestionsAdapter extends QuestionsAdapter {
     }
 
     // region Submit view holder
-    static class SubmitViewHolder extends RecyclerView.ViewHolder {
+    public static class SubmitViewHolder extends RecyclerView.ViewHolder {
         public interface OnSubmitListener {
             void onSubmit();
         }

@@ -21,6 +21,8 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.sunway.averychoke.studywifidirect3.R;
+import com.sunway.averychoke.studywifidirect3.controller.common_class.HasQuestion;
+import com.sunway.averychoke.studywifidirect3.controller.common_class.QuestionsAdapter;
 import com.sunway.averychoke.studywifidirect3.databinding.CellCreateQuestionBinding;
 import com.sunway.averychoke.studywifidirect3.model.ChoiceQuestion;
 import com.sunway.averychoke.studywifidirect3.model.Question;
@@ -32,13 +34,12 @@ import java.util.List;
  * Created by AveryChoke on 11/2/2017.
  */
 
-public class CreateQuestionAdapter extends RecyclerView.Adapter<CreateQuestionAdapter.CreateQuestionViewHolder> {
+public class CreateQuestionAdapter extends QuestionsAdapter {
 
     private CreateQuestionViewHolder.OnQuestionChangeListener mListener;
 
-    private final List<Question> mQuestions = new ArrayList<>();
-
     public CreateQuestionAdapter(CreateQuestionViewHolder.OnQuestionChangeListener listener) {
+        super();
         mListener = listener;
     }
 
@@ -49,59 +50,37 @@ public class CreateQuestionAdapter extends RecyclerView.Adapter<CreateQuestionAd
         return viewHolder;
     }
 
-    @Override
-    public void onBindViewHolder(CreateQuestionViewHolder holder, int position) {
-        Question question = null;
-        question = mQuestions.get(position);
-        if (question != null) {
-            holder.setQuestion(question);
-        }
-    }
-
-    @Override
-    public int getItemCount() {
-        return mQuestions.size();
-    }
-
-    public void setQuestions(List<Question> questions) {
-        mQuestions.clear();
-        mQuestions.addAll(questions);
-        notifyDataSetChanged();
-    }
-
     public void addQuestion(Question question) {
-        mQuestions.add(question);
-        notifyItemInserted(mQuestions.indexOf(question));
+        getQuestions().add(question);
+        notifyItemInserted(getQuestions().size() - 1);
     }
 
     public void changeQuestion(int index, Question question) {
-        mQuestions.set(index, question);
+        getQuestions().set(index, question);
         notifyItemChanged(index);
     }
 
     public void removeQuestion(int index) {
-        mQuestions.remove(index);
+        getQuestions().remove(index);
         notifyItemRemoved(index);
     }
 
     // region get set
-    protected List<Question> getQuestions() {
-        return mQuestions;
+    public List<Question> getQuestions() {
+        return super.getQuestions();
     }
     // endregion get set
 
 
     // region view holder class
-    static class CreateQuestionViewHolder extends RecyclerView.ViewHolder {
+    static class CreateQuestionViewHolder extends RecyclerView.ViewHolder implements HasQuestion {
 
         public interface OnQuestionChangeListener {
             void onQuestionTypeSelected(QuestionType questionType, @NonNull Question question, @NonNull int index);
 
             // MCQ
             void onAddChoicesClicked(ChoiceQuestion choiceQuestion, int index);
-
             void onEditChoiceClicked(ChoiceQuestion choiceQuestion, int index, int choiceIndex);
-
             void onChoiceLongClicked(ChoiceQuestion choiceQuestion, int index, int choiceIndex);
         }
 
@@ -215,7 +194,7 @@ public class CreateQuestionAdapter extends RecyclerView.Adapter<CreateQuestionAd
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
                     if (mQuestion instanceof ChoiceQuestion) {
                         int index = mBinding.mcq.choicesRadioGroup.indexOfChild(itemView.findViewById(checkedId));
-                        if (index > 0) {
+                        if (index >= 0) {
                             RadioButton radioButton = (RadioButton) mBinding.mcq.choicesRadioGroup.getChildAt(index);
                             mQuestion.setCorrectAnswer(radioButton.getText().toString());
                         }
@@ -224,7 +203,8 @@ public class CreateQuestionAdapter extends RecyclerView.Adapter<CreateQuestionAd
             });
         }
 
-        private void setQuestion(Question question) {
+        @Override
+        public void setQuestion(Question question) {
             mQuestion = question;
 
             mBinding.questionEditText.setText(question.getQuestion());
@@ -237,7 +217,6 @@ public class CreateQuestionAdapter extends RecyclerView.Adapter<CreateQuestionAd
                 mBinding.typeSpinner.setSelection(QuestionType.MCQ.ordinal());
                 mBinding.mcq.containerLayout.setVisibility(View.VISIBLE);
 
-                //mBinding.mcq.choicesRadioGroup.clearCheck();
                 mBinding.mcq.choicesRadioGroup.removeAllViews();
                 ChoiceQuestion choiceQuestion = (ChoiceQuestion) question;
                 for (int i=0; i<choiceQuestion.getChoices().size(); i++) {
@@ -256,6 +235,7 @@ public class CreateQuestionAdapter extends RecyclerView.Adapter<CreateQuestionAd
             // example - question no.1, 2nd choice - 101
             radioButton.setId((getAdapterPosition()+1)*100 + index);
             radioButton.setLayoutParams(new RadioGroup.LayoutParams(RadioGroup.LayoutParams.MATCH_PARENT, RadioGroup.LayoutParams.WRAP_CONTENT));
+            radioButton.setTextSize(14);
 
             String choice = choiceQuestion.getChoices().get(index);
             radioButton.setText(choice);
