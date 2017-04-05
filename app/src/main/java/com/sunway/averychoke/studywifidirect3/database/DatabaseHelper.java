@@ -45,7 +45,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String QUIZ_ID = "id";
     private static final String QUIZ_CLASS_NAME = "class_name";
     private static final String QUIZ_NAME = "name";
-    private static final String QUIZ_MARKS = "marks";
+    private static final String QUIZ_ANSWERED = "marks";
     private static final String QUIZ_VISIBLE = "visible";
     //create table statement
     private static final String CREATE_TABLE_QUIZ =
@@ -53,7 +53,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     + QUIZ_ID + " INTEGER PRIMARY KEY,"
                     + QUIZ_CLASS_NAME + " TEXT NOT NULL,"
                     + QUIZ_NAME + " TEXT,"
-                    + QUIZ_MARKS + " REAL,"
+                    + QUIZ_ANSWERED + " BOOLEAN,"
                     + QUIZ_VISIBLE + " BOOLEAN,"
                     + "FOREIGN KEY(" + QUIZ_CLASS_NAME + ") REFERENCES " + TABLE_CLASS + "(" + CLASS_NAME + ") ON DELETE CASCADE)";
     // endregion Quiz Table
@@ -244,7 +244,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(QUIZ_ID, quiz.getQuizId());
         values.put(QUIZ_CLASS_NAME, className);
         values.put(QUIZ_NAME, quiz.getName());
-        values.put(QUIZ_MARKS, quiz.getMarks());
+        values.put(QUIZ_ANSWERED, quiz.isAnswered());
         values.put(QUIZ_VISIBLE, quiz.getVisible());
 
         // insert row
@@ -281,8 +281,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                             quizId,
                             c.getString(c.getColumnIndex(QUIZ_NAME)),
                             quizQuestions,
-                            c.getDouble(c.getColumnIndex(QUIZ_MARKS)),
-                            c.getInt(c.getColumnIndex(QUIZ_VISIBLE)) == 1
+                            c.getInt(c.getColumnIndex(QUIZ_ANSWERED)) != 0,
+                            c.getInt(c.getColumnIndex(QUIZ_VISIBLE)) != 0
                     );
 
                     quizzes.add(quiz);
@@ -319,8 +319,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         quizId,
                         c.getString(c.getColumnIndex(QUIZ_NAME)),
                         quizQuestions,
-                        c.getDouble(c.getColumnIndex(QUIZ_MARKS)),
-                        c.getInt(c.getColumnIndex(QUIZ_VISIBLE)) == 1
+                        c.getInt(c.getColumnIndex(QUIZ_ANSWERED)) != 0,
+                        c.getInt(c.getColumnIndex(QUIZ_VISIBLE)) != 0
                 );
 
                 return quiz;
@@ -342,7 +342,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(QUIZ_NAME, quiz.getName());
-        values.put(QUIZ_MARKS, quiz.getMarks());
+        values.put(QUIZ_ANSWERED, quiz.isAnswered());
         values.put(QUIZ_VISIBLE, quiz.getVisible());
 
         //update the question list
@@ -357,23 +357,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[] { String.valueOf(quiz.getQuizId()) });
     }
 
-    public int updateQuizMarks(Quiz quiz)
-    {
+    public int updateQuizVisible(Quiz quiz) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(QUIZ_MARKS, quiz.getMarks());
+        values.put(QUIZ_VISIBLE, quiz.getVisible());
 
         // updating row
         return db.update(TABLE_QUIZ, values, QUIZ_ID + " = ?",
                 new String[] { String.valueOf(quiz.getQuizId()) });
     }
 
-    public int updateQuizVisible(Quiz quiz) {
+    public int updateQuizAnswers(Quiz quiz) {
+        for (Question question : quiz.getQuestions()) {
+            updateQuestionAnswer(question);
+        }
+
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(QUIZ_VISIBLE, quiz.getVisible());
+        values.put(QUIZ_ANSWERED, quiz.isAnswered());
 
         // updating row
         return db.update(TABLE_QUIZ, values, QUIZ_ID + " = ?",
@@ -507,6 +510,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         {
             updateChoiceQuestionTable((ChoiceQuestion)question);
         }
+
+        // updating row
+        return db.update(TABLE_QUESTION, values, QUESTION_ID + " = ?",
+                new String[] { String.valueOf(question.getQuestionId()) });
+    }
+
+    public int updateQuestionAnswer(Question question) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(QUESTION_USER_ANSWER, question.getUserAnswer());
 
         // updating row
         return db.update(TABLE_QUESTION, values, QUESTION_ID + " = ?",

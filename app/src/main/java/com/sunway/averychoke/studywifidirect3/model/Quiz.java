@@ -17,28 +17,38 @@ public class Quiz extends ClassMaterial implements Parcelable, Serializable {
 
     private final long mQuizId;
     private List<Question> mQuestions;
-    private double mMarks;
+    private boolean mAnswered;
 
-    public Quiz(String name)
-    {
+    public Quiz(String name) {
         super(name, false);
         mQuizId = ++mCounter;
         mQuestions = new ArrayList<>();
-        mMarks = 0.0;
+        mAnswered = false;
     }
 
     //for database
-    public Quiz(long quizId, String name, List<Question> questions, double marks, boolean visible)
-    {
+    public Quiz(long quizId, String name, List<Question> questions, boolean answered, boolean visible) {
         super(name, visible);
         mQuizId = quizId;
+        mAnswered = answered;
         mQuestions = questions;
-        mMarks = marks;
     }
 
     public void addQuestion(Question question)
     {
         mQuestions.add(question);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Quiz)) {
+            return false;
+        }
+        Quiz quiz = (Quiz) o;
+        return quiz.mQuizId == mQuizId;
     }
 
     // region get set
@@ -52,19 +62,16 @@ public class Quiz extends ClassMaterial implements Parcelable, Serializable {
         return mQuestions;
     }
 
-    public void setQuestions(List<Question> questions)
-    {
+    public void setQuestions(List<Question> questions) {
         mQuestions = questions;
     }
 
-    public double getMarks()
-    {
-        return mMarks;
+    public boolean isAnswered() {
+        return mAnswered;
     }
 
-    public void setMarks(double marks)
-    {
-        mMarks = marks;
+    public void setAnswered(boolean answered) {
+        mAnswered = answered;
     }
     // endregion get set
 
@@ -75,12 +82,12 @@ public class Quiz extends ClassMaterial implements Parcelable, Serializable {
 
     public void writeToParcel(Parcel out, int flags) {
         // write for superclass first
-        out.writeString(super.getName());
-        out.writeInt(super.getVisible()? 1: 0); // cannot write as boolean so change to int instead
+        out.writeString(getName());
+        out.writeInt(getVisible() ? 1 : 0); // cannot write as boolean so change to int instead
 
         out.writeLong(mQuizId);
         out.writeList(mQuestions);
-        out.writeDouble(mMarks);
+        out.writeInt(mAnswered ? 1 : 0);
     }
 
     public static final Parcelable.Creator<Quiz> CREATOR = new Parcelable.Creator<Quiz>() {
@@ -94,10 +101,10 @@ public class Quiz extends ClassMaterial implements Parcelable, Serializable {
     };
 
     private Quiz(Parcel in) {
-        super(in.readString(), in.readInt()==1);
+        super(in.readString(), in.readInt() != 0);
         mQuizId = in.readLong();
         mQuestions = in.readArrayList(Question.class.getClassLoader());
-        mMarks = in.readDouble();
+        mAnswered = in.readInt() != 0;
     }
     // endregion Parcelable
 }

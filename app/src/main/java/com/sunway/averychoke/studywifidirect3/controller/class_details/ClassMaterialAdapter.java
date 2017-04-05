@@ -62,6 +62,16 @@ public class ClassMaterialAdapter extends RecyclerView.Adapter<ClassMaterialView
         notifyItemInserted(mClassMaterials.size()-1);
     }
 
+    public void replaceClassMaterial(ClassMaterial classMaterial) {
+        int index = mClassMaterials.indexOf(classMaterial);
+        if (index >= 0) {
+            mClassMaterials.set(index, classMaterial);
+        } else {
+            mClassMaterials.add(classMaterial);
+        }
+        notifyItemChanged(index);
+    }
+
     public void addClassMaterials(List<? extends ClassMaterial> classMaterials) {
         int startIndex = mClassMaterials.size();
 

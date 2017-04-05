@@ -1,6 +1,5 @@
 package com.sunway.averychoke.studywifidirect3.controller.student_class;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -8,31 +7,24 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
 import com.sunway.averychoke.studywifidirect3.controller.class_details.ClassMaterialAdapter;
 import com.sunway.averychoke.studywifidirect3.controller.class_details.ClassMaterialViewHolder;
 import com.sunway.averychoke.studywifidirect3.controller.student_class.quiz.AnswerQuizActivity;
-import com.sunway.averychoke.studywifidirect3.controller.teacher_class.quiz.CreateQuizActivity;
-import com.sunway.averychoke.studywifidirect3.controller.teacher_class.quiz.CreateQuizFragment;
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassMaterialBinding;
 import com.sunway.averychoke.studywifidirect3.manager.StudentManager;
 import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
 import com.sunway.averychoke.studywifidirect3.model.Quiz;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by AveryChoke on 29/1/2017.
@@ -40,10 +32,11 @@ import java.util.Random;
 
 public class StudentQuizFragment extends SWDBaseFragment implements
         ClassMaterialViewHolder.OnClassMaterialSelectListener {
+    public static final int ANSWER_QUIZ_CODE = 101;
 
     private StudentManager sManager;
     private DatabaseHelper mDatabase;
-    private ClassMaterialAdapter mClassMaterialAdapter;
+    private ClassMaterialAdapter mAdapter;
 
     private FragmentClassMaterialBinding mBinding;
 
@@ -53,7 +46,7 @@ public class StudentQuizFragment extends SWDBaseFragment implements
 
         sManager = StudentManager.getInstance();
         mDatabase = new DatabaseHelper(getContext());
-        mClassMaterialAdapter = new ClassMaterialAdapter(false, this);
+        mAdapter = new ClassMaterialAdapter(false, this);
     }
 
     @Override
@@ -70,10 +63,24 @@ public class StudentQuizFragment extends SWDBaseFragment implements
         mBinding.materialsSwipeRefreshLayout.setEnabled(false);
 
         mBinding.materialsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mBinding.materialsRecyclerView.setAdapter(mClassMaterialAdapter);
-        mClassMaterialAdapter.setClassMaterials(sManager.getQuizzes());
+        mBinding.materialsRecyclerView.setAdapter(mAdapter);
+        mAdapter.setClassMaterials(sManager.getQuizzes());
 
         mBinding.addButton.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case ANSWER_QUIZ_CODE:
+                if (resultCode == RESULT_OK) {
+                    Quiz quiz = data.getParcelableExtra(AnswerQuizActivity.ARGS_QUIZ_KEY);
+                    if (quiz != null) {
+                        mAdapter.replaceClassMaterial(quiz);
+                    }
+                }
+        }
     }
 
     // region class material view holder
@@ -82,7 +89,7 @@ public class StudentQuizFragment extends SWDBaseFragment implements
         Quiz quiz = (Quiz) classMaterial;
         Intent intent = new Intent(getActivity(), AnswerQuizActivity.class);
         intent.putExtra(AnswerQuizActivity.ARGS_QUIZ_KEY, (Parcelable) quiz);
-        startActivity(intent);
+        startActivityForResult(intent, ANSWER_QUIZ_CODE);
     }
 
     @Override
@@ -94,7 +101,7 @@ public class StudentQuizFragment extends SWDBaseFragment implements
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Quiz quiz = (Quiz) classMaterial;
-                        mClassMaterialAdapter.removeClassMaterial(index);
+                        mAdapter.removeClassMaterial(index);
                         mDatabase.deleteQuiz(quiz);
                     }
                 })

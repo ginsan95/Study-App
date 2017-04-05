@@ -161,7 +161,7 @@ public class ClassFragment extends SWDBaseFragment implements
 
     private void createClass() {
         final EditText editText = new EditText(getContext());
-        editText.setInputType(InputType.TYPE_CLASS_TEXT);
+        editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
 
         final AlertDialog.Builder dialog = new AlertDialog.Builder(getContext())
                 .setTitle(R.string.create_class_dialog_title)

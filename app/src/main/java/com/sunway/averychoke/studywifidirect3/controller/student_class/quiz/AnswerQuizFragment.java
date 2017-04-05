@@ -1,9 +1,13 @@
 package com.sunway.averychoke.studywifidirect3.controller.student_class.quiz;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.os.UserManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,8 +18,10 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
+import com.sunway.averychoke.studywifidirect3.controller.student_class.StudentQuizFragment;
 import com.sunway.averychoke.studywifidirect3.controller.student_class.quiz.adapter.AnswerQuestionsAdapter;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentAnswerQuizBinding;
+import com.sunway.averychoke.studywifidirect3.manager.StudentManager;
 import com.sunway.averychoke.studywifidirect3.model.Quiz;
 
 /**
@@ -27,6 +33,7 @@ public class AnswerQuizFragment extends SWDBaseFragment implements AnswerQuestio
 
     private FragmentAnswerQuizBinding mBinding;
 
+    private StudentManager mManager;
     private Quiz mQuiz;
     private AnswerQuestionsAdapter mAdapter;
 
@@ -45,6 +52,7 @@ public class AnswerQuizFragment extends SWDBaseFragment implements AnswerQuestio
 
         mQuiz = getArguments().getParcelable(ARGS_QUIZ_KEY);
         mAdapter = new AnswerQuestionsAdapter(this);
+        mManager = StudentManager.getInstance();
     }
 
     @Nullable
@@ -80,7 +88,14 @@ public class AnswerQuizFragment extends SWDBaseFragment implements AnswerQuestio
                 .setPositiveButton(R.string.dialog_yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // todo Update quiz in database and goto next screen
+                        mQuiz.setAnswered(true);
+                        mManager.updateQuizAnswer(mQuiz);
+
+                        // return data to activity
+                        Intent intent = new Intent();
+                        intent.putExtra(ARGS_QUIZ_KEY, (Parcelable) mQuiz);
+                        getActivity().setResult(Activity.RESULT_OK, intent);
+
                         getBaseActivity().changeFragment(QuizResultFragment.newInstance(mQuiz));
                     }
                 })

@@ -42,6 +42,19 @@ public class StudentManager {
     public List<Quiz> getQuizzes() {
         return mStudyClass != null ?  mStudyClass.getQuizzes() : new ArrayList<Quiz>();
     }
+
+    public void updateQuizAnswer(Quiz quiz) {
+        // update manager data
+        if (mStudyClass != null) {
+            int index = mStudyClass.getQuizzes().indexOf(quiz);
+            mStudyClass.getQuizzes().set(index, quiz);
+        }
+
+        // update local database
+        if (mDatabase != null) {
+            mDatabase.updateQuizAnswers(quiz);
+        }
+    }
     // endregion
 
     // region Study Material
