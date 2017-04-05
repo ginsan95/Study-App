@@ -69,6 +69,6 @@ public class ClassMaterialViewHolder extends RecyclerView.ViewHolder {
         mClassMaterial = classMaterial;
 
         mBinding.nameTextView.setText(classMaterial.getName());
-        mBinding.visibleCheckBox.setChecked(classMaterial.getVisible());
+        mBinding.visibleCheckBox.setChecked(classMaterial.isVisible());
     }
 }

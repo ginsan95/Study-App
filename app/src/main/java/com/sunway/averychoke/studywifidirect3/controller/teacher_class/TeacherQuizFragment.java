@@ -117,7 +117,7 @@ public class TeacherQuizFragment extends SWDBaseFragment implements
                     public void onClick(DialogInterface dialog, int which) {
                         Quiz quiz = (Quiz) classMaterial;
                         mClassMaterialAdapter.removeClassMaterial(index);
-                        mDatabase.deleteQuiz(quiz);
+                        mDatabase.deleteClassMaterial(quiz);
                     }
                 })
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
@@ -133,7 +133,7 @@ public class TeacherQuizFragment extends SWDBaseFragment implements
     public void onClassMaterialChecked(@NonNull ClassMaterial classMaterial, @NonNull boolean isChecked) {
         Quiz quiz = (Quiz) classMaterial;
         quiz.setVisible(isChecked);
-        mDatabase.updateQuizVisible(quiz);
+        mDatabase.updateClassMaterialVisible(quiz);
     }
     // endregion class material view holder
 }

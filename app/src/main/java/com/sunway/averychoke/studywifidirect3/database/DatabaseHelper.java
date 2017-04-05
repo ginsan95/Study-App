@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.sunway.averychoke.studywifidirect3.model.*;
 
@@ -39,23 +38,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + CLASS_NAME + " TEXT PRIMARY KEY)";
     // endregion Class Table
 
+    // region Class Material Table
+    private static final String TABLE_CLASS_MATERIAL = "class_material";
+    // columns name
+    private static final String CLASS_MATERIAL_ID = "id";
+    private static final String CLASS_MATERIAL_CLASS_NAME = "class_name";
+    private static final String CLASS_MATERIAL_NAME = "name";
+    private static final String CLASS_MATERIAL_VISIBLE = "visible";
+    // create table statement
+    private static final String CREATE_TABLE_CLASS_MATERIAL =
+            "CREATE TABLE " + TABLE_CLASS_MATERIAL + "("
+                    + CLASS_MATERIAL_ID + " INTEGER PRIMARY KEY,"
+                    + CLASS_MATERIAL_CLASS_NAME + " TEXT NOT NULL,"
+                    + CLASS_MATERIAL_NAME + " TEXT,"
+                    + CLASS_MATERIAL_VISIBLE + " BOOLEAN,"
+                    + "FOREIGN KEY(" + CLASS_MATERIAL_CLASS_NAME + ") REFERENCES " + TABLE_CLASS + "(" + CLASS_NAME + ") ON DELETE CASCADE)";
+    // endregion Class Material Table
+
     // region Quiz Table
     private static final String TABLE_QUIZ = "quiz";
     // columns names
     private static final String QUIZ_ID = "id";
-    private static final String QUIZ_CLASS_NAME = "class_name";
-    private static final String QUIZ_NAME = "name";
     private static final String QUIZ_ANSWERED = "marks";
-    private static final String QUIZ_VISIBLE = "visible";
     //create table statement
     private static final String CREATE_TABLE_QUIZ =
             "CREATE TABLE " + TABLE_QUIZ + "("
                     + QUIZ_ID + " INTEGER PRIMARY KEY,"
-                    + QUIZ_CLASS_NAME + " TEXT NOT NULL,"
-                    + QUIZ_NAME + " TEXT,"
                     + QUIZ_ANSWERED + " BOOLEAN,"
-                    + QUIZ_VISIBLE + " BOOLEAN,"
-                    + "FOREIGN KEY(" + QUIZ_CLASS_NAME + ") REFERENCES " + TABLE_CLASS + "(" + CLASS_NAME + ") ON DELETE CASCADE)";
+                    + "FOREIGN KEY(" + QUIZ_ID + ") REFERENCES " + TABLE_CLASS_MATERIAL + "(" + CLASS_MATERIAL_ID + ") ON DELETE CASCADE)";
     // endregion Quiz Table
 
     // region Question Table
@@ -96,19 +106,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_STUDY_MATERIAL = "study_material";
     //columns names
     private static final String STUDY_MATERIAL_ID = "id";
-    private static final String STUDY_MATERIAL_CLASS_NAME = "class_name";
-    private static final String STUDY_MATERIAL_NAME = "name";
     private static final String STUDY_MATERIAL_PATH = "path";
-    private static final String STUDY_MATERIAL_VISIBLE = "visible";
     //create table statement
     private static final String CREATE_TABLE_STUDY_MATERIAL =
             "CREATE TABLE " + TABLE_STUDY_MATERIAL + "("
                 + STUDY_MATERIAL_ID + " INTEGER PRIMARY KEY,"
-                + STUDY_MATERIAL_CLASS_NAME + " TEXT NOT NULL,"
-                + STUDY_MATERIAL_NAME + " TEXT,"
                 + STUDY_MATERIAL_PATH + " TEXT,"
-                + STUDY_MATERIAL_VISIBLE + " BOOLEAN,"
-                + "FOREIGN KEY(" + STUDY_MATERIAL_CLASS_NAME + ") REFERENCES " + TABLE_CLASS + "(" + CLASS_NAME + ") ON DELETE CASCADE)";
+                + "FOREIGN KEY(" + STUDY_MATERIAL_ID + ") REFERENCES " + TABLE_CLASS_MATERIAL + "(" + CLASS_MATERIAL_ID + ") ON DELETE CASCADE)";
     // endregion Study Material Table
 
     // endregion All Static variables
@@ -123,6 +127,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_CLASS);
+        db.execSQL(CREATE_TABLE_CLASS_MATERIAL);
         db.execSQL(CREATE_TABLE_QUIZ);
         db.execSQL(CREATE_TABLE_QUESTION);
         db.execSQL(CREATE_TABLE_CHOICE_QUESTION);
@@ -134,6 +139,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CLASS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CLASS_MATERIAL);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_QUIZ);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_QUESTION);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CHOICE_QUESTION);
@@ -235,37 +241,90 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
     // endregion Class Table
 
-    // region Quiz Table
-    public long addQuiz(Quiz quiz, String className)
-    {
+    // region Class Material Table
+    private long addClassMaterial(ClassMaterial classMaterial, String className) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(QUIZ_ID, quiz.getQuizId());
-        values.put(QUIZ_CLASS_NAME, className);
-        values.put(QUIZ_NAME, quiz.getName());
+        values.put(CLASS_MATERIAL_ID, classMaterial.getId());
+        values.put(CLASS_MATERIAL_CLASS_NAME, className);
+        values.put(CLASS_MATERIAL_NAME, classMaterial.getName());
+        values.put(CLASS_MATERIAL_VISIBLE, classMaterial.isVisible());
+
+        long id = db.insert(TABLE_CLASS_MATERIAL, null, values);
+        return id;
+    }
+
+    private int updateClassMaterial(ClassMaterial classMaterial) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(CLASS_MATERIAL_NAME, classMaterial.getName());
+        values.put(CLASS_MATERIAL_VISIBLE, classMaterial.isVisible());
+
+        // updating row
+        return db.update(TABLE_CLASS_MATERIAL, values, CLASS_MATERIAL_ID + " = ?",
+                new String[] { String.valueOf(classMaterial.getId()) });
+    }
+
+    public int updateClassMaterialVisible(ClassMaterial classMaterial) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(CLASS_MATERIAL_VISIBLE, classMaterial.isVisible());
+
+        // updating row
+        return db.update(TABLE_CLASS_MATERIAL, values, CLASS_MATERIAL_ID + " = ?",
+                new String[] { String.valueOf(classMaterial.getId()) });
+    }
+
+    public int deleteClassMaterial(ClassMaterial classMaterial) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        //delete quiz
+        return db.delete(TABLE_CLASS_MATERIAL, CLASS_MATERIAL_ID + " = ?",
+                new String[] { String.valueOf(classMaterial.getId()) });
+    }
+
+    public long getClassMaterialMaxId() {
+        return getMaxId(CLASS_MATERIAL_ID, TABLE_CLASS_MATERIAL);
+    }
+    // endregion Class Material Table
+
+    // region Quiz Table
+    public long addQuiz(Quiz quiz, String className) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // insert superclass
+        addClassMaterial(quiz, className);
+
+        ContentValues values = new ContentValues();
+        values.put(QUIZ_ID, quiz.getId());
         values.put(QUIZ_ANSWERED, quiz.isAnswered());
-        values.put(QUIZ_VISIBLE, quiz.getVisible());
 
         // insert row
         long id = db.insert(TABLE_QUIZ, null, values);
 
         //insert questions
-        for(Question question : quiz.getQuestions())
-        {
-            addQuestion(question, quiz.getQuizId());
+        for(Question question : quiz.getQuestions()) {
+            if (question instanceof ChoiceQuestion) {
+                addChoiceQuestion((ChoiceQuestion) question, quiz.getId());
+            } else {
+                addQuestion(question, quiz.getId());
+            }
         }
 
         return id;
     }
 
     // get the quizzes based on the class name
-    public List<Quiz> getClassQuizzes(String className)
-    {
+    public List<Quiz> getClassQuizzes(String className) {
         List<Quiz> quizzes = new ArrayList<>();
         String selectQuery =
-                "SELECT * FROM " + TABLE_QUIZ
-                        + " WHERE " + QUIZ_CLASS_NAME + " = ?";
+                "SELECT " + TABLE_CLASS_MATERIAL + ".*," + TABLE_QUIZ + ".*"
+                        + " FROM " + TABLE_CLASS_MATERIAL + "," + TABLE_QUIZ
+                        + " WHERE " + TABLE_CLASS_MATERIAL + "." + CLASS_MATERIAL_ID + "=" + TABLE_QUIZ + "." + QUIZ_ID
+                        + " AND " + TABLE_CLASS_MATERIAL + "." + CLASS_MATERIAL_CLASS_NAME + " =?";
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor c = null;
@@ -275,14 +334,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             // looping through all rows and adding to list
             if (c.moveToFirst()) {
                 do {
-                    long quizId = c.getLong(c.getColumnIndex(QUIZ_ID));
-                    List<Question> quizQuestions = getQuizQuestions(quizId);
+                    long classMaterialId = c.getLong(c.getColumnIndex(CLASS_MATERIAL_ID));
+                    List<Question> quizQuestions = getQuizQuestions(classMaterialId);
                     Quiz quiz = new Quiz(
-                            quizId,
-                            c.getString(c.getColumnIndex(QUIZ_NAME)),
+                            classMaterialId,
+                            c.getString(c.getColumnIndex(CLASS_MATERIAL_NAME)),
                             quizQuestions,
                             c.getInt(c.getColumnIndex(QUIZ_ANSWERED)) != 0,
-                            c.getInt(c.getColumnIndex(QUIZ_VISIBLE)) != 0
+                            c.getInt(c.getColumnIndex(CLASS_MATERIAL_VISIBLE)) != 0
                     );
 
                     quizzes.add(quiz);
@@ -291,8 +350,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return quizzes;
         }
         finally {
-            if(c != null)
-            {
+            if(c != null) {
                 c.close();
             }
         }
@@ -312,15 +370,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             c = db.rawQuery(selectQuery, new String[]{String.valueOf(id)});
 
             if (c.moveToFirst()) {
-                long quizId = c.getLong(c.getColumnIndex(QUIZ_ID));
-                List<Question> quizQuestions = getQuizQuestions(quizId);
-
+                long classMaterialId = c.getLong(c.getColumnIndex(CLASS_MATERIAL_ID));
+                List<Question> quizQuestions = getQuizQuestions(classMaterialId);
                 Quiz quiz = new Quiz(
-                        quizId,
-                        c.getString(c.getColumnIndex(QUIZ_NAME)),
+                        classMaterialId,
+                        c.getString(c.getColumnIndex(CLASS_MATERIAL_NAME)),
                         quizQuestions,
                         c.getInt(c.getColumnIndex(QUIZ_ANSWERED)) != 0,
-                        c.getInt(c.getColumnIndex(QUIZ_VISIBLE)) != 0
+                        c.getInt(c.getColumnIndex(CLASS_MATERIAL_VISIBLE)) != 0
                 );
 
                 return quiz;
@@ -340,61 +397,41 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public int updateQuiz(Quiz quiz) {
         SQLiteDatabase db = this.getWritableDatabase();
 
+        // update superclass
+        updateClassMaterial(quiz);
+
         ContentValues values = new ContentValues();
-        values.put(QUIZ_NAME, quiz.getName());
         values.put(QUIZ_ANSWERED, quiz.isAnswered());
-        values.put(QUIZ_VISIBLE, quiz.getVisible());
 
         //update the question list
-        clearQuizQuestion(quiz.getQuizId());
-        for(Question question : quiz.getQuestions())
-        {
-            addQuestion(question, quiz.getQuizId());
+        clearQuizQuestion(quiz.getId());
+        for(Question question : quiz.getQuestions()) {
+            if (question instanceof ChoiceQuestion) {
+                addChoiceQuestion((ChoiceQuestion) question, quiz.getId());
+            } else {
+                addQuestion(question, quiz.getId());
+            }
         }
 
         // updating row
         return db.update(TABLE_QUIZ, values, QUIZ_ID + " = ?",
-                new String[] { String.valueOf(quiz.getQuizId()) });
-    }
-
-    public int updateQuizVisible(Quiz quiz) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put(QUIZ_VISIBLE, quiz.getVisible());
-
-        // updating row
-        return db.update(TABLE_QUIZ, values, QUIZ_ID + " = ?",
-                new String[] { String.valueOf(quiz.getQuizId()) });
+                new String[] { String.valueOf(quiz.getId()) });
     }
 
     public int updateQuizAnswers(Quiz quiz) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(QUIZ_ANSWERED, quiz.isAnswered());
+
+        // update questions
         for (Question question : quiz.getQuestions()) {
             updateQuestionAnswer(question);
         }
 
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put(QUIZ_ANSWERED, quiz.isAnswered());
-
         // updating row
         return db.update(TABLE_QUIZ, values, QUIZ_ID + " = ?",
-                new String[] { String.valueOf(quiz.getQuizId()) });
-    }
-
-    public void deleteQuiz(Quiz quiz) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        //delete quiz
-        db.delete(TABLE_QUIZ, QUIZ_ID + " = ?",
-                new String[] { String.valueOf(quiz.getQuizId()) });
-
-    }
-
-    public long getQuizMaxId()
-    {
-        return getMaxId(QUIZ_ID, TABLE_QUIZ);
+                new String[] { String.valueOf(quiz.getId()) });
     }
     // endregion Quiz Table
 
@@ -414,53 +451,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // insert row
         long id = db.insert(TABLE_QUESTION, null, values);
 
-        //insert choice question
-        if(question instanceof ChoiceQuestion)
-        {
-            addChoiceQuestionTable((ChoiceQuestion)question);
-        }
-
         return id;
     }
 
     public Question getQuestion(long id)
     {
         Question question = null;
+        String selectQuery =
+                "SELECT * FROM " + TABLE_QUESTION
+                        + " WHERE " + QUESTION_ID + " =?";
 
-        if(existInTable(id, TABLE_CHOICE_QUESTION, CHOICE_QUESTION_ID)) //this is a choice question
-        {
-            question = getChoiceQuestion(id);
-        }
-        else
-        {
-            String selectQuery =
-                    "SELECT * FROM " + TABLE_QUESTION
-                            + " WHERE " + QUESTION_ID + " =?";
+        SQLiteDatabase db = this.getReadableDatabase();
 
-            SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = null;
+        try {
+            c = db.rawQuery(selectQuery, new String[]{String.valueOf(id)});
 
-            Cursor c = null;
-            try {
-                c = db.rawQuery(selectQuery, new String[]{String.valueOf(id)});
-
-                if (c.moveToFirst()) {
-                    question = new Question(
-                            c.getLong(c.getColumnIndex(QUESTION_ID)),
-                            c.getString(c.getColumnIndex(QUESTION_QUESTION)),
-                            c.getString(c.getColumnIndex(QUESTION_CORRECT_ANSWER)),
-                            c.getInt(c.getColumnIndex(QUESTION_MARKS)),
-                            c.getString(c.getColumnIndex(QUESTION_USER_ANSWER))
-                    );
-                } else {
-                    return null;
-                }
+            if (c.moveToFirst()) {
+                question = new Question(
+                        c.getLong(c.getColumnIndex(QUESTION_ID)),
+                        c.getString(c.getColumnIndex(QUESTION_QUESTION)),
+                        c.getString(c.getColumnIndex(QUESTION_CORRECT_ANSWER)),
+                        c.getInt(c.getColumnIndex(QUESTION_MARKS)),
+                        c.getString(c.getColumnIndex(QUESTION_USER_ANSWER))
+                );
+            } else {
+                return null;
             }
-            finally
-            {
-                if(c != null)
-                {
-                    c.close();
-                }
+        }
+        finally {
+            if(c != null) {
+                c.close();
             }
         }
         return question;
@@ -485,7 +506,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             if (c.moveToFirst()) {
                 do {
                     long questionID = c.getLong(c.getColumnIndex(QUESTION_ID));
-                    questions.add(getQuestion(questionID));
+                    if(existInTable(questionID, TABLE_CHOICE_QUESTION, CHOICE_QUESTION_ID)) { // check if is a choice question
+                        questions.add(getChoiceQuestion(questionID));
+                    } else {
+                        questions.add(getQuestion(questionID));
+                    }
                 } while (c.moveToNext());
             }
             return questions;
@@ -505,11 +530,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(QUESTION_QUESTION, question.getQuestion());
         values.put(QUESTION_CORRECT_ANSWER, question.getCorrectAnswer());
         values.put(QUESTION_MARKS, question.getTotalMarks());
-
-        if(existInTable(question.getQuestionId(), TABLE_CHOICE_QUESTION, CHOICE_QUESTION_ID)) //this is a choice question
-        {
-            updateChoiceQuestionTable((ChoiceQuestion)question);
-        }
 
         // updating row
         return db.update(TABLE_QUESTION, values, QUESTION_ID + " = ?",
@@ -552,9 +572,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // endregion Question Table
 
     // region Choice Question Table
-    public long addChoiceQuestionTable(ChoiceQuestion choiceQuestion)
-    {
+    public long addChoiceQuestion(ChoiceQuestion choiceQuestion, long quizId) {
         SQLiteDatabase db = this.getWritableDatabase();
+
+        // insert superclass
+        addQuestion(choiceQuestion, quizId);
 
         //Convert the choices to string
         JSONArray jsonArray = new JSONArray(choiceQuestion.getChoices());
@@ -615,8 +637,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public int updateChoiceQuestionTable(ChoiceQuestion choiceQuestion) {
+    public int updateChoiceQuestion(ChoiceQuestion choiceQuestion) {
         SQLiteDatabase db = this.getWritableDatabase();
+
+        // update superclass
+        updateQuestion(choiceQuestion);
 
         //Convert the choices to string
         JSONArray jsonArray = new JSONArray(choiceQuestion.getChoices());
@@ -643,12 +668,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public long addStudyMaterial(StudyMaterial studyMaterial, String className) {
         SQLiteDatabase db = this.getWritableDatabase();
 
+        // insert superclass
+        addClassMaterial(studyMaterial, className);
+
         ContentValues values = new ContentValues();
-        values.put(STUDY_MATERIAL_ID, studyMaterial.getStudyMaterialId());
-        values.put(STUDY_MATERIAL_CLASS_NAME, className);
-        values.put(STUDY_MATERIAL_NAME, studyMaterial.getName());
+        values.put(STUDY_MATERIAL_ID, studyMaterial.getId());
         values.put(STUDY_MATERIAL_PATH, studyMaterial.getFile().getPath());
-        values.put(STUDY_MATERIAL_VISIBLE, studyMaterial.getVisible());
 
         // insert row
         return db.insert(TABLE_STUDY_MATERIAL, null, values);
@@ -659,8 +684,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         List<StudyMaterial> studyMaterials = new ArrayList<>();
 
         String selectQuery =
-                "SELECT * FROM " + TABLE_STUDY_MATERIAL
-                        + " WHERE " + STUDY_MATERIAL_CLASS_NAME + " =?";
+                "SELECT " + TABLE_CLASS_MATERIAL + ".*," + TABLE_STUDY_MATERIAL + ".*"
+                        + " FROM " + TABLE_CLASS_MATERIAL + "," + TABLE_STUDY_MATERIAL
+                        + " WHERE " + TABLE_CLASS_MATERIAL + "." + CLASS_MATERIAL_ID + "=" + TABLE_STUDY_MATERIAL + "." + STUDY_MATERIAL_ID
+                        + " AND " + TABLE_CLASS_MATERIAL + "." + CLASS_MATERIAL_CLASS_NAME + " =?";
 
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -672,10 +699,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             if (c.moveToFirst()) {
                 do {
                     StudyMaterial studyMaterial = new StudyMaterial(
-                            c.getLong(c.getColumnIndex(STUDY_MATERIAL_ID)),
-                            c.getString(c.getColumnIndex(STUDY_MATERIAL_NAME)),
+                            c.getLong(c.getColumnIndex(CLASS_MATERIAL_ID)),
+                            c.getString(c.getColumnIndex(CLASS_MATERIAL_NAME)),
                             c.getString(c.getColumnIndex(STUDY_MATERIAL_PATH)),
-                            c.getInt(c.getColumnIndex(STUDY_MATERIAL_VISIBLE)) == 1
+                            c.getInt(c.getColumnIndex(CLASS_MATERIAL_VISIBLE)) != 0
                     );
                     studyMaterials.add(studyMaterial);
                 } while (c.moveToNext());
@@ -693,37 +720,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public int updateStudyMaterial(StudyMaterial studyMaterial) {
         SQLiteDatabase db = this.getWritableDatabase();
 
+        // update superclass
+        updateClassMaterial(studyMaterial);
+
         ContentValues values = new ContentValues();
-        values.put(STUDY_MATERIAL_NAME, studyMaterial.getName());
         values.put(STUDY_MATERIAL_PATH, studyMaterial.getFile().getPath());
-        values.put(STUDY_MATERIAL_VISIBLE, studyMaterial.getVisible());
 
         // updating row
         return db.update(TABLE_STUDY_MATERIAL, values, STUDY_MATERIAL_ID + " = ?",
-                new String[] { String.valueOf(studyMaterial.getStudyMaterialId()) });
-    }
-
-    public int updateStudyMaterialVisible(StudyMaterial studyMaterial) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put(STUDY_MATERIAL_VISIBLE, studyMaterial.getVisible());
-
-        // updating row
-        return db.update(TABLE_STUDY_MATERIAL, values, STUDY_MATERIAL_ID + " = ?",
-                new String[] { String.valueOf(studyMaterial.getStudyMaterialId()) });
-    }
-
-    public void deleteStudyMaterial(StudyMaterial studyMaterial) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        //delete study material
-        db.delete(TABLE_STUDY_MATERIAL, STUDY_MATERIAL_ID + " = ?",
-                new String[] { String.valueOf(studyMaterial.getStudyMaterialId()) });
-    }
-
-    public long getStudyMaterialMaxId() {
-        return getMaxId(STUDY_MATERIAL_ID, TABLE_STUDY_MATERIAL);
+                new String[] { String.valueOf(studyMaterial.getId()) });
     }
     // endregion Study Material Table
 

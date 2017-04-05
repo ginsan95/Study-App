@@ -12,51 +12,23 @@ import java.util.List;
  */
 
 public class Quiz extends ClassMaterial implements Parcelable, Serializable {
-
-    public static long mCounter = 0;
-
-    private final long mQuizId;
     private List<Question> mQuestions;
     private boolean mAnswered;
 
     public Quiz(String name) {
         super(name, false);
-        mQuizId = ++mCounter;
         mQuestions = new ArrayList<>();
         mAnswered = false;
     }
 
     //for database
     public Quiz(long quizId, String name, List<Question> questions, boolean answered, boolean visible) {
-        super(name, visible);
-        mQuizId = quizId;
+        super(quizId, name, visible);
         mAnswered = answered;
         mQuestions = questions;
     }
 
-    public void addQuestion(Question question)
-    {
-        mQuestions.add(question);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Quiz)) {
-            return false;
-        }
-        Quiz quiz = (Quiz) o;
-        return quiz.mQuizId == mQuizId;
-    }
-
     // region get set
-    public long getQuizId()
-    {
-        return mQuizId;
-    }
-
     public List<Question> getQuestions()
     {
         return mQuestions;
@@ -82,10 +54,10 @@ public class Quiz extends ClassMaterial implements Parcelable, Serializable {
 
     public void writeToParcel(Parcel out, int flags) {
         // write for superclass first
+        out.writeLong(getId());
         out.writeString(getName());
-        out.writeInt(getVisible() ? 1 : 0); // cannot write as boolean so change to int instead
+        out.writeInt(isVisible() ? 1 : 0); // cannot write as boolean so change to int instead
 
-        out.writeLong(mQuizId);
         out.writeList(mQuestions);
         out.writeInt(mAnswered ? 1 : 0);
     }
@@ -101,8 +73,7 @@ public class Quiz extends ClassMaterial implements Parcelable, Serializable {
     };
 
     private Quiz(Parcel in) {
-        super(in.readString(), in.readInt() != 0);
-        mQuizId = in.readLong();
+        super(in.readLong(), in.readString(), in.readInt() != 0);
         mQuestions = in.readArrayList(Question.class.getClassLoader());
         mAnswered = in.readInt() != 0;
     }

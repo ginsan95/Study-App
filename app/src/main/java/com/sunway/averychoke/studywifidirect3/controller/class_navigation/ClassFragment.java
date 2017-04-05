@@ -29,6 +29,7 @@ import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassBinding;
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.manager.StudentManager;
 import com.sunway.averychoke.studywifidirect3.manager.TeacherManager;
+import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
 import com.sunway.averychoke.studywifidirect3.model.Question;
 import com.sunway.averychoke.studywifidirect3.model.Quiz;
 import com.sunway.averychoke.studywifidirect3.model.StudyClass;
@@ -59,9 +60,8 @@ public class ClassFragment extends SWDBaseFragment implements
         mClassAdapter = new ClassAdapter(this);
 
         // set the id counter for the model objects
-        Quiz.mCounter = mDatabase.getQuizMaxId();
+        ClassMaterial.mCounter = mDatabase.getClassMaterialMaxId();
         Question.mCounter = mDatabase.getQuestionMaxId();
-        StudyMaterial.mCounter = mDatabase.getStudyMaterialMaxId();
     }
 
     @Override
