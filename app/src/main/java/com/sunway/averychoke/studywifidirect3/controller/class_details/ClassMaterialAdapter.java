@@ -84,4 +84,10 @@ public class ClassMaterialAdapter extends RecyclerView.Adapter<ClassMaterialView
         mClassMaterials.remove(index);
         notifyItemRemoved(index);
     }
+
+    // region Get Set
+    protected ClassMaterialViewHolder.OnClassMaterialSelectListener getListener() {
+        return mListener;
+    }
+    // endregion
 }

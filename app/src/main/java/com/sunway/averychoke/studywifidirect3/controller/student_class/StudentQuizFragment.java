@@ -22,6 +22,7 @@ import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassMaterialBinding;
 import com.sunway.averychoke.studywifidirect3.manager.StudentManager;
 import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
+import com.sunway.averychoke.studywifidirect3.model.Question;
 import com.sunway.averychoke.studywifidirect3.model.Quiz;
 
 import static android.app.Activity.RESULT_OK;
@@ -31,12 +32,12 @@ import static android.app.Activity.RESULT_OK;
  */
 
 public class StudentQuizFragment extends SWDBaseFragment implements
-        ClassMaterialViewHolder.OnClassMaterialSelectListener {
+        StudentQuizzesAdapter.StudentQuizViewHolder.OnCheckSelectListener {
     public static final int ANSWER_QUIZ_CODE = 101;
 
     private StudentManager sManager;
     private DatabaseHelper mDatabase;
-    private ClassMaterialAdapter mAdapter;
+    private StudentQuizzesAdapter mAdapter;
 
     private FragmentClassMaterialBinding mBinding;
 
@@ -46,7 +47,7 @@ public class StudentQuizFragment extends SWDBaseFragment implements
 
         sManager = StudentManager.getInstance();
         mDatabase = new DatabaseHelper(getContext());
-        mAdapter = new ClassMaterialAdapter(false, this);
+        mAdapter = new StudentQuizzesAdapter(this);
     }
 
     @Override
@@ -117,6 +118,32 @@ public class StudentQuizFragment extends SWDBaseFragment implements
     @Override
     public void onClassMaterialChecked(@NonNull ClassMaterial classMaterial, @NonNull boolean isChecked) {
 
+    }
+
+    @Override
+    public void onCheckLongClicked(@NonNull final Quiz quiz, @NonNull final int index) {
+        new AlertDialog.Builder(getContext())
+                .setTitle(R.string.dialog_reset_answer_title)
+                .setMessage(R.string.dialog_reset_answer_message)
+                .setPositiveButton(R.string.dialog_confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // reset quiz answer data
+                        quiz.setAnswered(false);
+                        for (Question question : quiz.getQuestions()) {
+                            question.setUserAnswer("");
+                        }
+
+                        mAdapter.notifyItemChanged(index);
+                        mDatabase.updateQuizAnswers(quiz);
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .show();
     }
     // endregion class material view holder
 }

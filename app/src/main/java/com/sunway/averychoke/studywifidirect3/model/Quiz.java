@@ -28,6 +28,11 @@ public class Quiz extends ClassMaterial implements Parcelable, Serializable {
         mQuestions = questions;
     }
 
+    @Override
+    public boolean isChecked() {
+        return mAnswered;
+    }
+
     // region get set
     public List<Question> getQuestions()
     {

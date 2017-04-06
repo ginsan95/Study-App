@@ -23,6 +23,10 @@ public class ClassMaterial {
         mVisible = visible;
     }
 
+    public boolean isChecked() {
+        return false;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

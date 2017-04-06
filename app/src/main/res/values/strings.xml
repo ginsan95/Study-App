@@ -32,4 +32,6 @@
     <string name="dialog_quiz_submission_message">You are about to submit your answer. Please ensure you answered all questions correctly. Continue to submission?</string>
     <string name="total_marks">Total Marks : </string>
     <string name="short_question_correct_answer">Correct answer : %1$s</string>
+    <string name="dialog_reset_answer_title">Reset Answer</string>
+    <string name="dialog_reset_answer_message">Are you sure you want to reset the answer for this quiz?</string>
 </resources>

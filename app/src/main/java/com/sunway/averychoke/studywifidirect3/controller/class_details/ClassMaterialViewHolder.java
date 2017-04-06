@@ -17,15 +17,13 @@ public class ClassMaterialViewHolder extends RecyclerView.ViewHolder {
 
     public interface OnClassMaterialSelectListener {
         void onClassMaterialSelected(@NonNull ClassMaterial classMaterial);
-
         void onClassMaterialLongClicked(@NonNull ClassMaterial classMaterial, @NonNull int index);
-
         void onClassMaterialChecked(@NonNull ClassMaterial classMaterial, @NonNull boolean isChecked);
     }
 
-    private ClassMaterial mClassMaterial;
-
     private CellClassMaterialBinding mBinding;
+
+    private ClassMaterial mClassMaterial;
 
     public ClassMaterialViewHolder(View itemView, boolean isTeacher, final OnClassMaterialSelectListener listener) {
         super(itemView);
@@ -71,4 +69,14 @@ public class ClassMaterialViewHolder extends RecyclerView.ViewHolder {
         mBinding.nameTextView.setText(classMaterial.getName());
         mBinding.visibleCheckBox.setChecked(classMaterial.isVisible());
     }
+
+    // region get set\
+    protected CellClassMaterialBinding getBinding() {
+        return mBinding;
+    }
+
+    protected ClassMaterial getClassMaterial() {
+        return mClassMaterial;
+    }
+    // endregion
 }
