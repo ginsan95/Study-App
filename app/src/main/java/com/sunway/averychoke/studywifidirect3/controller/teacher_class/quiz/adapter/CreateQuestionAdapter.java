@@ -1,4 +1,4 @@
-package com.sunway.averychoke.studywifidirect3.controller.teacher_class.quiz;
+package com.sunway.averychoke.studywifidirect3.controller.teacher_class.quiz.adapter;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
@@ -73,7 +73,7 @@ public class CreateQuestionAdapter extends QuestionsAdapter {
 
 
     // region view holder class
-    static class CreateQuestionViewHolder extends RecyclerView.ViewHolder implements HasQuestion {
+    public static class CreateQuestionViewHolder extends RecyclerView.ViewHolder implements HasQuestion {
 
         public interface OnQuestionChangeListener {
             void onQuestionTypeSelected(QuestionType questionType, @NonNull Question question, @NonNull int index);

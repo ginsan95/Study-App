@@ -23,6 +23,7 @@ import com.sunway.averychoke.studywifidirect3.controller.class_details.ClassMate
 import com.sunway.averychoke.studywifidirect3.controller.class_details.ClassMaterialViewHolder;
 import com.sunway.averychoke.studywifidirect3.controller.teacher_class.quiz.CreateQuizActivity;
 import com.sunway.averychoke.studywifidirect3.controller.teacher_class.quiz.CreateQuizFragment;
+import com.sunway.averychoke.studywifidirect3.controller.teacher_class.quiz.ViewQuizActivity;
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassMaterialBinding;
 import com.sunway.averychoke.studywifidirect3.manager.TeacherManager;
@@ -103,8 +104,29 @@ public class TeacherQuizFragment extends SWDBaseFragment implements
     // region class material view holder
     @Override
     public void onClassMaterialSelected(@NonNull ClassMaterial classMaterial) {
-        Quiz quiz = (Quiz) classMaterial;
-        Toast.makeText(getContext(), quiz.getName(), Toast.LENGTH_SHORT).show();
+        final Quiz quiz = (Quiz) classMaterial;
+
+        final CharSequence[] choices = new CharSequence[] {
+                "View Quiz",
+                "Edit Quiz"
+        };
+
+        new AlertDialog.Builder(getContext())
+                .setItems(choices, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0: // View Quiz
+                                Intent intent = new Intent(getActivity(), ViewQuizActivity.class);
+                                intent.putExtra(ViewQuizActivity.ARGS_QUIZ_KEY, (Parcelable)quiz);
+                                startActivity(intent);
+                                break;
+                            case 1: // Edit Quiz
+                                break;
+                        }
+                    }
+                })
+                .show();
     }
 
     @Override

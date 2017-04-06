@@ -20,6 +20,8 @@
             android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity android:name=".controller.teacher_class.quiz.CreateQuizActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"/>
+        <activity android:name=".controller.teacher_class.quiz.ViewQuizActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
 
         <activity android:name=".controller.student_class.StudentClassActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"/>
