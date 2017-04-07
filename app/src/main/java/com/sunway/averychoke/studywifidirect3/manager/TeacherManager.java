@@ -74,6 +74,25 @@ public class TeacherManager {
 
         return true;
     }
+
+    public boolean updateQuiz(Quiz quiz, String oldName) {
+        if (mDatabase == null || mStudyClass == null
+                // check for any conflicting name
+                || (!quiz.getName().equals(oldName) && mQuizMap.containsKey(quiz.getName()))
+                // update the quiz in database
+                || mDatabase.updateQuiz(quiz) == -1) {
+            return false;
+        }
+
+        quiz.setVersion(quiz.getVersion() + 1);
+        int index = mStudyClass.getQuizzes().indexOf(quiz);
+        mStudyClass.getQuizzes().set(index, quiz);
+
+        mQuizMap.remove(oldName);
+        mQuizMap.put(quiz.getName(), quiz);
+
+        return true;
+    }
     // endregion
 
     // region Study Material

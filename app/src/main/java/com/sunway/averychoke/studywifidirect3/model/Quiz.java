@@ -14,23 +14,21 @@ import java.util.List;
 public class Quiz extends ClassMaterial implements Parcelable, Serializable {
     private List<Question> mQuestions;
     private boolean mAnswered;
+    private int mVersion;
 
     public Quiz(String name) {
         super(name, false);
         mQuestions = new ArrayList<>();
         mAnswered = false;
+        mVersion = 1;
     }
 
     //for database
-    public Quiz(long quizId, String name, List<Question> questions, boolean answered, boolean visible) {
+    public Quiz(long quizId, String name, List<Question> questions, boolean answered, int version, boolean visible) {
         super(quizId, name, visible);
         mAnswered = answered;
         mQuestions = questions;
-    }
-
-    @Override
-    public boolean isChecked() {
-        return mAnswered;
+        mVersion = version;
     }
 
     // region get set
@@ -50,6 +48,14 @@ public class Quiz extends ClassMaterial implements Parcelable, Serializable {
     public void setAnswered(boolean answered) {
         mAnswered = answered;
     }
+
+    public int getVersion() {
+        return mVersion;
+    }
+
+    public void setVersion(int version) {
+        mVersion = version;
+    }
     // endregion get set
 
     // region Parcelable
@@ -65,6 +71,7 @@ public class Quiz extends ClassMaterial implements Parcelable, Serializable {
 
         out.writeList(mQuestions);
         out.writeInt(mAnswered ? 1 : 0);
+        out.writeInt(mVersion);
     }
 
     public static final Parcelable.Creator<Quiz> CREATOR = new Parcelable.Creator<Quiz>() {
@@ -81,6 +88,7 @@ public class Quiz extends ClassMaterial implements Parcelable, Serializable {
         super(in.readLong(), in.readString(), in.readInt() != 0);
         mQuestions = in.readArrayList(Question.class.getClassLoader());
         mAnswered = in.readInt() != 0;
+        mVersion = in.readInt();
     }
     // endregion Parcelable
 }

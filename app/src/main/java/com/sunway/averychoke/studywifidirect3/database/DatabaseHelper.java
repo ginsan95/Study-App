@@ -60,11 +60,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // columns names
     private static final String QUIZ_ID = "id";
     private static final String QUIZ_ANSWERED = "marks";
+    private static final String QUIZ_VERSION = "version";
     //create table statement
     private static final String CREATE_TABLE_QUIZ =
             "CREATE TABLE " + TABLE_QUIZ + "("
                     + QUIZ_ID + " INTEGER PRIMARY KEY,"
                     + QUIZ_ANSWERED + " BOOLEAN,"
+                    + QUIZ_VERSION + " INTEGER,"
                     + "FOREIGN KEY(" + QUIZ_ID + ") REFERENCES " + TABLE_CLASS_MATERIAL + "(" + CLASS_MATERIAL_ID + ") ON DELETE CASCADE)";
     // endregion Quiz Table
 
@@ -301,6 +303,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(QUIZ_ID, quiz.getId());
         values.put(QUIZ_ANSWERED, quiz.isAnswered());
+        values.put(QUIZ_VERSION, quiz.getVersion());
 
         // insert row
         long id = db.insert(TABLE_QUIZ, null, values);
@@ -341,6 +344,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                             c.getString(c.getColumnIndex(CLASS_MATERIAL_NAME)),
                             quizQuestions,
                             c.getInt(c.getColumnIndex(QUIZ_ANSWERED)) != 0,
+                            c.getInt(c.getColumnIndex(QUIZ_VERSION)),
                             c.getInt(c.getColumnIndex(CLASS_MATERIAL_VISIBLE)) != 0
                     );
 
@@ -377,6 +381,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         c.getString(c.getColumnIndex(CLASS_MATERIAL_NAME)),
                         quizQuestions,
                         c.getInt(c.getColumnIndex(QUIZ_ANSWERED)) != 0,
+                        c.getInt(c.getColumnIndex(QUIZ_VERSION)),
                         c.getInt(c.getColumnIndex(CLASS_MATERIAL_VISIBLE)) != 0
                 );
 
@@ -402,6 +407,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(QUIZ_ANSWERED, quiz.isAnswered());
+        values.put(QUIZ_VERSION, quiz.getVersion());
 
         //update the question list
         clearQuizQuestion(quiz.getId());

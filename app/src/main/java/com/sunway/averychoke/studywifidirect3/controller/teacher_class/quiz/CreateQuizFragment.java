@@ -22,7 +22,6 @@ import android.widget.EditText;
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
 import com.sunway.averychoke.studywifidirect3.controller.teacher_class.quiz.adapter.CreateQuestionAdapter;
-import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentCreateQuizBinding;
 import com.sunway.averychoke.studywifidirect3.manager.TeacherManager;
 import com.sunway.averychoke.studywifidirect3.model.ChoiceQuestion;
@@ -36,19 +35,44 @@ import com.sunway.averychoke.studywifidirect3.model.Quiz;
 public class CreateQuizFragment extends SWDBaseFragment implements
         CreateQuestionAdapter.CreateQuestionViewHolder.OnQuestionChangeListener {
 
-    public static final String NEW_QUIZ_KEY = "new_quiz_key";
+    public static final String ARGS_QUIZ_KEY = "quiz_key";
+    public static final String ARGS_TYPE_KEY = "type_key";
+    public static final int TYPE_CREATE = 101;
+    public static final int TYPE_EDIT = 102;
 
     private TeacherManager sManager;
-    private DatabaseHelper mDatabase;
+    private Quiz mQuiz;
+    private int mType;
+    private String mOldName;
+
     private FragmentCreateQuizBinding mBinding;
     private CreateQuestionAdapter mCreateQuestionAdapter;
+
+    public static CreateQuizFragment newInstance(int type, @Nullable Quiz quiz) {
+        Bundle args = new Bundle();
+        if (quiz != null) {
+            args.putParcelable(ARGS_QUIZ_KEY, quiz);
+        }
+        args.putInt(ARGS_TYPE_KEY, type);
+
+        CreateQuizFragment fragment = new CreateQuizFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mQuiz = getArguments().getParcelable(ARGS_QUIZ_KEY);
+        if (mQuiz == null) {
+            mQuiz = new Quiz("");
+        } else {
+            mOldName = mQuiz.getName();
+        }
+        mType = getArguments().getInt(ARGS_TYPE_KEY);
+
         sManager = TeacherManager.getInstance();
-        mDatabase = new DatabaseHelper(getContext());
         mCreateQuestionAdapter = new CreateQuestionAdapter(this);
     }
 
@@ -68,8 +92,12 @@ public class CreateQuizFragment extends SWDBaseFragment implements
 
         mBinding.quizzesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mBinding.quizzesRecyclerView.setAdapter(mCreateQuestionAdapter);
-        // add a single question
-        mCreateQuestionAdapter.addQuestion(new Question());
+        if (mQuiz.getQuestions().size() > 0) {
+            mCreateQuestionAdapter.setQuestions(mQuiz.getQuestions());
+        } else {
+            // add a single question
+            mCreateQuestionAdapter.addQuestion(new Question());
+        }
     }
 
     @Override
@@ -97,15 +125,17 @@ public class CreateQuizFragment extends SWDBaseFragment implements
         EditText titleEditText = (EditText) getActivity().findViewById(R.id.title_edit_text);
         if (handleEmptyET(titleEditText)) {
             String title = titleEditText.getText().toString();
-            Quiz quiz = new Quiz(title);
+            mQuiz.setName(title);
             // add all the created questions into the quiz
-            quiz.getQuestions().addAll(mCreateQuestionAdapter.getQuestions());
+            mQuiz.getQuestions().clear();
+            mQuiz.getQuestions().addAll(mCreateQuestionAdapter.getQuestions());
 
-            // check if add successfully
-            if (sManager.addQuiz(quiz)) {
+            // boolean to check if add / update successfully
+            boolean success = mType == TYPE_CREATE ? sManager.addQuiz(mQuiz) : sManager.updateQuiz(mQuiz, mOldName);
+            if (success) {
                 // send data back
                 Intent intent = new Intent();
-                intent.putExtra(NEW_QUIZ_KEY, (Parcelable) quiz);
+                intent.putExtra(ARGS_QUIZ_KEY, (Parcelable) mQuiz);
                 getActivity().setResult(Activity.RESULT_OK, intent);
                 getActivity().finish();
             }

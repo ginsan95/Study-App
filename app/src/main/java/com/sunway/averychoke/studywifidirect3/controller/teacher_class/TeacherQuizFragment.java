@@ -8,14 +8,11 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
@@ -30,10 +27,6 @@ import com.sunway.averychoke.studywifidirect3.manager.TeacherManager;
 import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
 import com.sunway.averychoke.studywifidirect3.model.Quiz;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 /**
  * Created by AveryChoke on 29/1/2017.
  */
@@ -41,7 +34,8 @@ import java.util.Random;
 public class TeacherQuizFragment extends SWDBaseFragment implements
         ClassMaterialViewHolder.OnClassMaterialSelectListener {
 
-    private static final int CREATE_QUIZ_CODE = 1;
+    private static final int CREATE_QUIZ_CODE = 101;
+    private static final int EDIT_QUIZ_CODE = 102;
 
     private TeacherManager sManager;
     private DatabaseHelper mDatabase;
@@ -79,6 +73,7 @@ public class TeacherQuizFragment extends SWDBaseFragment implements
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), CreateQuizActivity.class);
+                intent.putExtra(CreateQuizFragment.ARGS_TYPE_KEY, CreateQuizFragment.TYPE_CREATE);
                 startActivityForResult(intent, CREATE_QUIZ_CODE);
             }
         });
@@ -92,9 +87,18 @@ public class TeacherQuizFragment extends SWDBaseFragment implements
             case CREATE_QUIZ_CODE:
                 if (resultCode == Activity.RESULT_OK) {
                     // update the adapter
-                    Quiz quiz = data.getParcelableExtra(CreateQuizFragment.NEW_QUIZ_KEY);
+                    Quiz quiz = data.getParcelableExtra(CreateQuizFragment.ARGS_QUIZ_KEY);
                     if (quiz != null) {
                         mClassMaterialAdapter.addClassMaterial(quiz);
+                    }
+                }
+                break;
+            case EDIT_QUIZ_CODE:
+                if (resultCode == Activity.RESULT_OK) {
+                    // update the adapter
+                    Quiz quiz = data.getParcelableExtra(CreateQuizFragment.ARGS_QUIZ_KEY);
+                    if (quiz != null) {
+                        mClassMaterialAdapter.replaceClassMaterial(quiz);
                     }
                 }
                 break;
@@ -107,8 +111,8 @@ public class TeacherQuizFragment extends SWDBaseFragment implements
         final Quiz quiz = (Quiz) classMaterial;
 
         final CharSequence[] choices = new CharSequence[] {
-                "View Quiz",
-                "Edit Quiz"
+                getString(R.string.option_view_quiz),
+                getString(R.string.option_edit_quiz)
         };
 
         new AlertDialog.Builder(getContext())
@@ -117,11 +121,15 @@ public class TeacherQuizFragment extends SWDBaseFragment implements
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case 0: // View Quiz
-                                Intent intent = new Intent(getActivity(), ViewQuizActivity.class);
-                                intent.putExtra(ViewQuizActivity.ARGS_QUIZ_KEY, (Parcelable)quiz);
-                                startActivity(intent);
+                                Intent viewIntent = new Intent(getActivity(), ViewQuizActivity.class);
+                                viewIntent.putExtra(ViewQuizActivity.ARGS_QUIZ_KEY, (Parcelable)quiz);
+                                startActivity(viewIntent);
                                 break;
                             case 1: // Edit Quiz
+                                Intent editIntent = new Intent(getActivity(), CreateQuizActivity.class);
+                                editIntent.putExtra(CreateQuizFragment.ARGS_TYPE_KEY, CreateQuizFragment.TYPE_EDIT);
+                                editIntent.putExtra(CreateQuizFragment.ARGS_QUIZ_KEY, (Parcelable)quiz);
+                                startActivityForResult(editIntent, EDIT_QUIZ_CODE);
                                 break;
                         }
                     }

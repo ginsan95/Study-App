@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseActivity;
 import com.sunway.averychoke.studywifidirect3.databinding.ActivityCreateQuizBinding;
+import com.sunway.averychoke.studywifidirect3.model.Quiz;
 
 /**
  * Created by AveryChoke on 5/2/2017.
@@ -27,9 +28,19 @@ public class CreateQuizActivity extends SWDBaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
+        int type = getIntent().getIntExtra(CreateQuizFragment.ARGS_TYPE_KEY, 0);
+        if (type == 0) {
+            finish();
+            return;
+        }
+        Quiz quiz = getIntent().getParcelableExtra(CreateQuizFragment.ARGS_QUIZ_KEY);
+        if (quiz != null) {
+            mBinding.titleEditText.setText(quiz.getName());
+        }
+
         // display Create Quiz Fragment
         getSupportFragmentManager().beginTransaction()
-                .add(mBinding.containerLayout.getId(), new CreateQuizFragment(), CreateQuizFragment.class.getSimpleName())
+                .add(mBinding.containerLayout.getId(), CreateQuizFragment.newInstance(type, quiz), CreateQuizFragment.class.getSimpleName())
                 .commit();
     }
 
