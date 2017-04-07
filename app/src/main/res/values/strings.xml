@@ -36,4 +36,5 @@
     <string name="dialog_reset_answer_message">Are you sure you want to reset the answer for this quiz?</string>
     <string name="option_view_quiz">View Quiz</string>
     <string name="option_edit_quiz">Edit Quiz</string>
+    <string name="answer">Answer:</string>
 </resources>
