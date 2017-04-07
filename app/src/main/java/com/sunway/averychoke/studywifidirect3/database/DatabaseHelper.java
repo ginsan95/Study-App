@@ -162,6 +162,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // region Class Table
     public long addClass(StudyClass studyClass) {
         SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
 
         ContentValues values = new ContentValues();
         values.put(CLASS_NAME, studyClass.getName());
@@ -178,6 +179,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             addStudyMaterial(studyMaterial, studyClass.getName());
         }
 
+        db.setTransactionSuccessful();
+        db.endTransaction();
         return id;
     }
 
@@ -213,6 +216,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         + " WHERE " + CLASS_NAME + " = ?";
 
         SQLiteDatabase db = this.getReadableDatabase();
+        db.beginTransaction();
 
         Cursor c = null;
         try {
@@ -225,11 +229,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 studyClass = new StudyClass(className, quizzes, studyMaterials);
             }
+            db.setTransactionSuccessful();
         } finally {
             if(c != null) {
                 c.close();
             }
         }
+        db.endTransaction();
 
         return studyClass;
     }
@@ -296,6 +302,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // region Quiz Table
     public long addQuiz(Quiz quiz, String className) {
         SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
 
         // insert superclass
         addClassMaterial(quiz, className);
@@ -317,6 +324,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
         }
 
+        db.setTransactionSuccessful();
+        db.endTransaction();
         return id;
     }
 
@@ -401,6 +410,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public int updateQuiz(Quiz quiz) {
         SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
 
         // update superclass
         updateClassMaterial(quiz);
@@ -420,12 +430,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         // updating row
-        return db.update(TABLE_QUIZ, values, QUIZ_ID + " = ?",
+        int id = db.update(TABLE_QUIZ, values, QUIZ_ID + " = ?",
                 new String[] { String.valueOf(quiz.getId()) });
+
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        return id;
     }
 
     public int updateQuizAnswers(Quiz quiz) {
         SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
 
         ContentValues values = new ContentValues();
         values.put(QUIZ_ANSWERED, quiz.isAnswered());
@@ -436,8 +451,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         // updating row
-        return db.update(TABLE_QUIZ, values, QUIZ_ID + " = ?",
+        int id = db.update(TABLE_QUIZ, values, QUIZ_ID + " = ?",
                 new String[] { String.valueOf(quiz.getId()) });
+
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        return id;
     }
     // endregion Quiz Table
 
