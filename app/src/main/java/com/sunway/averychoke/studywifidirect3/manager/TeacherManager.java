@@ -1,6 +1,7 @@
 package com.sunway.averychoke.studywifidirect3.manager;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.model.Quiz;
@@ -42,10 +43,10 @@ public class TeacherManager {
 
         // change the list into map
         for (Quiz quiz : mStudyClass.getQuizzes()) {
-            mQuizMap.put(quiz.getName(), quiz);
+            mQuizMap.put(quiz.getName().toLowerCase(), quiz);
         }
         for (StudyMaterial studyMaterial : mStudyClass.getStudyMaterials()) {
-            mStudyMaterialMap.put(studyMaterial.getName(), studyMaterial);
+            mStudyMaterialMap.put(studyMaterial.getName().toLowerCase(), studyMaterial);
         }
     }
 
@@ -59,7 +60,7 @@ public class TeacherManager {
     }
 
     public Quiz findQuiz(String name) {
-        return mQuizMap.get(name);
+        return mQuizMap.get(name.toLowerCase());
     }
 
     public boolean addQuiz(Quiz quiz) {
@@ -77,8 +78,6 @@ public class TeacherManager {
 
     public boolean updateQuiz(Quiz quiz, String oldName) {
         if (mDatabase == null || mStudyClass == null
-                // check for any conflicting name
-                || (!quiz.getName().equals(oldName) && mQuizMap.containsKey(quiz.getName()))
                 // update the quiz in database
                 || mDatabase.updateQuiz(quiz) == -1) {
             return false;
@@ -93,6 +92,22 @@ public class TeacherManager {
 
         return true;
     }
+
+    public void deleteQuiz(Quiz quiz) {
+        if (mDatabase != null && mStudyClass != null) {
+            mDatabase.deleteClassMaterial(quiz);
+            mStudyClass.getQuizzes().remove(quiz);
+            mQuizMap.remove(quiz.getName().toLowerCase());
+        }
+    }
+
+    public boolean isQuizNameConflicting(String newName, @Nullable String oldName) {
+        if (oldName != null) {
+            return !newName.equalsIgnoreCase(oldName) && mQuizMap.containsKey(newName.toLowerCase());
+        } else {
+            return mQuizMap.containsKey(newName.toLowerCase());
+        }
+    }
     // endregion
 
     // region Study Material
@@ -102,6 +117,14 @@ public class TeacherManager {
 
     public StudyMaterial findStudyMaterial(String name) {
         return mStudyMaterialMap.get(name);
+    }
+
+    public void deleteStudyMaterial(StudyMaterial studyMaterial) {
+        if (mDatabase != null && mStudyClass != null) {
+            mDatabase.deleteClassMaterial(studyMaterial);
+            mStudyClass.getStudyMaterials().remove(studyMaterial);
+            mStudyMaterialMap.remove(studyMaterial.getName().toLowerCase());
+        }
     }
     // endregion
 

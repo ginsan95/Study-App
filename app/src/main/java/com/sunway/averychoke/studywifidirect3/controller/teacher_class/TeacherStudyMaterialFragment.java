@@ -96,7 +96,7 @@ public class TeacherStudyMaterialFragment extends SWDBaseFragment implements
                     public void onClick(DialogInterface dialog, int which) {
                         StudyMaterial studyMaterial = (StudyMaterial) classMaterial;
                         mClassMaterialAdapter.removeClassMaterial(index);
-                        mDatabase.deleteClassMaterial(studyMaterial);
+                        sManager.deleteStudyMaterial(studyMaterial);
                     }
                 })
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
@@ -32,6 +33,7 @@ import static android.app.Activity.RESULT_OK;
  */
 
 public class StudentQuizFragment extends SWDBaseFragment implements
+        SwipeRefreshLayout.OnRefreshListener,
         StudentQuizzesAdapter.StudentQuizViewHolder.OnCheckSelectListener {
     public static final int ANSWER_QUIZ_CODE = 101;
 
@@ -61,7 +63,7 @@ public class StudentQuizFragment extends SWDBaseFragment implements
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mBinding.materialsSwipeRefreshLayout.setEnabled(false);
+        mBinding.materialsSwipeRefreshLayout.setOnRefreshListener(this);
 
         mBinding.materialsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mBinding.materialsRecyclerView.setAdapter(mAdapter);
@@ -84,6 +86,11 @@ public class StudentQuizFragment extends SWDBaseFragment implements
         }
     }
 
+    @Override
+    public void onRefresh() {
+        // // TODO: 7/4/2017 Read data from teacher
+    }
+
     // region class material view holder
     @Override
     public void onClassMaterialSelected(@NonNull ClassMaterial classMaterial) {
@@ -103,7 +110,7 @@ public class StudentQuizFragment extends SWDBaseFragment implements
                     public void onClick(DialogInterface dialog, int which) {
                         Quiz quiz = (Quiz) classMaterial;
                         mAdapter.removeClassMaterial(index);
-                        mDatabase.deleteClassMaterial(quiz);
+                        sManager.deleteQuiz(quiz);
                     }
                 })
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {

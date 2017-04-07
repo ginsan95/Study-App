@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -125,6 +126,35 @@ public class CreateQuizFragment extends SWDBaseFragment implements
         EditText titleEditText = (EditText) getActivity().findViewById(R.id.title_edit_text);
         if (handleEmptyET(titleEditText)) {
             String title = titleEditText.getText().toString();
+
+            // error checking
+            if (mCreateQuestionAdapter.getQuestions().size() <= 0) {
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Error")
+                        .setMessage("Please ensure that there is at least 1 question.")
+                        .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .show();
+                return;
+            }
+            if (sManager.isQuizNameConflicting(title, mOldName)) {
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Invalid quiz name")
+                        .setMessage("The quiz name is already used by other quizzes. Please use a different name.")
+                        .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .show();
+                return;
+            }
+
             mQuiz.setName(title);
             // add all the created questions into the quiz
             mQuiz.getQuestions().clear();
@@ -138,6 +168,17 @@ public class CreateQuizFragment extends SWDBaseFragment implements
                 intent.putExtra(ARGS_QUIZ_KEY, (Parcelable) mQuiz);
                 getActivity().setResult(Activity.RESULT_OK, intent);
                 getActivity().finish();
+            } else {
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Save failed")
+                        .setMessage("Failed to save the quiz into the database. Please try again later.")
+                        .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .show();
             }
         }
     }
@@ -166,6 +207,7 @@ public class CreateQuizFragment extends SWDBaseFragment implements
     @Override
     public void onAddChoicesClicked(final ChoiceQuestion choiceQuestion, final int index) {
         final EditText editText = new EditText(getContext());
+        editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
 
         final AlertDialog.Builder dialog = new AlertDialog.Builder(getContext())
                 .setTitle(R.string.add_choice_dialog_title)

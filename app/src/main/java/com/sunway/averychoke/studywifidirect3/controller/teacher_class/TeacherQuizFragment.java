@@ -147,7 +147,7 @@ public class TeacherQuizFragment extends SWDBaseFragment implements
                     public void onClick(DialogInterface dialog, int which) {
                         Quiz quiz = (Quiz) classMaterial;
                         mClassMaterialAdapter.removeClassMaterial(index);
-                        mDatabase.deleteClassMaterial(quiz);
+                        sManager.deleteQuiz(quiz);
                     }
                 })
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {

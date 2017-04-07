@@ -43,16 +43,22 @@ public class StudentManager {
         return mStudyClass != null ?  mStudyClass.getQuizzes() : new ArrayList<Quiz>();
     }
 
-    public void updateQuizAnswer(Quiz quiz) {
-        // update manager data
-        if (mStudyClass != null) {
-            int index = mStudyClass.getQuizzes().indexOf(quiz);
-            mStudyClass.getQuizzes().set(index, quiz);
+    public boolean updateQuizAnswer(Quiz quiz) {
+        if (mDatabase == null || mStudyClass == null
+                || mDatabase.updateQuizAnswers(quiz) == -1) {
+            return false;
         }
 
-        // update local database
-        if (mDatabase != null) {
-            mDatabase.updateQuizAnswers(quiz);
+        int index = mStudyClass.getQuizzes().indexOf(quiz);
+        mStudyClass.getQuizzes().set(index, quiz);
+
+        return true;
+    }
+
+    public void deleteQuiz(Quiz quiz) {
+        if (mDatabase != null && mStudyClass != null) {
+            mDatabase.deleteClassMaterial(quiz);
+            mStudyClass.getQuizzes().remove(quiz);
         }
     }
     // endregion
@@ -60,6 +66,13 @@ public class StudentManager {
     // region Study Material
     public List<StudyMaterial> getStudyMaterials() {
         return mStudyClass != null ? mStudyClass.getStudyMaterials() : new ArrayList<StudyMaterial>();
+    }
+
+    public void deleteStudyMaterial(StudyMaterial studyMaterial) {
+        if (mDatabase != null && mStudyClass != null) {
+            mDatabase.deleteClassMaterial(studyMaterial);
+            mStudyClass.getStudyMaterials().remove(studyMaterial);
+        }
     }
     // endregion
 

@@ -5,13 +5,12 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
@@ -23,18 +22,15 @@ import com.sunway.averychoke.studywifidirect3.manager.StudentManager;
 import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
 import com.sunway.averychoke.studywifidirect3.model.StudyMaterial;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 /**
  * Created by AveryChoke on 30/1/2017.
  */
 
 public class StudentStudyMaterialFragment extends SWDBaseFragment implements
+        SwipeRefreshLayout.OnRefreshListener,
         ClassMaterialViewHolder.OnClassMaterialSelectListener {
 
-    private StudentManager mManager;
+    private StudentManager sManager;
     private DatabaseHelper mDatabase;
     private ClassMaterialAdapter mClassMaterialAdapter;
 
@@ -44,7 +40,7 @@ public class StudentStudyMaterialFragment extends SWDBaseFragment implements
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mManager = StudentManager.getInstance();
+        sManager = StudentManager.getInstance();
         mDatabase = new DatabaseHelper(getContext());
         mClassMaterialAdapter = new ClassMaterialAdapter(true, this);
     }
@@ -60,13 +56,18 @@ public class StudentStudyMaterialFragment extends SWDBaseFragment implements
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mBinding.materialsSwipeRefreshLayout.setEnabled(false);
+        mBinding.materialsSwipeRefreshLayout.setOnRefreshListener(this);
 
         mBinding.materialsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mBinding.materialsRecyclerView.setAdapter(mClassMaterialAdapter);
-        mClassMaterialAdapter.setClassMaterials(mManager.getStudyMaterials());
+        mClassMaterialAdapter.setClassMaterials(sManager.getStudyMaterials());
 
         mBinding.addButton.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onRefresh() {
+        // // TODO: 7/4/2017 Read data from teacher
     }
 
     // region class material view holder
@@ -85,7 +86,8 @@ public class StudentStudyMaterialFragment extends SWDBaseFragment implements
                     public void onClick(DialogInterface dialog, int which) {
                         StudyMaterial studyMaterial = (StudyMaterial) classMaterial;
                         mClassMaterialAdapter.removeClassMaterial(index);
-                        mDatabase.deleteClassMaterial(studyMaterial);
+                        sManager.deleteStudyMaterial(studyMaterial);
+
                     }
                 })
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
