@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,37 +17,32 @@ import android.databinding.DataBindingUtil;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.sunway.averychoke.studywifidirect3.controller.MainActivity;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
 import com.sunway.averychoke.studywifidirect3.controller.student_class.StudentClassActivity;
-import com.sunway.averychoke.studywifidirect3.controller.student_class.StudentClassFragment;
 import com.sunway.averychoke.studywifidirect3.controller.teacher_class.TeacherClassActivity;
-import com.sunway.averychoke.studywifidirect3.controller.teacher_class.TeacherClassFragment;
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassBinding;
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.manager.StudentManager;
 import com.sunway.averychoke.studywifidirect3.manager.TeacherManager;
 import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
+import com.sunway.averychoke.studywifidirect3.model.DeviceClass;
 import com.sunway.averychoke.studywifidirect3.model.Question;
-import com.sunway.averychoke.studywifidirect3.model.Quiz;
 import com.sunway.averychoke.studywifidirect3.model.StudyClass;
-import com.sunway.averychoke.studywifidirect3.model.StudyMaterial;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by AveryChoke on 22/1/2017.
  */
 
 public class ClassFragment extends SWDBaseFragment implements
-        ClassAdapter.ClassViewHolder.OnClassSelectListener,
+        DeviceClassesAdapter.DeviceClassViewHolder.OnDeviceClassSelectListener,
         SwipeRefreshLayout.OnRefreshListener {
 
     private DatabaseHelper mDatabase;
-    private ClassAdapter mClassAdapter;
+    private DeviceClassesAdapter mAdapter;
 
     private FragmentClassBinding mBinding;
 
@@ -57,7 +51,7 @@ public class ClassFragment extends SWDBaseFragment implements
         super.onCreate(savedInstanceState);
 
         mDatabase = new DatabaseHelper(getContext());
-        mClassAdapter = new ClassAdapter(this);
+        mAdapter = new DeviceClassesAdapter(this);
 
         // set the id counter for the model objects
         ClassMaterial.mCounter = mDatabase.getClassMaterialMaxId();
@@ -68,18 +62,18 @@ public class ClassFragment extends SWDBaseFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_class, container, false);
         mBinding = DataBindingUtil.bind(rootView);
-        mBinding.classesSwipeRefreshLayout.setOnRefreshListener(this);
-        getActivity().setTitle("Classes");
         return rootView;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        onRefresh();
+        getActivity().setTitle("Classes");
+
+        mBinding.classesSwipeRefreshLayout.setOnRefreshListener(this);
 
         mBinding.classesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mBinding.classesRecyclerView.setAdapter(mClassAdapter);
+        mBinding.classesRecyclerView.setAdapter(mAdapter);
 
         mBinding.addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,6 +81,14 @@ public class ClassFragment extends SWDBaseFragment implements
                 createClass();
             }
         });
+
+        // set initial data
+        List<DeviceClass> deviceClasses = new ArrayList<>();
+        List<String> classesName = mDatabase.getAllClassesName();
+        for (String className : classesName) {
+            deviceClasses.add(new DeviceClass(className));
+        }
+        mAdapter.setDeviceClasses(deviceClasses);
     }
 
     // region swipe refresh layout
@@ -95,17 +97,13 @@ public class ClassFragment extends SWDBaseFragment implements
         mBinding.classesSwipeRefreshLayout.setRefreshing(true);
         // // TODO: search for broadcasted classes
 
-        // example
-        List<String> classesName = mDatabase.getAllClassesName();
-        mClassAdapter.setClassesName(classesName);
-
         mBinding.classesSwipeRefreshLayout.setRefreshing(false);
     }
     // endregion swipe refresh layout
 
     // region class view holder
     @Override
-    public void onClassSelected(final String className) {
+    public void onDeviceClassSelected(final DeviceClass deviceClass) {
         final CharSequence[] choices = new CharSequence[] {
                 getString(R.string.option_host_class),
                 getString(R.string.option_participate_class),
@@ -118,12 +116,12 @@ public class ClassFragment extends SWDBaseFragment implements
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case 0: // Host class
-                                TeacherManager.getInstance().initialize(className, getContext());
+                                TeacherManager.getInstance().initialize(deviceClass.getClassName(), getContext());
                                 Intent teacherIntent = new Intent(getActivity(), TeacherClassActivity.class);
                                 startActivity(teacherIntent);
                                 break;
                             case 1: // Participate class
-                                StudentManager.getInstance().initialize(className, getContext());
+                                StudentManager.getInstance().initialize(deviceClass.getClassName(), getContext());
                                 Intent studentIntent = new Intent(getActivity(), StudentClassActivity.class);
                                 startActivity(studentIntent);
                                 break;
@@ -137,15 +135,15 @@ public class ClassFragment extends SWDBaseFragment implements
     }
 
     @Override
-    public void onClassLongClicked(@NonNull final String className, @NonNull final int index) {
+    public void onDeviceClassLongClicked(@NonNull final DeviceClass deviceClass, @NonNull final int index) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(getContext())
                 .setTitle(R.string.delete_class_dialog_title)
                 .setMessage(R.string.delete_class_dialog_message)
                 .setPositiveButton(R.string.dialog_confirm, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mClassAdapter.removeClassName(index);
-                        mDatabase.deleteClass(className);
+                        mAdapter.removeClassName(index);
+                        mDatabase.deleteClass(deviceClass.getClassName());
                     }
                 })
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
@@ -172,11 +170,11 @@ public class ClassFragment extends SWDBaseFragment implements
                     public void onClick(DialogInterface dialog, int which) {
                         String className = editText.getText().toString();
                         if (!TextUtils.isEmpty(className.trim())) {
-                            //// TODO: create Class object and save to database 
                             StudyClass studyClass = new StudyClass(className);
                             long errorCode = mDatabase.addClass(studyClass);
                             if (errorCode != -1) {
-                                mClassAdapter.addClassName(editText.getText().toString());
+                                DeviceClass deviceClass = new DeviceClass(className);
+                                mAdapter.addDeviceClass(deviceClass);
                                 return; // successfully exited the method
                             }
                         }

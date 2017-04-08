@@ -9,5 +9,6 @@
 
     <!-- Text -->
     <color name="text_color">#616161</color>
-    <color name="disable_text_color">#bdbdbd</color>
+    <color name="text_enable_color">#3F51B5</color>
+    <color name="text_disable_color">#bdbdbd</color>
 </resources>
