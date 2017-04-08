@@ -58,15 +58,34 @@ public class DeviceClassesAdapter extends RecyclerView.Adapter<DeviceClassesAdap
         notifyDataSetChanged();
     }
 
-    public void addDeviceClass(DeviceClass deviceClass) {
-        mDeviceClasses.add(deviceClass);
-        Collections.sort(mDeviceClasses);
-        notifyItemInserted(mDeviceClasses.indexOf(deviceClass));
+    public void addOrReplaceDeviceClass(DeviceClass deviceClass) {
+        DeviceClass sameDeviceClass = null;
+        if (deviceClass.getDevice() != null) {
+            sameDeviceClass = getSameDeviceClass(deviceClass.getClassName());
+        }
+
+        if (sameDeviceClass != null) {
+            sameDeviceClass.setDevice(deviceClass.getDevice());
+            notifyItemChanged(mDeviceClasses.indexOf(sameDeviceClass));
+        } else {
+            mDeviceClasses.add(deviceClass);
+            Collections.sort(mDeviceClasses);
+            notifyItemInserted(mDeviceClasses.indexOf(deviceClass));
+        }
     }
 
     public void removeClassName(int index) {
         mDeviceClasses.remove(index);
         notifyItemRemoved(index);
+    }
+
+    private DeviceClass getSameDeviceClass(String className) {
+        for (DeviceClass deviceClass : mDeviceClasses) {
+            if (deviceClass.getClassName().equalsIgnoreCase(className) && !deviceClass.isTeacherHosting()) {
+                return deviceClass;
+            }
+        }
+        return null;
     }
 
     // region View Holder
