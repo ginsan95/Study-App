@@ -57,7 +57,7 @@ public class StudentClassFragment extends SWDBaseFragment {
 
     // adapter for the view pager
     class ClassPagerFragmentAdapter extends FragmentStatePagerAdapter {
-        private String[] tabTitles = { "Quiz", "Study Material" };
+        private String[] tabTitles = { getString(R.string.tab_quiz), getString(R.string.tab_study_material) };
 
         private ClassPagerFragmentAdapter(FragmentManager fm) {
             super(fm);

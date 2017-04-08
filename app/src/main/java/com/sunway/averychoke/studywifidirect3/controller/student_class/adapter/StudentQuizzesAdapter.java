@@ -1,4 +1,4 @@
-package com.sunway.averychoke.studywifidirect3.controller.student_class;
+package com.sunway.averychoke.studywifidirect3.controller.student_class.adapter;
 
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;

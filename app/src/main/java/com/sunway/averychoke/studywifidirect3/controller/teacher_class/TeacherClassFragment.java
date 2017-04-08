@@ -12,11 +12,8 @@ import android.view.ViewGroup;
 
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
-import com.sunway.averychoke.studywifidirect3.controller.class_navigation.ClassFragment;
-import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassDetailsBinding;
 import com.sunway.averychoke.studywifidirect3.manager.TeacherManager;
-import com.sunway.averychoke.studywifidirect3.model.StudyClass;
 
 /**
  * Created by AveryChoke on 29/1/2017.
@@ -25,7 +22,6 @@ import com.sunway.averychoke.studywifidirect3.model.StudyClass;
 public class TeacherClassFragment extends SWDBaseFragment {
 
     private TeacherManager sManager;
-    private DatabaseHelper mDatabase;
 
     private FragmentClassDetailsBinding mBinding;
     private ClassPagerFragmentAdapter mClassPagerFragmentAdapter;
@@ -35,8 +31,6 @@ public class TeacherClassFragment extends SWDBaseFragment {
         super.onCreate(savedInstanceState);
 
         sManager = TeacherManager.getInstance();
-        mDatabase = new DatabaseHelper(getContext());
-
         mClassPagerFragmentAdapter = new ClassPagerFragmentAdapter(getChildFragmentManager());
     }
 
@@ -58,7 +52,7 @@ public class TeacherClassFragment extends SWDBaseFragment {
 
     // adapter for the view pager
     class ClassPagerFragmentAdapter extends FragmentStatePagerAdapter {
-        private String[] tabTitles = { "Quiz", "Study Material" };
+        private String[] tabTitles = { getString(R.string.tab_quiz), getString(R.string.tab_study_material) };
 
         private ClassPagerFragmentAdapter(FragmentManager fm) {
             super(fm);
