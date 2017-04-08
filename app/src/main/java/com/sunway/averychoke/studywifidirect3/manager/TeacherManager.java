@@ -71,7 +71,7 @@ public class TeacherManager {
         }
 
         mStudyClass.getQuizzes().add(quiz);
-        mQuizMap.put(quiz.getName(), quiz);
+        mQuizMap.put(quiz.getName().toLowerCase(), quiz);
 
         return true;
     }
@@ -88,7 +88,7 @@ public class TeacherManager {
         mStudyClass.getQuizzes().set(index, quiz);
 
         mQuizMap.remove(oldName);
-        mQuizMap.put(quiz.getName(), quiz);
+        mQuizMap.put(quiz.getName().toLowerCase(), quiz);
 
         return true;
     }
