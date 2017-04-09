@@ -13,9 +13,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
+import com.sunway.averychoke.studywifidirect3.controller.connection.ClassMaterialsUpdaterListener;
+import com.sunway.averychoke.studywifidirect3.controller.connection.SendReceiveTask;
+import com.sunway.averychoke.studywifidirect3.controller.connection.TeacherThread;
 import com.sunway.averychoke.studywifidirect3.controller.student_class.adapter.StudentQuizzesAdapter;
 import com.sunway.averychoke.studywifidirect3.controller.student_class.quiz.AnswerQuizActivity;
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
@@ -33,7 +37,8 @@ import static android.app.Activity.RESULT_OK;
 
 public class StudentQuizFragment extends SWDBaseFragment implements
         SwipeRefreshLayout.OnRefreshListener,
-        StudentQuizzesAdapter.StudentQuizViewHolder.OnCheckSelectListener {
+        StudentQuizzesAdapter.StudentQuizViewHolder.OnCheckSelectListener,
+        ClassMaterialsUpdaterListener {
     public static final int ANSWER_QUIZ_CODE = 101;
 
     private StudentManager sManager;
@@ -87,7 +92,9 @@ public class StudentQuizFragment extends SWDBaseFragment implements
 
     @Override
     public void onRefresh() {
-        // // TODO: 7/4/2017 Read data from teacher
+        mBinding.materialsSwipeRefreshLayout.setRefreshing(true);
+        SendReceiveTask task = new SendReceiveTask(sManager.getTeacherAddress(), this);
+        task.execute(TeacherThread.Request.QUIZZES);
     }
 
     // region class material view holder
@@ -152,4 +159,26 @@ public class StudentQuizFragment extends SWDBaseFragment implements
                 .show();
     }
     // endregion class material view holder
+
+    // region Class Materials Updater
+    @Override
+    public void onClassMaterialUpdated(ClassMaterial classMaterial) {
+        mAdapter.replaceClassMaterial(classMaterial);
+        mBinding.materialsSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onClassMaterialsUpdated() {
+        mAdapter.setClassMaterials(sManager.getQuizzes());
+        mBinding.materialsSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onError(Exception e) {
+        mBinding.materialsSwipeRefreshLayout.setRefreshing(false);
+        if (getContext() != null) {
+            Toast.makeText(getContext(), e != null ? e.toString() : "Error", Toast.LENGTH_SHORT).show();
+        }
+    }
+    // endregion
 }

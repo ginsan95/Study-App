@@ -2,6 +2,7 @@ package com.sunway.averychoke.studywifidirect3.model;
 
 import android.os.Parcel;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  * Created by AveryChoke on 27/1/2017.
  */
 
-public class ChoiceQuestion extends Question {
+public class ChoiceQuestion extends Question implements Serializable {
 
     private List<String> mChoices;
 

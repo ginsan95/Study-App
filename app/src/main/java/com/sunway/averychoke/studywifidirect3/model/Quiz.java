@@ -31,6 +31,18 @@ public class Quiz extends ClassMaterial implements Parcelable, Serializable {
         mVersion = version;
     }
 
+    @Override
+    public void updateId() {
+        super.updateId();
+        updateQuestionsId();
+    }
+
+    public void updateQuestionsId() {
+        for (Question question : mQuestions) {
+            question.updateId();
+        }
+    }
+
     // region get set
     public List<Question> getQuestions()
     {
@@ -68,6 +80,7 @@ public class Quiz extends ClassMaterial implements Parcelable, Serializable {
         out.writeLong(getId());
         out.writeString(getName());
         out.writeInt(isVisible() ? 1 : 0); // cannot write as boolean so change to int instead
+        out.writeSerializable(getStatus());
 
         out.writeList(mQuestions);
         out.writeInt(mAnswered ? 1 : 0);
@@ -85,7 +98,7 @@ public class Quiz extends ClassMaterial implements Parcelable, Serializable {
     };
 
     private Quiz(Parcel in) {
-        super(in.readLong(), in.readString(), in.readInt() != 0);
+        super(in.readLong(), in.readString(), in.readInt() != 0, (Status)in.readSerializable());
         mQuestions = in.readArrayList(Question.class.getClassLoader());
         mAnswered = in.readInt() != 0;
         mVersion = in.readInt();

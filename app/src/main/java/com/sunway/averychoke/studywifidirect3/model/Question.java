@@ -13,18 +13,14 @@ public class Question implements Parcelable, Serializable {
 
     public static long mCounter = 0;
 
-    private final long mQuestionId;
+    private long mQuestionId;
     private String mQuestion;
     private String mCorrectAnswer;
     private int mTotalMarks;
     private String mUserAnswer;
 
     public Question(String question, String correctAnswer, int totalMarks) {
-        mQuestionId = ++mCounter;
-        mQuestion = question;
-        mCorrectAnswer = correctAnswer;
-        mTotalMarks = totalMarks;
-        mUserAnswer = "";
+        this(++mCounter, question, correctAnswer, totalMarks, "");
     }
 
     //for database
@@ -58,6 +54,10 @@ public class Question implements Parcelable, Serializable {
 
     public boolean checkAnswer(String userAnswer) {
         return mCorrectAnswer.equalsIgnoreCase(userAnswer);
+    }
+
+    public void updateId() {
+        mQuestionId = ++mCounter;
     }
 
     // region get set

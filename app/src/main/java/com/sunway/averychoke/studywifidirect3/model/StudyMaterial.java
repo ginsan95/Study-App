@@ -39,6 +39,7 @@ public class StudyMaterial extends ClassMaterial implements Parcelable {
         out.writeLong(getId());
         out.writeString(getName());
         out.writeInt(isVisible()? 1: 0); // cannot write as boolean so change to int instead
+        out.writeSerializable(getStatus());
 
         out.writeString(mFile.getPath());
     }
@@ -54,7 +55,7 @@ public class StudyMaterial extends ClassMaterial implements Parcelable {
     };
 
     private StudyMaterial(Parcel in) {
-        super(in.readLong(), in.readString(), in.readInt()==1);
+        super(in.readLong(), in.readString(), in.readInt()==1, (Status)in.readSerializable());
         mFile = new File(in.readString());
     }
     // endregion Parcelable

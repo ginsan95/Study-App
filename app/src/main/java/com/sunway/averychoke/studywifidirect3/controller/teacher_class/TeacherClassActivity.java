@@ -7,10 +7,11 @@ import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseActivity;
-import com.sunway.averychoke.studywifidirect3.controller.teacher_class.thread.TeacherThread;
+import com.sunway.averychoke.studywifidirect3.controller.connection.TeacherThread;
 import com.sunway.averychoke.studywifidirect3.databinding.ActivityMainContainerBinding;
 import com.sunway.averychoke.studywifidirect3.manager.TeacherManager;
 
@@ -93,6 +94,7 @@ public class TeacherClassActivity extends SWDBaseActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d("alibaba", "destroy");
         // kills the thread
         if (mTeacherThread != null) {
             mTeacherThread.disconnect();

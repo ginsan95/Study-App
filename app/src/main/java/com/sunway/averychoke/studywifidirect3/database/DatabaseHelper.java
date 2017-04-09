@@ -240,6 +240,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return studyClass;
     }
 
+    public void updateClassQuizzes(StudyClass studyClass) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+
+        // clear previous quizzes
+        clearClassQuizzes(studyClass.getName());
+
+        // insert new quizzes
+        for (Quiz quiz : studyClass.getQuizzes()) {
+            addQuiz(quiz, studyClass.getName());
+        }
+
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
     public void deleteClass(String name) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -457,6 +473,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.setTransactionSuccessful();
         db.endTransaction();
         return id;
+    }
+
+    // delete all quizzes that belong to the class
+    private void clearClassQuizzes(String className) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String whereString = CLASS_MATERIAL_ID + " in ("
+                + "SELECT " + TABLE_CLASS_MATERIAL + "." + CLASS_MATERIAL_ID
+                + " FROM " + TABLE_CLASS_MATERIAL + "," + TABLE_QUIZ
+                + " WHERE " + TABLE_CLASS_MATERIAL + "." + CLASS_MATERIAL_ID + " = " +  TABLE_QUIZ + "." + QUIZ_ID
+                + " AND " + CLASS_MATERIAL_CLASS_NAME + " = ? )";
+
+        db.delete(TABLE_CLASS_MATERIAL, whereString,
+                new String[] { String.valueOf(className)});
     }
     // endregion Quiz Table
 
@@ -754,6 +784,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // updating row
         return db.update(TABLE_STUDY_MATERIAL, values, STUDY_MATERIAL_ID + " = ?",
                 new String[] { String.valueOf(studyMaterial.getId()) });
+    }
+
+    // delete all study materials that belong to the class
+    private void clearClassStudyMaterials(String className) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String whereString = CLASS_MATERIAL_ID + " in ("
+                + "SELECT " + TABLE_CLASS_MATERIAL + "." + CLASS_MATERIAL_ID
+                + " FROM " + TABLE_CLASS_MATERIAL + "," + TABLE_STUDY_MATERIAL
+                + " WHERE " + TABLE_CLASS_MATERIAL + "." + CLASS_MATERIAL_ID + " = " +  TABLE_STUDY_MATERIAL + "." + STUDY_MATERIAL_ID
+                + " ABD " + CLASS_MATERIAL_CLASS_NAME + " = ?";
+
+        db.delete(TABLE_CLASS_MATERIAL, whereString,
+                new String[] { String.valueOf(className)});
     }
     // endregion Study Material Table
 

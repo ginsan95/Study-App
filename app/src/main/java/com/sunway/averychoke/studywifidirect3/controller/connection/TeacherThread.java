@@ -1,4 +1,4 @@
-package com.sunway.averychoke.studywifidirect3.controller.teacher_class.thread;
+package com.sunway.averychoke.studywifidirect3.controller.connection;
 
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseActivity;
 import com.sunway.averychoke.studywifidirect3.manager.TeacherManager;
@@ -35,6 +35,7 @@ public class TeacherThread implements Runnable {
                     // wait for student to connect
                     Socket socket = mSocket.accept();
 
+
                     try {
                         ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
                         Request requestCode = (Request) ois.readObject();
@@ -51,7 +52,6 @@ public class TeacherThread implements Runnable {
                             case STUDY_MATERIAL:
                                 break;
                         }
-
                     } catch (IOException | ClassNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -69,6 +69,8 @@ public class TeacherThread implements Runnable {
     // region request methods
     private void sendQuizzes(Socket socket) throws IOException {
         ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+        oos.reset();
+        oos.writeObject(SendReceiveTask.Result.QUIZZES);
         oos.writeObject(sManager.getQuizzes());
         oos.flush();
     }
@@ -80,8 +82,9 @@ public class TeacherThread implements Runnable {
         // might send null
         Quiz quiz = sManager.findQuiz(quizName);
         ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+        oos.writeObject(SendReceiveTask.Result.QUIZ);
         oos.writeObject(quiz);
-        oos.flush();
+        oos.close();
     }
     // endregion
 
