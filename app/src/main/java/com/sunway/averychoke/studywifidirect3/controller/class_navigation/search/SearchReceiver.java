@@ -1,4 +1,4 @@
-package com.sunway.averychoke.studywifidirect3.controller.class_navigation;
+package com.sunway.averychoke.studywifidirect3.controller.class_navigation.search;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

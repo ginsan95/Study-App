@@ -2,30 +2,24 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <android.support.design.widget.CoordinatorLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/classes_swipe_refresh_layout"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/classes_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/classes_recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </android.support.v4.widget.SwipeRefreshLayout>
+            android:layout_height="match_parent" />
 
         <android.support.design.widget.FloatingActionButton
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:id="@+id/add_button"
             android:src="@drawable/ic_plus"
-            android:layout_margin="@dimen/fab_margin"
             app:fabSize="auto"
-            app:layout_anchor="@id/classes_swipe_refresh_layout"
-            app:layout_anchorGravity="bottom|right|end"/>
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"/>
 
-    </android.support.design.widget.CoordinatorLayout>
+    </RelativeLayout>
 </layout>

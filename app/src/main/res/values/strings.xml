@@ -43,4 +43,7 @@
     <string name="connecting">Connecting</string>
     <string name="tab_quiz">Quiz</string>
     <string name="tab_study_material">Study Material</string>
+    <string name="go_offline_button">Go Offline</string>
+    <string name="title_search_classes">Search Classes</string>
+    <string name="menu_search_classes">Search classes</string>
 </resources>

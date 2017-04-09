@@ -1,4 +1,4 @@
-package com.sunway.averychoke.studywifidirect3.controller.class_navigation;
+package com.sunway.averychoke.studywifidirect3.controller.class_navigation.search;
 
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
@@ -51,41 +51,15 @@ public class DeviceClassesAdapter extends RecyclerView.Adapter<DeviceClassesAdap
         return mDeviceClasses.size();
     }
 
-    public void setDeviceClasses(List<DeviceClass> deviceClasses) {
-        mDeviceClasses.clear();
-        mDeviceClasses.addAll(deviceClasses);
+    public void addDeviceClass(DeviceClass deviceClass) {
+        mDeviceClasses.add(deviceClass);
         Collections.sort(mDeviceClasses);
+        notifyItemInserted(mDeviceClasses.indexOf(deviceClass));
+    }
+
+    public void clearDeviceClasses() {
+        mDeviceClasses.clear();
         notifyDataSetChanged();
-    }
-
-    public void addOrReplaceDeviceClass(DeviceClass deviceClass) {
-        DeviceClass sameDeviceClass = null;
-        if (deviceClass.getDevice() != null) {
-            sameDeviceClass = getSameDeviceClass(deviceClass.getClassName());
-        }
-
-        if (sameDeviceClass != null) {
-            sameDeviceClass.setDevice(deviceClass.getDevice());
-            notifyItemChanged(mDeviceClasses.indexOf(sameDeviceClass));
-        } else {
-            mDeviceClasses.add(deviceClass);
-            Collections.sort(mDeviceClasses);
-            notifyItemInserted(mDeviceClasses.indexOf(deviceClass));
-        }
-    }
-
-    public void removeClassName(int index) {
-        mDeviceClasses.remove(index);
-        notifyItemRemoved(index);
-    }
-
-    private DeviceClass getSameDeviceClass(String className) {
-        for (DeviceClass deviceClass : mDeviceClasses) {
-            if (deviceClass.getClassName().equalsIgnoreCase(className) && !deviceClass.isTeacherHosting()) {
-                return deviceClass;
-            }
-        }
-        return null;
     }
 
     // region View Holder
@@ -93,7 +67,6 @@ public class DeviceClassesAdapter extends RecyclerView.Adapter<DeviceClassesAdap
 
         public interface OnDeviceClassSelectListener {
             void onDeviceClassSelected(@NonNull DeviceClass deviceClass);
-            void onDeviceClassLongClicked(@NonNull DeviceClass deviceClass, @NonNull int index);
         }
 
         private CellClassBinding mBinding;
@@ -111,23 +84,11 @@ public class DeviceClassesAdapter extends RecyclerView.Adapter<DeviceClassesAdap
                     }
                 }
             });
-            mBinding.getRoot().setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    if (mDeviceClass != null) {
-                        listener.onDeviceClassLongClicked(mDeviceClass, getAdapterPosition());
-                    }
-                    return true;
-                }
-            });
         }
 
         private void setDeviceClass(DeviceClass deviceClass) {
             mDeviceClass = deviceClass;
-
             mBinding.classNameTextView.setText(deviceClass.toString());
-            mBinding.classNameTextView.setTextColor(ContextCompat.getColor(itemView.getContext(),
-                    deviceClass.isTeacherHosting() ? R.color.text_enable_color : R.color.text_color));
         }
     }
     // endregion

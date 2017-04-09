@@ -11,12 +11,8 @@ import android.support.annotation.Nullable;
 // A container class for recycler view
 public class DeviceClass implements Comparable<DeviceClass> {
 
-    public String mClassName;
-    public WifiP2pDevice mDevice;
-
-    public DeviceClass(String className) {
-        this(className, null);
-    }
+    private String mClassName;
+    private WifiP2pDevice mDevice;
 
     public DeviceClass(String className, @Nullable WifiP2pDevice device) {
         mClassName = className;

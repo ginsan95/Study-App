@@ -3,6 +3,7 @@ package com.sunway.averychoke.studywifidirect3.manager;
 import android.content.Context;
 
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
+import com.sunway.averychoke.studywifidirect3.model.DeviceClass;
 import com.sunway.averychoke.studywifidirect3.model.Quiz;
 import com.sunway.averychoke.studywifidirect3.model.StudyClass;
 import com.sunway.averychoke.studywifidirect3.model.StudyMaterial;
@@ -20,6 +21,8 @@ public class StudentManager {
 
     private DatabaseHelper mDatabase;
     private StudyClass mStudyClass;
+    private DeviceClass mDeviceClass;
+    private String mTeacherAddress;
 
     private StudentManager() {}
 
@@ -77,6 +80,20 @@ public class StudentManager {
     // endregion
 
     // region Get Set
+    public DeviceClass getDeviceClass() {
+        return mDeviceClass;
+    }
 
+    public void setDeviceClass(DeviceClass deviceClass) {
+        mDeviceClass = deviceClass;
+    }
+
+    public String getTeacherAddress() {
+        return mTeacherAddress;
+    }
+
+    public void setTeacherAddress(String teacherAddress) {
+        mTeacherAddress = teacherAddress;
+    }
     // endregion
 }
