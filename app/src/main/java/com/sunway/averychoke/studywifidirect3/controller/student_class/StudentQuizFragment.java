@@ -67,7 +67,6 @@ public class StudentQuizFragment extends SWDBaseFragment implements
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mBinding.materialsSwipeRefreshLayout.setOnRefreshListener(this);
 
         mBinding.materialsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mBinding.materialsRecyclerView.setAdapter(mAdapter);
@@ -75,7 +74,12 @@ public class StudentQuizFragment extends SWDBaseFragment implements
 
         mBinding.addButton.setVisibility(View.GONE);
 
-        onRefresh();
+        if (!sManager.isOffline()) {
+            mBinding.materialsSwipeRefreshLayout.setOnRefreshListener(this);
+            onRefresh();
+        } else {
+            mBinding.materialsSwipeRefreshLayout.setEnabled(false);
+        }
     }
 
     @Override

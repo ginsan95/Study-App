@@ -3,12 +3,9 @@ package com.sunway.averychoke.studywifidirect3.manager;
 import android.content.Context;
 
 import com.sunway.averychoke.studywifidirect3.controller.connection.ClassMaterialsRequestTask;
-import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
 import com.sunway.averychoke.studywifidirect3.model.DeviceClass;
 import com.sunway.averychoke.studywifidirect3.model.Quiz;
-import com.sunway.averychoke.studywifidirect3.model.StudyClass;
-import com.sunway.averychoke.studywifidirect3.model.StudyMaterial;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +20,7 @@ public class StudentManager extends BaseManager {
 
     private DeviceClass mDeviceClass;
     private String mTeacherAddress;
+    private boolean mOffline;
     private List<ClassMaterialsRequestTask> mTasks;
 
     private StudentManager() {
@@ -32,6 +30,11 @@ public class StudentManager extends BaseManager {
 
     public static StudentManager getInstance() {
         return sInstance;
+    }
+
+    public void initialize(String className, Context context, boolean offline) {
+        super.initialize(className, context);
+        mOffline = offline;
     }
 
     // region Quiz
@@ -132,6 +135,14 @@ public class StudentManager extends BaseManager {
 
     public void setTeacherAddress(String teacherAddress) {
         mTeacherAddress = teacherAddress;
+    }
+
+    public boolean isOffline() {
+        return mOffline;
+    }
+
+    public void setOffline(boolean offline) {
+        mOffline = offline;
     }
     // endregion
 }

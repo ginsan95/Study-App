@@ -127,7 +127,7 @@ public class SearchClassFragment extends SWDBaseFragment implements
             mBinding.goOfflineButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    sManager.initialize(mClassName, getContext());
+                    sManager.initialize(mClassName, getContext(), true);
                     Intent studentIntent = new Intent(getActivity(), StudentClassActivity.class);
                     startActivity(studentIntent);
                 }
@@ -262,7 +262,7 @@ public class SearchClassFragment extends SWDBaseFragment implements
                 mProgressDialog.dismiss();
             }
 
-            sManager.initialize(sManager.getDeviceClass().getClassName(), getContext());
+            sManager.initialize(sManager.getDeviceClass().getClassName(), getContext(), false);
             Intent studentIntent = new Intent(getActivity(), StudentClassActivity.class);
             startActivity(studentIntent);
         }

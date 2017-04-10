@@ -66,7 +66,7 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
             ois.close();
 
             return result;
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException | IllegalArgumentException e) {
             return giveError(e);
         } finally {
             disconnect();
