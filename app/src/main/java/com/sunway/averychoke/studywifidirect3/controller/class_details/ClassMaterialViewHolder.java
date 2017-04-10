@@ -2,10 +2,12 @@ package com.sunway.averychoke.studywifidirect3.controller.class_details;
 
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CompoundButton;
 
+import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
 import com.sunway.averychoke.studywifidirect3.databinding.CellClassMaterialBinding;
 
@@ -68,6 +70,18 @@ public class ClassMaterialViewHolder extends RecyclerView.ViewHolder {
 
         mBinding.nameTextView.setText(classMaterial.getName());
         mBinding.visibleCheckBox.setChecked(classMaterial.isVisible());
+
+        switch (classMaterial.getStatus()) {
+            case NORMAL:
+                mBinding.nameTextView.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.text_color));
+                break;
+            case DOWNLOADING:
+                mBinding.nameTextView.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.text_downloading_color));
+                break;
+            case CONFLICT:
+                mBinding.nameTextView.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.text_conflict_color));
+                break;
+        }
     }
 
     // region get set\

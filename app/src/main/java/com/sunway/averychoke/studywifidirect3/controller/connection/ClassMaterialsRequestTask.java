@@ -27,6 +27,7 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
 
     private String mAddress;
     private ClassMaterialsUpdaterListener mListener;
+    private ClassMaterial mDownloadClassMaterial; // used for failed download handling
     private Socket mSocket;
     private StudentManager sManager;
 
@@ -34,8 +35,13 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
     private ClassMaterial mClassMaterial;
 
     public ClassMaterialsRequestTask(String address, ClassMaterialsUpdaterListener listener) {
+        this(address, listener, null);
+    }
+
+    public ClassMaterialsRequestTask(String address, ClassMaterialsUpdaterListener listener, ClassMaterial downloadClassMaterial) {
         mAddress = address;
         mListener = listener;
+        mDownloadClassMaterial = downloadClassMaterial;
         sManager = StudentManager.getInstance();
     }
 
@@ -88,6 +94,10 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
                 case STUDY_MATERIAL:
                     if (mClassMaterial != null) {
                         mListener.onClassMaterialUpdated(mClassMaterial);
+                    } else if (mDownloadClassMaterial != null) {
+                        mListener.onError(new DownloadException(mDownloadClassMaterial));
+                    } else {
+                        mListener.onError(mError);
                     }
                     break;
                 case ERROR:

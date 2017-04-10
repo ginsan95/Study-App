@@ -50,8 +50,16 @@ public class StudentManager extends BaseManager {
         return true;
     }
 
+    public void updateQuizStatus(Quiz quiz, ClassMaterial.Status status) {
+        if (getStudyClass() != null) {
+            int index = getStudyClass().getQuizzes().indexOf(quiz);
+            quiz.setStatus(status);
+            getStudyClass().getQuizzes().set(index, quiz);
+        }
+    }
+
     public void updateQuizzes(List<Quiz> quizzes) {
-        if (getStudyClass() == null && getDatabase() == null) {
+        if (getStudyClass() == null || getDatabase() == null) {
             return;
         }
 
@@ -62,7 +70,7 @@ public class StudentManager extends BaseManager {
                 quiz.updateId();
                 getStudyClass().getQuizzes().add(quiz);
             } else if(getStudyClass().getQuizzes().get(index).getVersion() != quiz.getVersion()) {
-                quiz.setStatus(ClassMaterial.Status.CONFLICT);
+                getStudyClass().getQuizzes().get(index).setStatus(ClassMaterial.Status.CONFLICT);
             }
         }
 
@@ -72,17 +80,17 @@ public class StudentManager extends BaseManager {
 
     // used for conflict or if user want to dl a new version
     public Quiz updateQuiz(Quiz quiz) {
-        if (getStudyClass() == null && getDatabase() == null) {
+        if (getStudyClass() == null || getDatabase() == null || quiz == null) {
             return null;
         }
 
         int index = getQuizIndex(quiz);
         if (index != -1) {
-            quiz.updateQuestionsId();
-            getStudyClass().getQuizzes().set(index, quiz);
+            Quiz myQuiz = getStudyClass().getQuizzes().get(index);
+            myQuiz.update(quiz);
+            getDatabase().updateQuiz(myQuiz);
+            return myQuiz;
         }
-
-        getDatabase().updateQuiz(quiz);
         return quiz;
     }
     

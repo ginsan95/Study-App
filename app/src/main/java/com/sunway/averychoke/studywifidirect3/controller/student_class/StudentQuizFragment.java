@@ -19,6 +19,7 @@ import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
 import com.sunway.averychoke.studywifidirect3.controller.connection.ClassMaterialsUpdaterListener;
 import com.sunway.averychoke.studywifidirect3.controller.connection.ClassMaterialsRequestTask;
+import com.sunway.averychoke.studywifidirect3.controller.connection.DownloadException;
 import com.sunway.averychoke.studywifidirect3.controller.connection.TeacherThread;
 import com.sunway.averychoke.studywifidirect3.controller.student_class.adapter.StudentQuizzesAdapter;
 import com.sunway.averychoke.studywifidirect3.controller.student_class.quiz.AnswerQuizActivity;
@@ -28,6 +29,9 @@ import com.sunway.averychoke.studywifidirect3.manager.StudentManager;
 import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
 import com.sunway.averychoke.studywifidirect3.model.Question;
 import com.sunway.averychoke.studywifidirect3.model.Quiz;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -105,33 +109,75 @@ public class StudentQuizFragment extends SWDBaseFragment implements
 
     // region class material view holder
     @Override
-    public void onClassMaterialSelected(@NonNull ClassMaterial classMaterial) {
-        Quiz quiz = (Quiz) classMaterial;
-        Intent intent = new Intent(getActivity(), AnswerQuizActivity.class);
-        intent.putExtra(AnswerQuizActivity.ARGS_QUIZ_KEY, (Parcelable) quiz);
-        startActivityForResult(intent, ANSWER_QUIZ_CODE);
+    public void onClassMaterialSelected(@NonNull final ClassMaterial classMaterial) {
+        switch (classMaterial.getStatus()) {
+            case DOWNLOADING:
+                // // TODO: 10/4/2017 view download progress
+                return;
+            case CONFLICT:
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Conflict")
+                        .setMessage("It seems like the teacher is having a different version.")
+                        .setPositiveButton("Download from teacher", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                downloadQuiz((Quiz) classMaterial);
+                            }
+                        })
+                        .setNeutralButton("Ignore & continue", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                answerQuiz(classMaterial);
+                            }
+                        })
+                        .setNegativeButton("Use my version", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                sManager.updateQuizStatus((Quiz) classMaterial, ClassMaterial.Status.NORMAL);
+                                mAdapter.replaceClassMaterial(classMaterial);
+                            }
+                        })
+                        .show();
+                break;
+            default:
+                answerQuiz(classMaterial);
+                break;
+        }
     }
 
     @Override
     public void onClassMaterialLongClicked(@NonNull final ClassMaterial classMaterial, @NonNull final int index) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(getContext())
-                .setTitle(R.string.delete_quiz_dialog_title)
-                .setMessage(R.string.delete_quiz_dialog_message)
-                .setPositiveButton(R.string.dialog_confirm, new DialogInterface.OnClickListener() {
+        if (classMaterial.getStatus() == ClassMaterial.Status.DOWNLOADING) {
+            return;
+        }
+
+        // region setup options
+        final Quiz quiz = (Quiz) classMaterial;
+        final List<CharSequence> options = new ArrayList<>();
+        if (!sManager.isOffline()) {
+            options.add(getString(R.string.option_download));
+        }
+        if (quiz.isAnswered()) {
+            options.add(getString(R.string.option_reset_answer));
+        }
+        options.add(getString(R.string.option_delete_quiz));
+        // endregion
+
+        new AlertDialog.Builder(getContext())
+                .setItems(options.toArray(new CharSequence[options.size()]), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Quiz quiz = (Quiz) classMaterial;
-                        mAdapter.removeClassMaterial(index);
-                        sManager.deleteQuiz(quiz);
+                        String option = options.get(which).toString();
+                        if (option.equals(getString(R.string.option_download))) {
+                            downloadQuiz(quiz);
+                        } else if (option.equals(getString(R.string.option_reset_answer))) {
+                            resetAnswer(quiz, index);
+                        } else if (option.equals(getString(R.string.option_delete_quiz))) {
+                            deleteQuiz(quiz, index);
+                        }
                     }
                 })
-                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-        dialog.show();
+                .show();
     }
 
     @Override
@@ -141,36 +187,20 @@ public class StudentQuizFragment extends SWDBaseFragment implements
 
     @Override
     public void onCheckLongClicked(@NonNull final Quiz quiz, @NonNull final int index) {
-        new AlertDialog.Builder(getContext())
-                .setTitle(R.string.dialog_reset_answer_title)
-                .setMessage(R.string.dialog_reset_answer_message)
-                .setPositiveButton(R.string.dialog_confirm, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // reset quiz answer data
-                        quiz.setAnswered(false);
-                        for (Question question : quiz.getQuestions()) {
-                            question.setUserAnswer("");
-                        }
 
-                        mAdapter.notifyItemChanged(index);
-                        mDatabase.updateQuizAnswers(quiz);
-                    }
-                })
-                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                })
-                .show();
     }
     // endregion class material view holder
 
     // region Class Materials Updater
     @Override
     public void onClassMaterialUpdated(ClassMaterial classMaterial) {
-        mAdapter.replaceClassMaterial(classMaterial);
         mBinding.materialsSwipeRefreshLayout.setRefreshing(false);
+
+        mAdapter.replaceClassMaterial(classMaterial);
+
+        if (getContext() != null) {
+            Toast.makeText(getContext(), "Downloaded " + classMaterial.getName() + "successfully", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -182,9 +212,78 @@ public class StudentQuizFragment extends SWDBaseFragment implements
     @Override
     public void onError(Exception e) {
         mBinding.materialsSwipeRefreshLayout.setRefreshing(false);
+
+        if (e instanceof DownloadException) {
+            ClassMaterial classMaterial = ((DownloadException) e).getClassMaterial();
+            if (classMaterial instanceof Quiz) {
+                Quiz quiz = (Quiz) classMaterial;
+                sManager.updateQuizStatus(quiz, ClassMaterial.Status.NORMAL);
+                mAdapter.replaceClassMaterial(quiz);
+            }
+        }
+
         if (getContext() != null) {
             Toast.makeText(getContext(), e != null ? e.toString() : "Error", Toast.LENGTH_SHORT).show();
         }
     }
     // endregion
+
+    private void answerQuiz(ClassMaterial classMaterial) {
+        Quiz quiz = (Quiz) classMaterial;
+        Intent intent = new Intent(getActivity(), AnswerQuizActivity.class);
+        intent.putExtra(AnswerQuizActivity.ARGS_QUIZ_KEY, (Parcelable) quiz);
+        startActivityForResult(intent, ANSWER_QUIZ_CODE);
+    }
+
+    private void downloadQuiz(Quiz quiz) {
+        if (!sManager.isOffline()) {
+            sManager.updateQuizStatus(quiz, ClassMaterial.Status.DOWNLOADING);
+            mAdapter.replaceClassMaterial(quiz);
+            ClassMaterialsRequestTask task = new ClassMaterialsRequestTask(sManager.getTeacherAddress(), this, quiz);
+            task.execute(TeacherThread.Request.QUIZ, quiz.getName());
+        }
+    }
+
+    private void resetAnswer(final Quiz quiz, final int index) {
+        new AlertDialog.Builder(getContext())
+                .setTitle(R.string.option_reset_answer)
+                .setMessage(R.string.dialog_reset_answer_message)
+                .setPositiveButton(R.string.dialog_confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        quiz.setAnswered(false);
+                        for (Question question : quiz.getQuestions()) {
+                            question.setUserAnswer("");
+                        }
+                        mAdapter.notifyItemChanged(index);
+                        mDatabase.updateQuizAnswers(quiz);
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .show();
+    }
+
+    private void deleteQuiz(final Quiz quiz, final int index) {
+        new AlertDialog.Builder(getContext())
+                .setTitle(R.string.option_delete_quiz)
+                .setMessage(R.string.delete_quiz_dialog_message)
+                .setPositiveButton(R.string.dialog_confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mAdapter.removeClassMaterial(index);
+                        sManager.deleteQuiz(quiz);
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                })
+                .show();
+    }
 }

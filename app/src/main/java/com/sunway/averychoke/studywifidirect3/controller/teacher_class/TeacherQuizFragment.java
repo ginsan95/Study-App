@@ -138,7 +138,7 @@ public class TeacherQuizFragment extends SWDBaseFragment implements
     @Override
     public void onClassMaterialLongClicked(@NonNull final ClassMaterial classMaterial, @NonNull final int index) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(getContext())
-                .setTitle(R.string.delete_quiz_dialog_title)
+                .setTitle(R.string.option_delete_quiz)
                 .setMessage(R.string.delete_quiz_dialog_message)
                 .setPositiveButton(R.string.dialog_confirm, new DialogInterface.OnClickListener() {
                     @Override

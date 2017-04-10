@@ -15,7 +15,7 @@
     <string name="option_host_class">Host Class</string>
     <string name="option_participate_class">Participate Class</string>
     <string name="option_view_class">View/Edit Class</string>
-    <string name="delete_quiz_dialog_title">Delete Quiz</string>
+    <string name="option_delete_quiz">Delete Quiz</string>
     <string name="delete_quiz_dialog_message">Are you sure you want to delete this quiz?</string>
     <string name="delete_study_material_dialog_title">Delete Study Material</string>
     <string name="delete_study_material_message">Are you sure you want to delete this study material?</string>
@@ -32,7 +32,7 @@
     <string name="dialog_quiz_submission_message">You are about to submit your answer. Please ensure you answered all questions correctly. Continue to submission?</string>
     <string name="total_marks">Total Marks : </string>
     <string name="short_question_correct_answer">Correct answer : %1$s</string>
-    <string name="dialog_reset_answer_title">Reset Answer</string>
+    <string name="option_reset_answer">Reset Answer</string>
     <string name="dialog_reset_answer_message">Are you sure you want to reset the answer for this quiz?</string>
     <string name="option_view_quiz">View Quiz</string>
     <string name="option_edit_quiz">Edit Quiz</string>
@@ -46,4 +46,5 @@
     <string name="go_offline_button">Go Offline</string>
     <string name="title_search_classes">Search Classes</string>
     <string name="menu_search_classes">Search classes</string>
+    <string name="option_download">Download</string>
 </resources>

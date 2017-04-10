@@ -42,7 +42,7 @@ public class StudentStudyMaterialFragment extends SWDBaseFragment implements
 
         sManager = StudentManager.getInstance();
         mDatabase = new DatabaseHelper(getContext());
-        mClassMaterialAdapter = new ClassMaterialAdapter(true, this);
+        mClassMaterialAdapter = new ClassMaterialAdapter(false, this);
     }
 
     @Override

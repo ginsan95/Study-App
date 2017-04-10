@@ -82,13 +82,13 @@ public class TeacherManager extends BaseManager {
     }
 
     public boolean updateQuiz(Quiz quiz, String oldName) {
+        quiz.setVersion(quiz.getVersion() + 1);
         if (getDatabase() == null || getStudyClass() == null
                 // update the quiz in database
                 || getDatabase().updateQuiz(quiz) == -1) {
             return false;
         }
 
-        quiz.setVersion(quiz.getVersion() + 1);
         int index = getStudyClass().getQuizzes().indexOf(quiz);
         getStudyClass().getQuizzes().set(index, quiz);
 

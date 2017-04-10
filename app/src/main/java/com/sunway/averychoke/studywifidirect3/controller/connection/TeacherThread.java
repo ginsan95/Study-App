@@ -44,7 +44,7 @@ public class TeacherThread implements Runnable {
                                 sendQuizzes(socket);
                                 break;
                             case QUIZ:
-                                sendQuiz(socket);
+                                sendQuiz(socket, ois);
                                 break;
                             case STUDY_MATERIALS:
                                 break;
@@ -53,6 +53,13 @@ public class TeacherThread implements Runnable {
                         }
                     } catch (IOException | ClassNotFoundException e) {
                         e.printStackTrace();
+                        if (socket.isConnected()) {
+                            try {
+                                socket.close();
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
                     }
 
                 } catch (IOException e) {
@@ -73,8 +80,8 @@ public class TeacherThread implements Runnable {
         oos.flush();
     }
 
-    private void sendQuiz(Socket socket) throws IOException, ClassNotFoundException {
-        ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+    private void sendQuiz(Socket socket, ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        //ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
         String quizName = (String) ois.readObject();
 
         // might send null
@@ -82,7 +89,7 @@ public class TeacherThread implements Runnable {
         ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
         oos.writeObject(ClassMaterialsRequestTask.Result.QUIZ);
         oos.writeObject(quiz);
-        oos.close();
+        oos.flush();
     }
     // endregion
 

@@ -66,10 +66,11 @@ public class ClassMaterialAdapter extends RecyclerView.Adapter<ClassMaterialView
         int index = mClassMaterials.indexOf(classMaterial);
         if (index >= 0) {
             mClassMaterials.set(index, classMaterial);
+            notifyItemChanged(index);
         } else {
             mClassMaterials.add(classMaterial);
+            notifyItemInserted(mClassMaterials.size() - 1);
         }
-        notifyItemChanged(index);
     }
 
     public void addClassMaterials(List<? extends ClassMaterial> classMaterials) {
