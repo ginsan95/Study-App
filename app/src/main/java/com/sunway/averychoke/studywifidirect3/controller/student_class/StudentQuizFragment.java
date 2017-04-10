@@ -17,11 +17,12 @@ import android.widget.Toast;
 
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
+import com.sunway.averychoke.studywifidirect3.controller.class_details.ClassMaterialAdapter;
+import com.sunway.averychoke.studywifidirect3.controller.class_details.ClassMaterialViewHolder;
 import com.sunway.averychoke.studywifidirect3.controller.connection.ClassMaterialsUpdaterListener;
 import com.sunway.averychoke.studywifidirect3.controller.connection.ClassMaterialsRequestTask;
 import com.sunway.averychoke.studywifidirect3.controller.connection.DownloadException;
 import com.sunway.averychoke.studywifidirect3.controller.connection.TeacherThread;
-import com.sunway.averychoke.studywifidirect3.controller.student_class.adapter.StudentQuizzesAdapter;
 import com.sunway.averychoke.studywifidirect3.controller.student_class.quiz.AnswerQuizActivity;
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassMaterialBinding;
@@ -41,13 +42,13 @@ import static android.app.Activity.RESULT_OK;
 
 public class StudentQuizFragment extends SWDBaseFragment implements
         SwipeRefreshLayout.OnRefreshListener,
-        StudentQuizzesAdapter.StudentQuizViewHolder.OnCheckSelectListener,
+        ClassMaterialViewHolder.OnClassMaterialSelectListener,
         ClassMaterialsUpdaterListener {
     public static final int ANSWER_QUIZ_CODE = 101;
 
     private StudentManager sManager;
     private DatabaseHelper mDatabase;
-    private StudentQuizzesAdapter mAdapter;
+    private ClassMaterialAdapter mAdapter;
 
     private FragmentClassMaterialBinding mBinding;
 
@@ -57,7 +58,7 @@ public class StudentQuizFragment extends SWDBaseFragment implements
 
         sManager = StudentManager.getInstance();
         mDatabase = new DatabaseHelper(getContext());
-        mAdapter = new StudentQuizzesAdapter(this);
+        mAdapter = new ClassMaterialAdapter(false, this);
     }
 
     @Override
@@ -182,11 +183,6 @@ public class StudentQuizFragment extends SWDBaseFragment implements
 
     @Override
     public void onClassMaterialChecked(@NonNull ClassMaterial classMaterial, @NonNull boolean isChecked) {
-
-    }
-
-    @Override
-    public void onCheckLongClicked(@NonNull final Quiz quiz, @NonNull final int index) {
 
     }
     // endregion class material view holder

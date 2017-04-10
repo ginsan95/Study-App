@@ -37,6 +37,10 @@ public class ClassMaterial implements Serializable {
         mId = ++mCounter;
     }
 
+    public boolean hasCheck() {
+        return false;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

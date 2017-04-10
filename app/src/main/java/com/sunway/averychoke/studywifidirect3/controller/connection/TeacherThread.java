@@ -81,7 +81,6 @@ public class TeacherThread implements Runnable {
     }
 
     private void sendQuiz(Socket socket, ObjectInputStream ois) throws IOException, ClassNotFoundException {
-        //ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
         String quizName = (String) ois.readObject();
 
         // might send null

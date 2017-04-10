@@ -26,12 +26,13 @@ public class ClassMaterialViewHolder extends RecyclerView.ViewHolder {
     private CellClassMaterialBinding mBinding;
 
     private ClassMaterial mClassMaterial;
+    private boolean mIsTeacher;
 
     public ClassMaterialViewHolder(View itemView, boolean isTeacher, final OnClassMaterialSelectListener listener) {
         super(itemView);
-
         mBinding = DataBindingUtil.bind(itemView);
 
+        mIsTeacher = isTeacher;
         if (isTeacher) {
             mBinding.visibleCheckBox.setVisibility(View.VISIBLE);
         } else {
@@ -70,6 +71,7 @@ public class ClassMaterialViewHolder extends RecyclerView.ViewHolder {
 
         mBinding.nameTextView.setText(classMaterial.getName());
         mBinding.visibleCheckBox.setChecked(classMaterial.isVisible());
+        mBinding.checkImageView.setVisibility(!mIsTeacher && classMaterial.hasCheck() ? View.VISIBLE : View.GONE);
 
         switch (classMaterial.getStatus()) {
             case NORMAL:
