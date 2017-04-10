@@ -18,7 +18,7 @@ import android.widget.Toast;
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
 import com.sunway.averychoke.studywifidirect3.controller.connection.ClassMaterialsUpdaterListener;
-import com.sunway.averychoke.studywifidirect3.controller.connection.SendReceiveTask;
+import com.sunway.averychoke.studywifidirect3.controller.connection.ClassMaterialsRequestTask;
 import com.sunway.averychoke.studywifidirect3.controller.connection.TeacherThread;
 import com.sunway.averychoke.studywifidirect3.controller.student_class.adapter.StudentQuizzesAdapter;
 import com.sunway.averychoke.studywifidirect3.controller.student_class.quiz.AnswerQuizActivity;
@@ -74,6 +74,8 @@ public class StudentQuizFragment extends SWDBaseFragment implements
         mAdapter.setClassMaterials(sManager.getQuizzes());
 
         mBinding.addButton.setVisibility(View.GONE);
+
+        onRefresh();
     }
 
     @Override
@@ -93,7 +95,7 @@ public class StudentQuizFragment extends SWDBaseFragment implements
     @Override
     public void onRefresh() {
         mBinding.materialsSwipeRefreshLayout.setRefreshing(true);
-        SendReceiveTask task = new SendReceiveTask(sManager.getTeacherAddress(), this);
+        ClassMaterialsRequestTask task = new ClassMaterialsRequestTask(sManager.getTeacherAddress(), this);
         task.execute(TeacherThread.Request.QUIZZES);
     }
 

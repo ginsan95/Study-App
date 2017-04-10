@@ -35,7 +35,6 @@ public class TeacherStudyMaterialFragment extends SWDBaseFragment implements
         ClassMaterialViewHolder.OnClassMaterialSelectListener {
 
     private TeacherManager sManager;
-    private DatabaseHelper mDatabase;
     private ClassMaterialAdapter mClassMaterialAdapter;
 
     private FragmentClassMaterialBinding mBinding;
@@ -45,7 +44,6 @@ public class TeacherStudyMaterialFragment extends SWDBaseFragment implements
         super.onCreate(savedInstanceState);
 
         sManager = TeacherManager.getInstance();
-        mDatabase = new DatabaseHelper(getContext());
         mClassMaterialAdapter = new ClassMaterialAdapter(true, this);
     }
 
@@ -112,7 +110,7 @@ public class TeacherStudyMaterialFragment extends SWDBaseFragment implements
     public void onClassMaterialChecked(@NonNull ClassMaterial classMaterial, @NonNull boolean isChecked) {
         StudyMaterial studyMaterial = (StudyMaterial) classMaterial;
         studyMaterial.setVisible(isChecked);
-        mDatabase.updateClassMaterialVisible(studyMaterial);
+        sManager.updateStudyMaterialVisible(studyMaterial);
     }
     // endregion class material view holder
 }

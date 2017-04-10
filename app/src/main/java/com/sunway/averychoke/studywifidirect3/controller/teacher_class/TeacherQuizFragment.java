@@ -38,7 +38,6 @@ public class TeacherQuizFragment extends SWDBaseFragment implements
     private static final int EDIT_QUIZ_CODE = 102;
 
     private TeacherManager sManager;
-    private DatabaseHelper mDatabase;
     private ClassMaterialAdapter mClassMaterialAdapter;
 
     private FragmentClassMaterialBinding mBinding;
@@ -48,7 +47,6 @@ public class TeacherQuizFragment extends SWDBaseFragment implements
         super.onCreate(savedInstanceState);
 
         sManager = TeacherManager.getInstance();
-        mDatabase = new DatabaseHelper(getContext());
         mClassMaterialAdapter = new ClassMaterialAdapter(true, this);
     }
 
@@ -163,7 +161,7 @@ public class TeacherQuizFragment extends SWDBaseFragment implements
     public void onClassMaterialChecked(@NonNull ClassMaterial classMaterial, @NonNull boolean isChecked) {
         Quiz quiz = (Quiz) classMaterial;
         quiz.setVisible(isChecked);
-        mDatabase.updateClassMaterialVisible(quiz);
+        sManager.updateQuizVisible(quiz);
     }
     // endregion class material view holder
 }

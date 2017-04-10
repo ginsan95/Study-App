@@ -94,7 +94,6 @@ public class TeacherClassActivity extends SWDBaseActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d("alibaba", "destroy");
         // kills the thread
         if (mTeacherThread != null) {
             mTeacherThread.disconnect();

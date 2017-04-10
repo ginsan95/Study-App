@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
+import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
 import com.sunway.averychoke.studywifidirect3.model.Quiz;
 import com.sunway.averychoke.studywifidirect3.model.StudyClass;
 import com.sunway.averychoke.studywifidirect3.model.StudyMaterial;
@@ -17,16 +18,15 @@ import java.util.Map;
  * Created by AveryChoke on 2/4/2017.
  */
 
-public class TeacherManager {
+public class TeacherManager extends BaseManager {
 
     private static final TeacherManager sInstance = new TeacherManager();
 
-    private DatabaseHelper mDatabase;
-    private StudyClass mStudyClass;
     private Map<String, Quiz> mQuizMap;
     private Map<String, StudyMaterial> mStudyMaterialMap;
 
     private TeacherManager() {
+        super();
         mQuizMap = new HashMap<>();
         mStudyMaterialMap = new HashMap<>();
     }
@@ -35,57 +35,62 @@ public class TeacherManager {
         return sInstance;
     }
 
+    @Override
     public void initialize(String className, Context context) {
-        mDatabase = new DatabaseHelper(context);
-
-        StudyClass studyClass = mDatabase.getClass(className);
-        mStudyClass = studyClass != null ? studyClass : new StudyClass(className);
+        super.initialize(className, context);
 
         // change the list into map
-        for (Quiz quiz : mStudyClass.getQuizzes()) {
+        for (Quiz quiz : getStudyClass().getQuizzes()) {
             mQuizMap.put(quiz.getName().toLowerCase(), quiz);
         }
-        for (StudyMaterial studyMaterial : mStudyClass.getStudyMaterials()) {
+        for (StudyMaterial studyMaterial : getStudyClass().getStudyMaterials()) {
             mStudyMaterialMap.put(studyMaterial.getName().toLowerCase(), studyMaterial);
         }
     }
 
-    public String getClassName() {
-        return mStudyClass != null ? mStudyClass.getName() : "";
-    }
-
     // region Quiz
-    public List<Quiz> getQuizzes() {
-        return mStudyClass != null ?  mStudyClass.getQuizzes() : new ArrayList<Quiz>();
+    public List<Quiz> getVisibleQuizzes() {
+        List<Quiz> visibleQuizzes = new ArrayList<>();
+        for (Quiz quiz : getQuizzes()) {
+            if (quiz.isVisible()) {
+                visibleQuizzes.add(quiz);
+            }
+        }
+        return visibleQuizzes;
     }
 
     public Quiz findQuiz(String name) {
-        return mQuizMap.get(name.toLowerCase());
+        Quiz quiz = mQuizMap.get(name.toLowerCase());
+        if (quiz != null && quiz.isVisible()) {
+            return quiz;
+        } else {
+            return null;
+        }
     }
 
     public boolean addQuiz(Quiz quiz) {
-        if (mDatabase == null || mStudyClass == null
+        if (getDatabase() == null || getStudyClass() == null
                 // save the quiz to database
-                || mDatabase.addQuiz(quiz, mStudyClass.getName()) == -1) {
+                || getDatabase().addQuiz(quiz, getStudyClass().getName()) == -1) {
             return false;
         }
 
-        mStudyClass.getQuizzes().add(quiz);
+        getStudyClass().getQuizzes().add(quiz);
         mQuizMap.put(quiz.getName().toLowerCase(), quiz);
 
         return true;
     }
 
     public boolean updateQuiz(Quiz quiz, String oldName) {
-        if (mDatabase == null || mStudyClass == null
+        if (getDatabase() == null || getStudyClass() == null
                 // update the quiz in database
-                || mDatabase.updateQuiz(quiz) == -1) {
+                || getDatabase().updateQuiz(quiz) == -1) {
             return false;
         }
 
         quiz.setVersion(quiz.getVersion() + 1);
-        int index = mStudyClass.getQuizzes().indexOf(quiz);
-        mStudyClass.getQuizzes().set(index, quiz);
+        int index = getStudyClass().getQuizzes().indexOf(quiz);
+        getStudyClass().getQuizzes().set(index, quiz);
 
         mQuizMap.remove(oldName);
         mQuizMap.put(quiz.getName().toLowerCase(), quiz);
@@ -93,12 +98,20 @@ public class TeacherManager {
         return true;
     }
 
-    public void deleteQuiz(Quiz quiz) {
-        if (mDatabase != null && mStudyClass != null) {
-            mDatabase.deleteClassMaterial(quiz);
-            mStudyClass.getQuizzes().remove(quiz);
-            mQuizMap.remove(quiz.getName().toLowerCase());
+    public void updateQuizVisible(Quiz quiz) {
+        if (getStudyClass() != null && getDatabase() != null) {
+            int index = getStudyClass().getQuizzes().indexOf(quiz);
+            getStudyClass().getQuizzes().set(index, quiz);
+            mQuizMap.remove(quiz.getName());
+            mQuizMap.put(quiz.getName().toLowerCase(), quiz);
+            getDatabase().updateClassMaterialVisible(quiz);
         }
+    }
+
+    @Override
+    public void deleteQuiz(Quiz quiz) {
+        super.deleteQuiz(quiz);
+        mQuizMap.remove(quiz.getName().toLowerCase());
     }
 
     public boolean isQuizNameConflicting(String newName, @Nullable String oldName) {
@@ -111,20 +124,24 @@ public class TeacherManager {
     // endregion
 
     // region Study Material
-    public List<StudyMaterial> getStudyMaterials() {
-        return mStudyClass != null ? mStudyClass.getStudyMaterials() : new ArrayList<StudyMaterial>();
-    }
-
     public StudyMaterial findStudyMaterial(String name) {
         return mStudyMaterialMap.get(name);
     }
 
-    public void deleteStudyMaterial(StudyMaterial studyMaterial) {
-        if (mDatabase != null && mStudyClass != null) {
-            mDatabase.deleteClassMaterial(studyMaterial);
-            mStudyClass.getStudyMaterials().remove(studyMaterial);
-            mStudyMaterialMap.remove(studyMaterial.getName().toLowerCase());
+    public void updateStudyMaterialVisible(StudyMaterial studyMaterial) {
+        if (getStudyClass() != null && getDatabase() != null) {
+            int index = getStudyClass().getStudyMaterials().indexOf(studyMaterial);
+            getStudyClass().getStudyMaterials().set(index, studyMaterial);
+            mStudyMaterialMap.remove(studyMaterial.getName());
+            mStudyMaterialMap.put(studyMaterial.getName().toLowerCase(), studyMaterial);
+            getDatabase().updateClassMaterialVisible(studyMaterial);
         }
+    }
+
+    @Override
+    public void deleteStudyMaterial(StudyMaterial studyMaterial) {
+        super.deleteStudyMaterial(studyMaterial);
+        mStudyMaterialMap.remove(studyMaterial.getName().toLowerCase());
     }
     // endregion
 

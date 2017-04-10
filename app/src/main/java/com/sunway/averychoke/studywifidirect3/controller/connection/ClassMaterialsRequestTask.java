@@ -19,7 +19,7 @@ import java.util.List;
  * Created by AveryChoke on 9/4/2017.
  */
 
-public class SendReceiveTask extends AsyncTask<Serializable, Void, SendReceiveTask.Result> {
+public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, ClassMaterialsRequestTask.Result> {
 
     public enum Result {
         QUIZZES, QUIZ, STUDY_MATERIALS, STUDY_MATERIAL, ERROR;
@@ -27,12 +27,13 @@ public class SendReceiveTask extends AsyncTask<Serializable, Void, SendReceiveTa
 
     private String mAddress;
     private ClassMaterialsUpdaterListener mListener;
+    private Socket mSocket;
     private StudentManager sManager;
 
     private Exception mError;
     private ClassMaterial mClassMaterial;
 
-    public SendReceiveTask(String address, ClassMaterialsUpdaterListener listener) {
+    public ClassMaterialsRequestTask(String address, ClassMaterialsUpdaterListener listener) {
         mAddress = address;
         mListener = listener;
         sManager = StudentManager.getInstance();
@@ -43,24 +44,23 @@ public class SendReceiveTask extends AsyncTask<Serializable, Void, SendReceiveTa
         if (objects.length <= 0) {
             return giveError(null);
         }
-
-        Socket socket = null;
+        sManager.addTask(this);
 
         try {
-            socket = new Socket();
+            mSocket = new Socket();
             InetSocketAddress address = new InetSocketAddress(mAddress, SWDBaseActivity.APP_PORT_NUMBER);
             // Connect to the host for 5 sec
-            socket.connect(address, 5000);
+            mSocket.connect(address, 5000);
 
             // Send request to teacher
-            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+            ObjectOutputStream oos = new ObjectOutputStream(mSocket.getOutputStream());
             for (Serializable object : objects) {
                 oos.writeObject(object);
             }
             oos.flush();
 
             // Receive data from teacher
-            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+            ObjectInputStream ois = new ObjectInputStream(mSocket.getInputStream());
             Result result = (Result) ois.readObject();
             updateManager(result, ois);
             ois.close();
@@ -69,13 +69,8 @@ public class SendReceiveTask extends AsyncTask<Serializable, Void, SendReceiveTa
         } catch (IOException | ClassNotFoundException e) {
             return giveError(e);
         } finally {
-            if (socket != null && socket.isConnected()) {
-                try {
-                    socket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            disconnect();
+            sManager.removeTask(this);
         }
     }
 
@@ -124,5 +119,15 @@ public class SendReceiveTask extends AsyncTask<Serializable, Void, SendReceiveTa
     private Result giveError(Exception e) {
         mError = e;
         return Result.ERROR;
+    }
+
+    public void disconnect() {
+        if (mSocket != null && mSocket.isConnected()) {
+            try {
+                mSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
