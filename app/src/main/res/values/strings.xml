@@ -45,6 +45,14 @@
     <string name="tab_study_material">Study Material</string>
     <string name="go_offline_button">Go Offline</string>
     <string name="title_search_classes">Search Classes</string>
+    <string name="title_search_class">Search - %1$s</string>
     <string name="menu_search_classes">Search classes</string>
     <string name="option_download">Download</string>
+    <string name="dialog_conflict_title">Conflict</string>
+    <string name="dialog_conflict_message">It seems like the teacher is having a different version.</string>
+    <string name="dialog_download_from_teacher">Download from teacher</string>
+    <string name="dialog_ignore_and_continue"><![CDATA[Ignore & continue]]></string>
+    <string name="dialog_use_my_version">Use my version</string>
+    <string name="dialog_class_exit_title">Class Exit</string>
+    <string name="dialog_class_exit_message">Are you sure you want to exit the class?</string>
 </resources>

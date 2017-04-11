@@ -117,21 +117,21 @@ public class StudentQuizFragment extends SWDBaseFragment implements
                 return;
             case CONFLICT:
                 new AlertDialog.Builder(getContext())
-                        .setTitle("Conflict")
-                        .setMessage("It seems like the teacher is having a different version.")
-                        .setPositiveButton("Download from teacher", new DialogInterface.OnClickListener() {
+                        .setTitle(R.string.dialog_conflict_title)
+                        .setMessage(R.string.dialog_conflict_message)
+                        .setPositiveButton(R.string.dialog_download_from_teacher, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 downloadQuiz((Quiz) classMaterial);
                             }
                         })
-                        .setNeutralButton("Ignore & continue", new DialogInterface.OnClickListener() {
+                        .setNeutralButton(R.string.dialog_ignore_and_continue, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 answerQuiz(classMaterial);
                             }
                         })
-                        .setNegativeButton("Use my version", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(R.string.dialog_use_my_version, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 sManager.updateQuizStatus((Quiz) classMaterial, ClassMaterial.Status.NORMAL);

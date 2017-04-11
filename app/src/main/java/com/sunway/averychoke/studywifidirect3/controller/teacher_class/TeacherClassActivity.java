@@ -1,12 +1,14 @@
 package com.sunway.averychoke.studywifidirect3.controller.teacher_class;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.IntentFilter;
 import android.databinding.DataBindingUtil;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import com.sunway.averychoke.studywifidirect3.R;
@@ -105,6 +107,26 @@ public class TeacherClassActivity extends SWDBaseActivity {
             mWifiManager.removeGroup(mChannel, null);
         }
         unregisterReceiver(mTeacherReceiver);
+    }
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.dialog_class_exit_title)
+                .setMessage(R.string.dialog_class_exit_message)
+                .setPositiveButton(R.string.dialog_confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        TeacherClassActivity.super.onBackPressed();
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .show();
     }
 
     @Override

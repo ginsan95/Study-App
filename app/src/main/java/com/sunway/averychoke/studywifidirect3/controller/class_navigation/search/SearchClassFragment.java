@@ -115,7 +115,7 @@ public class SearchClassFragment extends SWDBaseFragment implements
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getActivity().setTitle(mClassName != null ? mClassName : getString(R.string.title_search_classes));
+        getActivity().setTitle(mClassName != null ? getString(R.string.title_search_class, mClassName) : getString(R.string.title_search_classes));
 
         mBinding.classesSwipeRefreshLayout.setOnRefreshListener(this);
 

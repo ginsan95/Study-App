@@ -38,7 +38,7 @@ public class TeacherClassFragment extends SWDBaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_class_details, container, false);
         mBinding = DataBindingUtil.bind(rootView);
-        getActivity().setTitle(sManager.getClassName() + " (T)");
+        getActivity().setTitle("(T) " + sManager.getClassName());
         return rootView;
     }
 
