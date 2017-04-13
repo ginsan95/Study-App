@@ -125,7 +125,25 @@ public class TeacherManager extends BaseManager {
 
     // region Study Material
     public StudyMaterial findStudyMaterial(String name) {
-        return mStudyMaterialMap.get(name);
+        StudyMaterial studyMaterial = mStudyMaterialMap.get(name.toLowerCase());
+        if (studyMaterial != null && studyMaterial.isVisible()) {
+            return studyMaterial;
+        } else {
+            return null;
+        }
+    }
+
+    public boolean addStudyMaterial(StudyMaterial studyMaterial) {
+        if (getDatabase() == null || getStudyClass() == null
+                // save the study material to database
+                || getDatabase().addStudyMaterial(studyMaterial, getStudyClass().getName()) == -1) {
+            return false;
+        }
+
+        getStudyClass().getStudyMaterials().add(studyMaterial);
+        mStudyMaterialMap.put(studyMaterial.getName().toLowerCase(), studyMaterial);
+
+        return true;
     }
 
     public void updateStudyMaterialVisible(StudyMaterial studyMaterial) {

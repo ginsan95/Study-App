@@ -21,7 +21,6 @@ import com.sunway.averychoke.studywifidirect3.controller.class_details.ClassMate
 import com.sunway.averychoke.studywifidirect3.controller.teacher_class.quiz.CreateQuizActivity;
 import com.sunway.averychoke.studywifidirect3.controller.teacher_class.quiz.CreateQuizFragment;
 import com.sunway.averychoke.studywifidirect3.controller.teacher_class.quiz.ViewQuizActivity;
-import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassMaterialBinding;
 import com.sunway.averychoke.studywifidirect3.manager.TeacherManager;
 import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
@@ -38,7 +37,7 @@ public class TeacherQuizFragment extends SWDBaseFragment implements
     private static final int EDIT_QUIZ_CODE = 102;
 
     private TeacherManager sManager;
-    private ClassMaterialAdapter mClassMaterialAdapter;
+    private ClassMaterialAdapter mAdapter;
 
     private FragmentClassMaterialBinding mBinding;
 
@@ -47,7 +46,7 @@ public class TeacherQuizFragment extends SWDBaseFragment implements
         super.onCreate(savedInstanceState);
 
         sManager = TeacherManager.getInstance();
-        mClassMaterialAdapter = new ClassMaterialAdapter(true, this);
+        mAdapter = new ClassMaterialAdapter(true, this);
     }
 
     @Override
@@ -64,8 +63,8 @@ public class TeacherQuizFragment extends SWDBaseFragment implements
         mBinding.materialsSwipeRefreshLayout.setEnabled(false);
 
         mBinding.materialsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mBinding.materialsRecyclerView.setAdapter(mClassMaterialAdapter);
-        mClassMaterialAdapter.setClassMaterials(sManager.getQuizzes());
+        mBinding.materialsRecyclerView.setAdapter(mAdapter);
+        mAdapter.setClassMaterials(sManager.getQuizzes());
 
         mBinding.addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,7 +86,7 @@ public class TeacherQuizFragment extends SWDBaseFragment implements
                     // update the adapter
                     Quiz quiz = data.getParcelableExtra(CreateQuizFragment.ARGS_QUIZ_KEY);
                     if (quiz != null) {
-                        mClassMaterialAdapter.addClassMaterial(quiz);
+                        mAdapter.addClassMaterial(quiz);
                     }
                 }
                 break;
@@ -96,7 +95,7 @@ public class TeacherQuizFragment extends SWDBaseFragment implements
                     // update the adapter
                     Quiz quiz = data.getParcelableExtra(CreateQuizFragment.ARGS_QUIZ_KEY);
                     if (quiz != null) {
-                        mClassMaterialAdapter.replaceClassMaterial(quiz);
+                        mAdapter.replaceClassMaterial(quiz);
                     }
                 }
                 break;
@@ -144,7 +143,7 @@ public class TeacherQuizFragment extends SWDBaseFragment implements
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Quiz quiz = (Quiz) classMaterial;
-                        mClassMaterialAdapter.removeClassMaterial(index);
+                        mAdapter.removeClassMaterial(index);
                         sManager.deleteQuiz(quiz);
                     }
                 })

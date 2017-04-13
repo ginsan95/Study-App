@@ -1,6 +1,7 @@
 package com.sunway.averychoke.studywifidirect3.manager;
 
 import android.content.Context;
+import android.os.Environment;
 
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.model.Quiz;
@@ -17,6 +18,7 @@ import java.util.List;
 public class BaseManager {
 
     private static final BaseManager sInstance = new BaseManager();
+    public static final String STUDY_MATERIALS_PATH = Environment.getExternalStorageDirectory() + "/Study App/Study materials/";
 
     private DatabaseHelper mDatabase;
     private StudyClass mStudyClass;

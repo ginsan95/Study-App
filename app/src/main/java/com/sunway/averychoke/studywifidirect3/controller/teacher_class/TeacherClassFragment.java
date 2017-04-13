@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
+import com.sunway.averychoke.studywifidirect3.controller.teacher_class.study_material.TeacherStudyMaterialFragment;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassDetailsBinding;
 import com.sunway.averychoke.studywifidirect3.manager.TeacherManager;
 

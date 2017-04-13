@@ -55,4 +55,6 @@
     <string name="dialog_use_my_version">Use my version</string>
     <string name="dialog_class_exit_title">Class Exit</string>
     <string name="dialog_class_exit_message">Are you sure you want to exit the class?</string>
+    <string name="uploading">Uploading</string>
+    <string name="add_study_material_message">Select a study material to add</string>
 </resources>

@@ -13,7 +13,7 @@ public class StudyMaterial extends ClassMaterial implements Parcelable {
     private final File mFile;
 
     public StudyMaterial(String name, String path) {
-        super(name, true);
+        super(name, false);
         mFile = new File(path);
     }
 
