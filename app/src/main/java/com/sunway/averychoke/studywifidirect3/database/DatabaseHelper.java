@@ -256,6 +256,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.endTransaction();
     }
 
+    public void updateClassStudyMaterials(StudyClass studyClass) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+
+        // clear previous study materials
+        clearClassStudyMaterials(studyClass.getName());
+
+        // insert new study materials
+        for (StudyMaterial studyMaterial : studyClass.getStudyMaterials()) {
+            addStudyMaterial(studyMaterial, studyClass.getName());
+        }
+
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
     public void deleteClass(String name) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -794,7 +810,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + "SELECT " + TABLE_CLASS_MATERIAL + "." + CLASS_MATERIAL_ID
                 + " FROM " + TABLE_CLASS_MATERIAL + "," + TABLE_STUDY_MATERIAL
                 + " WHERE " + TABLE_CLASS_MATERIAL + "." + CLASS_MATERIAL_ID + " = " +  TABLE_STUDY_MATERIAL + "." + STUDY_MATERIAL_ID
-                + " ABD " + CLASS_MATERIAL_CLASS_NAME + " = ?";
+                + " AND " + CLASS_MATERIAL_CLASS_NAME + " = ?)";
 
         db.delete(TABLE_CLASS_MATERIAL, whereString,
                 new String[] { String.valueOf(className)});

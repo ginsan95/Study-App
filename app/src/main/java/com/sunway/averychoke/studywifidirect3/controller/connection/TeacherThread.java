@@ -48,6 +48,7 @@ public class TeacherThread implements Runnable {
                                 sendQuiz(socket, ois);
                                 break;
                             case STUDY_MATERIALS:
+                                sendStudyMaterialsName(socket);
                                 break;
                             case STUDY_MATERIAL:
                                 break;
@@ -89,6 +90,13 @@ public class TeacherThread implements Runnable {
         ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
         oos.writeObject(ClassMaterialsRequestTask.Result.QUIZ);
         oos.writeObject(quiz);
+        oos.flush();
+    }
+
+    private void sendStudyMaterialsName(Socket socket) throws IOException {
+        ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+        oos.writeObject(ClassMaterialsRequestTask.Result.STUDY_MATERIALS);
+        oos.writeObject(sManager.getVisibleStudyMaterialsName());
         oos.flush();
     }
     // endregion

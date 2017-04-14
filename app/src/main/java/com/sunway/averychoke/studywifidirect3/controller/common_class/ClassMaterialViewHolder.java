@@ -80,6 +80,8 @@ public class ClassMaterialViewHolder extends RecyclerView.ViewHolder {
             case DOWNLOADING:
                 mBinding.nameTextView.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.text_downloading_color));
                 break;
+            case PENDING:
+                mBinding.nameTextView.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.text_disable_color));
             case ERROR:
                 mBinding.nameTextView.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.text_error_color));
                 break;

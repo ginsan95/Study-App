@@ -124,6 +124,16 @@ public class TeacherManager extends BaseManager {
     // endregion
 
     // region Study Material
+    public List<String> getVisibleStudyMaterialsName() {
+        List<String> visibleNames = new ArrayList<>();
+        for (StudyMaterial studyMaterial : getStudyMaterials()) {
+            if (studyMaterial.isVisible() && studyMaterial.getStatus() != ClassMaterial.Status.ERROR) {
+                visibleNames.add(studyMaterial.getName());
+            }
+        }
+        return visibleNames;
+    }
+
     public StudyMaterial findStudyMaterial(String name) {
         StudyMaterial studyMaterial = mStudyMaterialMap.get(name.toLowerCase());
         if (studyMaterial != null && studyMaterial.isVisible()) {

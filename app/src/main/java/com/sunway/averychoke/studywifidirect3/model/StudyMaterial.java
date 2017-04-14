@@ -10,11 +10,20 @@ import java.io.File;
  */
 
 public class StudyMaterial extends ClassMaterial implements Parcelable {
-    private final File mFile;
+    private File mFile;
+
+    public StudyMaterial(String name) {
+        super(name, false);
+        mFile = new File("");
+        setStatus(Status.PENDING);
+    }
 
     public StudyMaterial(String name, String path) {
         super(name, false);
         mFile = new File(path);
+        if (!mFile.exists()) {
+            setStatus(Status.ERROR);
+        }
     }
 
     // for database
@@ -29,6 +38,10 @@ public class StudyMaterial extends ClassMaterial implements Parcelable {
     // region get set
     public File getFile() {
         return mFile;
+    }
+
+    public void setFile(File file) {
+        mFile = file;
     }
     // endregion get set
 

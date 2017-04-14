@@ -119,6 +119,8 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
                 mClassMaterial = sManager.updateQuiz(quiz);
                 break;
             case STUDY_MATERIALS:
+                List<String> studyMaterialsName = (List<String>) ois.readObject();
+                sManager.updateStudyMaterials(studyMaterialsName);
                 break;
             case STUDY_MATERIAL:
                 break;

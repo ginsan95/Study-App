@@ -6,6 +6,7 @@ import com.sunway.averychoke.studywifidirect3.controller.connection.ClassMateria
 import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
 import com.sunway.averychoke.studywifidirect3.model.DeviceClass;
 import com.sunway.averychoke.studywifidirect3.model.Quiz;
+import com.sunway.averychoke.studywifidirect3.model.StudyMaterial;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,7 +108,38 @@ public class StudentManager extends BaseManager {
     // endregion
 
     // region Study Material
+    public void updateStudyMaterials(List<String> studyMaterialsName) {
+        if (getStudyClass() == null || getDatabase() == null) {
+            return;
+        }
 
+        // update current data
+        for (String name : studyMaterialsName) {
+            int index = getStudyMaterialIndex(name);
+            if (index == -1) {
+                getStudyClass().getStudyMaterials().add(new StudyMaterial(name));
+            }
+        }
+    }
+
+    public void updateStudyMaterialStatus(StudyMaterial studyMaterial, ClassMaterial.Status status) {
+        if (getStudyClass() != null) {
+            int index = getStudyClass().getStudyMaterials().indexOf(studyMaterial);
+            studyMaterial.setStatus(status);
+            getStudyClass().getStudyMaterials().set(index, studyMaterial);
+        }
+    }
+
+    private int getStudyMaterialIndex(String name) {
+        if (getStudyClass() != null) {
+            for (int i = 0; i < getStudyClass().getStudyMaterials().size(); i++) {
+                if (getStudyClass().getStudyMaterials().get(i).getName().equalsIgnoreCase(name)) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
     // endregion
 
     // region Others

@@ -8,14 +8,20 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
+import android.widget.Toast;
 
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.common_class.ClassMaterialAdapter;
 import com.sunway.averychoke.studywifidirect3.controller.common_class.ClassMaterialViewHolder;
 import com.sunway.averychoke.studywifidirect3.controller.common_class.study_material.StudentMaterialFragment;
+import com.sunway.averychoke.studywifidirect3.controller.connection.ClassMaterialsRequestTask;
+import com.sunway.averychoke.studywifidirect3.controller.connection.ClassMaterialsUpdaterListener;
+import com.sunway.averychoke.studywifidirect3.controller.connection.DownloadException;
+import com.sunway.averychoke.studywifidirect3.controller.connection.TeacherThread;
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.manager.StudentManager;
 import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
+import com.sunway.averychoke.studywifidirect3.model.Quiz;
 import com.sunway.averychoke.studywifidirect3.model.StudyMaterial;
 
 /**
@@ -24,19 +30,18 @@ import com.sunway.averychoke.studywifidirect3.model.StudyMaterial;
 
 public class StudentStudyMaterialFragment extends StudentMaterialFragment implements
         SwipeRefreshLayout.OnRefreshListener,
-        ClassMaterialViewHolder.OnClassMaterialSelectListener {
+        ClassMaterialViewHolder.OnClassMaterialSelectListener,
+        ClassMaterialsUpdaterListener {
 
     private StudentManager sManager;
-    private DatabaseHelper mDatabase;
-    private ClassMaterialAdapter mClassMaterialAdapter;
+    private ClassMaterialAdapter mAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         sManager = StudentManager.getInstance();
-        mDatabase = new DatabaseHelper(getContext());
-        mClassMaterialAdapter = new ClassMaterialAdapter(false, this);
+        mAdapter = new ClassMaterialAdapter(false, this);
     }
 
     @Override
@@ -44,14 +49,13 @@ public class StudentStudyMaterialFragment extends StudentMaterialFragment implem
         super.onViewCreated(view, savedInstanceState);
 
         getBinding().classMaterial.materialsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        getBinding().classMaterial.materialsRecyclerView.setAdapter(mClassMaterialAdapter);
-        mClassMaterialAdapter.setClassMaterials(sManager.getStudyMaterials());
+        getBinding().classMaterial.materialsRecyclerView.setAdapter(mAdapter);
+        mAdapter.setClassMaterials(sManager.getStudyMaterials());
 
         getBinding().classMaterial.addButton.setVisibility(View.GONE);
 
         if (!sManager.isOffline()) {
             getBinding().classMaterial.materialsSwipeRefreshLayout.setOnRefreshListener(this);
-            onRefresh();
         } else {
             getBinding().classMaterial.materialsSwipeRefreshLayout.setEnabled(false);
         }
@@ -59,7 +63,9 @@ public class StudentStudyMaterialFragment extends StudentMaterialFragment implem
 
     @Override
     public void onRefresh() {
-        // // TODO: 7/4/2017 Read data from teacher
+        getBinding().classMaterial.materialsSwipeRefreshLayout.setRefreshing(true);
+        ClassMaterialsRequestTask task = new ClassMaterialsRequestTask(sManager.getTeacherAddress(), this);
+        task.execute(TeacherThread.Request.STUDY_MATERIALS);
     }
 
     // region class material view holder
@@ -77,7 +83,7 @@ public class StudentStudyMaterialFragment extends StudentMaterialFragment implem
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         StudyMaterial studyMaterial = (StudyMaterial) classMaterial;
-                        mClassMaterialAdapter.removeClassMaterial(index);
+                        mAdapter.removeClassMaterial(index);
                         sManager.deleteStudyMaterial(studyMaterial);
 
                     }
@@ -93,6 +99,44 @@ public class StudentStudyMaterialFragment extends StudentMaterialFragment implem
 
     @Override
     public void onClassMaterialChecked(@NonNull ClassMaterial classMaterial, @NonNull boolean isChecked) {
+
     }
     // endregion class material view holder
+
+    // region Class Materials Updater
+    @Override
+    public void onClassMaterialUpdated(ClassMaterial classMaterial) {
+        getBinding().classMaterial.materialsSwipeRefreshLayout.setRefreshing(false);
+
+        mAdapter.replaceClassMaterial(classMaterial);
+
+        if (getContext() != null) {
+            Toast.makeText(getContext(), "Downloaded " + classMaterial.getName() + "successfully", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onClassMaterialsUpdated() {
+        mAdapter.setClassMaterials(sManager.getStudyMaterials());
+        getBinding().classMaterial.materialsSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onError(Exception e) {
+        getBinding().classMaterial.materialsSwipeRefreshLayout.setRefreshing(false);
+
+        if (e instanceof DownloadException) {
+            ClassMaterial classMaterial = ((DownloadException) e).getClassMaterial();
+            if (classMaterial instanceof StudyMaterial) {
+                StudyMaterial studyMaterial = (StudyMaterial) classMaterial;
+                sManager.updateStudyMaterialStatus(studyMaterial, ClassMaterial.Status.NORMAL);
+                mAdapter.replaceClassMaterial(studyMaterial);
+            }
+        }
+
+        if (getContext() != null) {
+            Toast.makeText(getContext(), e != null ? e.toString() : "Error", Toast.LENGTH_SHORT).show();
+        }
+    }
+    // endregion
 }
