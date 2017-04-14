@@ -28,6 +28,7 @@ import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
 import com.sunway.averychoke.studywifidirect3.controller.student_class.StudentClassActivity;
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentSearchClassBinding;
+import com.sunway.averychoke.studywifidirect3.manager.BaseManager;
 import com.sunway.averychoke.studywifidirect3.manager.StudentManager;
 import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
 import com.sunway.averychoke.studywifidirect3.model.DeviceClass;
@@ -198,7 +199,7 @@ public class SearchClassFragment extends SWDBaseFragment implements
     @Override
     public void onDnsSdServiceAvailable(String instanceName, String registrationType, WifiP2pDevice srcDevice) {
         // check if the device is running our app
-        if (instanceName.equalsIgnoreCase(SWDBaseActivity.APP_ID)) {
+        if (instanceName.equalsIgnoreCase(BaseManager.APP_ID)) {
             String className = mClassesName.get(srcDevice.deviceAddress);
             if (className != null) {
                 mAdapter.addDeviceClass(new DeviceClass(className, srcDevice));

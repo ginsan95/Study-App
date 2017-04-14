@@ -10,9 +10,6 @@ import android.view.MenuItem;
 
 public abstract class SWDBaseActivity extends AppCompatActivity {
 
-    public static final String APP_ID = "swd_study_app";
-    public static final int APP_PORT_NUMBER = 6767;
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

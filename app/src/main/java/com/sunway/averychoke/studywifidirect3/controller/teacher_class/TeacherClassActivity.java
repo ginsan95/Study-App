@@ -15,6 +15,7 @@ import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseActivity;
 import com.sunway.averychoke.studywifidirect3.controller.connection.TeacherThread;
 import com.sunway.averychoke.studywifidirect3.databinding.ActivityMainContainerBinding;
+import com.sunway.averychoke.studywifidirect3.manager.BaseManager;
 import com.sunway.averychoke.studywifidirect3.manager.TeacherManager;
 
 import java.io.IOException;
@@ -59,7 +60,7 @@ public class TeacherClassActivity extends SWDBaseActivity {
         if (mWifiManager != null && mChannel != null) {
             Map<String, String> record = new HashMap<>();
             record.put("class_name", TeacherManager.getInstance().getClassName());
-            final WifiP2pDnsSdServiceInfo serviceInfo = WifiP2pDnsSdServiceInfo.newInstance(SWDBaseActivity.APP_ID, "_presence._tcp", record);
+            final WifiP2pDnsSdServiceInfo serviceInfo = WifiP2pDnsSdServiceInfo.newInstance(BaseManager.APP_ID, "_presence._tcp", record);
 
             // stop previous service
             mWifiManager.clearLocalServices(mChannel, new WifiP2pManager.ActionListener() {

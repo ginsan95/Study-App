@@ -70,7 +70,7 @@ public class StudentManager extends BaseManager {
                 quiz.updateId();
                 getStudyClass().getQuizzes().add(quiz);
             } else if(getStudyClass().getQuizzes().get(index).getVersion() != quiz.getVersion()) {
-                getStudyClass().getQuizzes().get(index).setStatus(ClassMaterial.Status.CONFLICT);
+                getStudyClass().getQuizzes().get(index).setStatus(ClassMaterial.Status.ERROR);
             }
         }
 

@@ -21,6 +21,9 @@ public class StudyMaterial extends ClassMaterial implements Parcelable {
     public StudyMaterial(long studyMaterialId, String name, String path, boolean visible) {
         super(studyMaterialId, name, visible);
         mFile = new File(path);
+        if (!mFile.exists()) {
+            setStatus(Status.ERROR);
+        }
     }
 
     // region get set

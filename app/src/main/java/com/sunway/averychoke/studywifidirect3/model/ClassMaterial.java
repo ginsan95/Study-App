@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 public class ClassMaterial implements Serializable {
     public enum Status {
-        NORMAL, DOWNLOADING, CONFLICT;
+        NORMAL, DOWNLOADING, ERROR;
     }
 
     public static long mCounter = 0;

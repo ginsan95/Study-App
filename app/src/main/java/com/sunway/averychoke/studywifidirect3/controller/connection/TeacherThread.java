@@ -1,6 +1,7 @@
 package com.sunway.averychoke.studywifidirect3.controller.connection;
 
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseActivity;
+import com.sunway.averychoke.studywifidirect3.manager.BaseManager;
 import com.sunway.averychoke.studywifidirect3.manager.TeacherManager;
 import com.sunway.averychoke.studywifidirect3.model.Quiz;
 
@@ -23,7 +24,7 @@ public class TeacherThread implements Runnable {
     private TeacherManager sManager;
 
     public TeacherThread() throws IOException {
-        mSocket = new ServerSocket(SWDBaseActivity.APP_PORT_NUMBER);
+        mSocket = new ServerSocket(BaseManager.APP_PORT_NUMBER);
         sManager = TeacherManager.getInstance();
     }
 

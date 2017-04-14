@@ -8,6 +8,7 @@ import com.sunway.averychoke.studywifidirect3.model.Quiz;
 import com.sunway.averychoke.studywifidirect3.model.StudyClass;
 import com.sunway.averychoke.studywifidirect3.model.StudyMaterial;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,10 +19,13 @@ import java.util.List;
 public class BaseManager {
 
     private static final BaseManager sInstance = new BaseManager();
+    public static final String APP_ID = "swd_study_app";
+    public static final int APP_PORT_NUMBER = 6767;
     public static final String STUDY_MATERIALS_PATH = Environment.getExternalStorageDirectory() + "/Study App/Study materials/";
 
     private DatabaseHelper mDatabase;
     private StudyClass mStudyClass;
+    private Context mContext;
 
     protected BaseManager() {}
 
@@ -31,6 +35,7 @@ public class BaseManager {
 
     public void initialize(String className, Context context) {
         mDatabase = new DatabaseHelper(context);
+        mContext = context;
 
         StudyClass studyClass = mDatabase.getClass(className);
         if (studyClass != null) {
@@ -67,6 +72,7 @@ public class BaseManager {
         if (mDatabase != null && mStudyClass != null) {
             mDatabase.deleteClassMaterial(studyMaterial);
             mStudyClass.getStudyMaterials().remove(studyMaterial);
+            new File(STUDY_MATERIALS_PATH + getClassName() + File.separator + studyMaterial.getName()).delete();
         }
     }
     // endregion
@@ -86,6 +92,14 @@ public class BaseManager {
 
     protected void setStudyClass(StudyClass studyClass) {
         mStudyClass = studyClass;
+    }
+
+    protected Context getContext() {
+        return mContext;
+    }
+
+    protected void setContext(Context context) {
+        mContext = context;
     }
     // endregion
 }

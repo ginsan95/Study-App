@@ -114,7 +114,7 @@ public class StudentQuizFragment extends SWDBaseFragment implements
             case DOWNLOADING:
                 // // TODO: 10/4/2017 view download progress
                 return;
-            case CONFLICT:
+            case ERROR:
                 new AlertDialog.Builder(getContext())
                         .setTitle(R.string.dialog_conflict_title)
                         .setMessage(R.string.dialog_conflict_message)

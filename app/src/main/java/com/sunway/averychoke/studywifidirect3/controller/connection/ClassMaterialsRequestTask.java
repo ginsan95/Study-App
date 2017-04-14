@@ -3,6 +3,7 @@ package com.sunway.averychoke.studywifidirect3.controller.connection;
 import android.os.AsyncTask;
 
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseActivity;
+import com.sunway.averychoke.studywifidirect3.manager.BaseManager;
 import com.sunway.averychoke.studywifidirect3.manager.StudentManager;
 import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
 import com.sunway.averychoke.studywifidirect3.model.Quiz;
@@ -54,7 +55,7 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
 
         try {
             mSocket = new Socket();
-            InetSocketAddress address = new InetSocketAddress(mAddress, SWDBaseActivity.APP_PORT_NUMBER);
+            InetSocketAddress address = new InetSocketAddress(mAddress, BaseManager.APP_PORT_NUMBER);
             // Connect to the host for 5 sec
             mSocket.connect(address, 5000);
 
