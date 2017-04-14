@@ -12,6 +12,7 @@ import java.io.File;
 public class StudyMaterial extends ClassMaterial implements Parcelable {
     private File mFile;
 
+    // for reading name from teacher
     public StudyMaterial(String name) {
         super(name, false);
         mFile = new File("");
@@ -33,6 +34,11 @@ public class StudyMaterial extends ClassMaterial implements Parcelable {
         if (!mFile.exists()) {
             setStatus(Status.ERROR);
         }
+    }
+
+    public void update(StudyMaterial studyMaterial) {
+        mFile = studyMaterial.mFile;
+        setStatus(Status.NORMAL);
     }
 
     // region get set

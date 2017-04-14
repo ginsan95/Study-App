@@ -4,8 +4,12 @@ import com.sunway.averychoke.studywifidirect3.controller.SWDBaseActivity;
 import com.sunway.averychoke.studywifidirect3.manager.BaseManager;
 import com.sunway.averychoke.studywifidirect3.manager.TeacherManager;
 import com.sunway.averychoke.studywifidirect3.model.Quiz;
+import com.sunway.averychoke.studywifidirect3.model.StudyMaterial;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
@@ -51,6 +55,7 @@ public class TeacherThread implements Runnable {
                                 sendStudyMaterialsName(socket);
                                 break;
                             case STUDY_MATERIAL:
+                                sendStudyMaterial(socket, ois);
                                 break;
                         }
                     } catch (IOException | ClassNotFoundException e) {
@@ -97,6 +102,37 @@ public class TeacherThread implements Runnable {
         ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
         oos.writeObject(ClassMaterialsRequestTask.Result.STUDY_MATERIALS);
         oos.writeObject(sManager.getVisibleStudyMaterialsName());
+        oos.flush();
+    }
+
+    private void sendStudyMaterial(Socket socket, ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        String studyMaterialName = (String) ois.readObject();
+        StudyMaterial studyMaterial = sManager.findStudyMaterial(studyMaterialName);
+        ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+
+        if (studyMaterial != null) {
+            oos.writeObject(ClassMaterialsRequestTask.Result.STUDY_MATERIAL);
+
+            // send file
+            BufferedInputStream bis = null;
+            try {
+                byte[] buffer = new byte[4 * 1024];
+                bis = new BufferedInputStream(new FileInputStream(studyMaterial.getFile()));
+                int count = 0;
+                while ((count = bis.read(buffer)) > 0) {
+                    oos.write(buffer, 0, count);
+                    oos.flush();
+                }
+            } finally {
+                if (bis != null) {
+                    bis.close();
+                }
+                oos.close();
+            }
+
+        } else {
+            oos.writeObject(ClassMaterialsRequestTask.Result.ERROR);
+        }
         oos.flush();
     }
     // endregion

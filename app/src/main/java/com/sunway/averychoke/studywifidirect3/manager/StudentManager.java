@@ -122,6 +122,22 @@ public class StudentManager extends BaseManager {
         }
     }
 
+    // download a single study material
+    public StudyMaterial updateStudyMaterial(StudyMaterial studyMaterial) {
+        if (getStudyClass() == null || getDatabase() == null || studyMaterial == null) {
+            return null;
+        }
+
+        int index = getStudyMaterialIndex(studyMaterial.getName());
+        if (index != -1) {
+            StudyMaterial myStudyMaterial = getStudyClass().getStudyMaterials().get(index);
+            myStudyMaterial.update(studyMaterial);
+            getDatabase().updateStudyMaterial(myStudyMaterial);
+            return myStudyMaterial;
+        }
+        return studyMaterial;
+    }
+
     public void updateStudyMaterialStatus(StudyMaterial studyMaterial, ClassMaterial.Status status) {
         if (getStudyClass() != null) {
             int index = getStudyClass().getStudyMaterials().indexOf(studyMaterial);

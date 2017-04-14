@@ -136,7 +136,7 @@ public class TeacherManager extends BaseManager {
 
     public StudyMaterial findStudyMaterial(String name) {
         StudyMaterial studyMaterial = mStudyMaterialMap.get(name.toLowerCase());
-        if (studyMaterial != null && studyMaterial.isVisible()) {
+        if (studyMaterial != null && studyMaterial.isVisible() && studyMaterial.getStatus() != ClassMaterial.Status.ERROR) {
             return studyMaterial;
         } else {
             return null;

@@ -7,7 +7,11 @@ import com.sunway.averychoke.studywifidirect3.manager.BaseManager;
 import com.sunway.averychoke.studywifidirect3.manager.StudentManager;
 import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
 import com.sunway.averychoke.studywifidirect3.model.Quiz;
+import com.sunway.averychoke.studywifidirect3.model.StudyMaterial;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -28,7 +32,7 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
 
     private String mAddress;
     private ClassMaterialsUpdaterListener mListener;
-    private ClassMaterial mDownloadClassMaterial; // used for failed download handling
+    private ClassMaterial mDownloadClassMaterial;  // the request material
     private Socket mSocket;
     private StudentManager sManager;
 
@@ -123,14 +127,39 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
                 sManager.updateStudyMaterials(studyMaterialsName);
                 break;
             case STUDY_MATERIAL:
+                if (mDownloadClassMaterial != null && mDownloadClassMaterial instanceof StudyMaterial) {
+                    StudyMaterial studyMaterial = (StudyMaterial) mDownloadClassMaterial;
+
+                    // download the file from teacher
+                    BufferedOutputStream bos = null;
+                    try {
+                        byte[] buffer = new byte[4 * 1024];
+                        File file = new File(BaseManager.STUDY_MATERIALS_PATH + sManager.getClassName() + File.separator + studyMaterial.getName());
+                        bos = new BufferedOutputStream(new FileOutputStream(file));
+                        int count = 0;
+                        while ((count = ois.read(buffer)) > 0) {
+                            bos.write(buffer, 0, count);
+                        }
+
+                        studyMaterial.setFile(file);
+                        mClassMaterial = sManager.updateStudyMaterial(studyMaterial);
+                    } finally {
+                        if (bos != null) {
+                            bos.close();
+                        }
+                    }
+                }
                 break;
             case ERROR:
+                if (mDownloadClassMaterial != null) {
+                    mError = new DownloadException(mDownloadClassMaterial);
+                }
                 break;
         }
     }
 
     private Result giveError(Exception e) {
-        mError = e;
+        mError = mDownloadClassMaterial != null ? new DownloadException(mDownloadClassMaterial) : e;
         return Result.ERROR;
     }
 

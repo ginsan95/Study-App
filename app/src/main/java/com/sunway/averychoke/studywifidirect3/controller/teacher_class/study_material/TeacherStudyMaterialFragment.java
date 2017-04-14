@@ -116,7 +116,7 @@ public class TeacherStudyMaterialFragment extends StudentMaterialFragment implem
     @Override
     public void onClassMaterialLongClicked(@NonNull final ClassMaterial classMaterial, @NonNull final int index) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(getContext())
-                .setTitle(R.string.delete_study_material_dialog_title)
+                .setTitle(R.string.option_delete_study_material)
                 .setMessage(R.string.delete_study_material_message)
                 .setPositiveButton(R.string.dialog_confirm, new DialogInterface.OnClickListener() {
                     @Override

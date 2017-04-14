@@ -257,6 +257,7 @@ public class StudentQuizFragment extends SWDBaseFragment implements
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+
                     }
                 })
                 .show();
@@ -276,7 +277,7 @@ public class StudentQuizFragment extends SWDBaseFragment implements
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
+
                     }
                 })
                 .show();

@@ -24,6 +24,9 @@ import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
 import com.sunway.averychoke.studywifidirect3.model.Quiz;
 import com.sunway.averychoke.studywifidirect3.model.StudyMaterial;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by AveryChoke on 30/1/2017.
  */
@@ -71,30 +74,37 @@ public class StudentStudyMaterialFragment extends StudentMaterialFragment implem
     // region class material view holder
     @Override
     public void onClassMaterialSelected(@NonNull ClassMaterial classMaterial) {
-
+        // // TODO: 14/4/2017 view study material
     }
 
     @Override
     public void onClassMaterialLongClicked(@NonNull final ClassMaterial classMaterial, @NonNull final int index) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(getContext())
-                .setTitle(R.string.delete_study_material_dialog_title)
-                .setMessage(R.string.delete_study_material_message)
-                .setPositiveButton(R.string.dialog_confirm, new DialogInterface.OnClickListener() {
+        if (classMaterial.getStatus() == ClassMaterial.Status.DOWNLOADING) {
+            return;
+        }
+
+        // region setup options
+        final StudyMaterial studyMaterial = (StudyMaterial) classMaterial;
+        final List<CharSequence> options = new ArrayList<>();
+        if (!sManager.isOffline()) {
+            options.add(getString(R.string.option_download));
+        }
+        options.add(getString(R.string.option_delete_study_material));
+        // endregion
+
+        new AlertDialog.Builder(getContext())
+                .setItems(options.toArray(new CharSequence[options.size()]), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        StudyMaterial studyMaterial = (StudyMaterial) classMaterial;
-                        mAdapter.removeClassMaterial(index);
-                        sManager.deleteStudyMaterial(studyMaterial);
-
+                        String option = options.get(which).toString();
+                        if (option.equals(getString(R.string.option_download))) {
+                            downloadStudyMaterial(studyMaterial);
+                        } else if (option.equals(getString(R.string.option_delete_study_material))) {
+                            deleteStudyMaterial(studyMaterial, index);
+                        }
                     }
                 })
-                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-        dialog.show();
+                .show();
     }
 
     @Override
@@ -139,4 +149,34 @@ public class StudentStudyMaterialFragment extends StudentMaterialFragment implem
         }
     }
     // endregion
+
+    private void downloadStudyMaterial(StudyMaterial studyMaterial) {
+        if (!sManager.isOffline()) {
+            sManager.updateStudyMaterialStatus(studyMaterial, ClassMaterial.Status.DOWNLOADING);
+            mAdapter.replaceClassMaterial(studyMaterial);
+            ClassMaterialsRequestTask task = new ClassMaterialsRequestTask(sManager.getTeacherAddress(), this, studyMaterial);
+            task.execute(TeacherThread.Request.STUDY_MATERIAL, studyMaterial.getName());
+        }
+    }
+
+    private void deleteStudyMaterial(final StudyMaterial studyMaterial, final int index) {
+        new AlertDialog.Builder(getContext())
+                .setTitle(R.string.option_delete_study_material)
+                .setMessage(R.string.delete_study_material_message)
+                .setPositiveButton(R.string.dialog_confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mAdapter.removeClassMaterial(index);
+                        sManager.deleteStudyMaterial(studyMaterial);
+
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .show();
+    }
 }
