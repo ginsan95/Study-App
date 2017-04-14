@@ -17,7 +17,7 @@ import com.sunway.averychoke.studywifidirect3.util.PermissionUtil;
  * Created by AveryChoke on 14/4/2017.
  */
 
-public class StudentMaterialFragment extends SWDBaseFragment {
+public class StudyMaterialFragment extends SWDBaseFragment {
 
     private FragmentStudyMaterialBinding mBinding;
 

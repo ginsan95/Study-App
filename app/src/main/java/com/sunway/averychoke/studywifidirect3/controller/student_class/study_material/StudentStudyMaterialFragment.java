@@ -13,15 +13,13 @@ import android.widget.Toast;
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.common_class.ClassMaterialAdapter;
 import com.sunway.averychoke.studywifidirect3.controller.common_class.ClassMaterialViewHolder;
-import com.sunway.averychoke.studywifidirect3.controller.common_class.study_material.StudentMaterialFragment;
+import com.sunway.averychoke.studywifidirect3.controller.common_class.study_material.StudyMaterialFragment;
 import com.sunway.averychoke.studywifidirect3.controller.connection.ClassMaterialsRequestTask;
 import com.sunway.averychoke.studywifidirect3.controller.connection.ClassMaterialsUpdaterListener;
 import com.sunway.averychoke.studywifidirect3.controller.connection.DownloadException;
 import com.sunway.averychoke.studywifidirect3.controller.connection.TeacherThread;
-import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.manager.StudentManager;
 import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
-import com.sunway.averychoke.studywifidirect3.model.Quiz;
 import com.sunway.averychoke.studywifidirect3.model.StudyMaterial;
 
 import java.util.ArrayList;
@@ -31,7 +29,7 @@ import java.util.List;
  * Created by AveryChoke on 30/1/2017.
  */
 
-public class StudentStudyMaterialFragment extends StudentMaterialFragment implements
+public class StudentStudyMaterialFragment extends StudyMaterialFragment implements
         SwipeRefreshLayout.OnRefreshListener,
         ClassMaterialViewHolder.OnClassMaterialSelectListener,
         ClassMaterialsUpdaterListener {

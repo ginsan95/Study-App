@@ -14,7 +14,7 @@ import android.view.View;
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.common_class.ClassMaterialAdapter;
 import com.sunway.averychoke.studywifidirect3.controller.common_class.ClassMaterialViewHolder;
-import com.sunway.averychoke.studywifidirect3.controller.common_class.study_material.StudentMaterialFragment;
+import com.sunway.averychoke.studywifidirect3.controller.common_class.study_material.StudyMaterialFragment;
 import com.sunway.averychoke.studywifidirect3.manager.TeacherManager;
 import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
 import com.sunway.averychoke.studywifidirect3.model.StudyMaterial;
@@ -28,7 +28,7 @@ import static android.app.Activity.RESULT_OK;
  * Created by AveryChoke on 30/1/2017.
  */
 
-public class TeacherStudyMaterialFragment extends StudentMaterialFragment implements
+public class TeacherStudyMaterialFragment extends StudyMaterialFragment implements
         ClassMaterialViewHolder.OnClassMaterialSelectListener,
         UploadStudyMaterialTask.UploadListener {
 
