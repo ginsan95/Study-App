@@ -1,6 +1,5 @@
 package com.sunway.averychoke.studywifidirect3.controller.teacher_class.quiz.adapter;
 
-import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -8,21 +7,18 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import com.sunway.averychoke.studywifidirect3.R;
-import com.sunway.averychoke.studywifidirect3.controller.common_class.HasQuestion;
-import com.sunway.averychoke.studywifidirect3.controller.common_class.QuestionsAdapter;
+import com.sunway.averychoke.studywifidirect3.controller.common_class.quiz.HasQuestion;
+import com.sunway.averychoke.studywifidirect3.controller.common_class.quiz.QuestionsAdapter;
 import com.sunway.averychoke.studywifidirect3.databinding.CellCreateQuestionBinding;
 import com.sunway.averychoke.studywifidirect3.model.ChoiceQuestion;
 import com.sunway.averychoke.studywifidirect3.model.Question;

@@ -1,4 +1,4 @@
-package com.sunway.averychoke.studywifidirect3.controller.common_class;
+package com.sunway.averychoke.studywifidirect3.controller.common_class.quiz;
 
 import com.sunway.averychoke.studywifidirect3.model.Question;
 

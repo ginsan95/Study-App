@@ -57,4 +57,7 @@
     <string name="dialog_class_exit_message">Are you sure you want to exit the class?</string>
     <string name="uploading">Uploading</string>
     <string name="add_study_material_message">Select a study material to add</string>
+    <string name="external_storage_reason">To use the study materials section, please enable external storage access permission.</string>
+    <string name="external_storage_settings">Please go to settings and enable external storage permission.</string>
+    <string name="retry">Retry</string>
 </resources>

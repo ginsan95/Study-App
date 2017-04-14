@@ -1,18 +1,11 @@
-package com.sunway.averychoke.studywifidirect3.controller.common_class;
+package com.sunway.averychoke.studywifidirect3.controller.common_class.quiz;
 
-import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 
 import com.sunway.averychoke.studywifidirect3.R;
-import com.sunway.averychoke.studywifidirect3.databinding.CellQuestionBinding;
-import com.sunway.averychoke.studywifidirect3.model.ChoiceQuestion;
 import com.sunway.averychoke.studywifidirect3.model.Question;
 
 import java.util.ArrayList;

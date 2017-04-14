@@ -1,4 +1,4 @@
-package com.sunway.averychoke.studywifidirect3.controller.class_details;
+package com.sunway.averychoke.studywifidirect3.controller.common_class;
 
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;

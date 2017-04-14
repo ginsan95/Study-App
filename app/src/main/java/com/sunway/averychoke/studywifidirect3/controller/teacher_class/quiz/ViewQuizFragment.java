@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
-import com.sunway.averychoke.studywifidirect3.controller.common_class.QuestionsAdapter;
+import com.sunway.averychoke.studywifidirect3.controller.common_class.quiz.QuestionsAdapter;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentViewQuizBinding;
 import com.sunway.averychoke.studywifidirect3.model.Question;
 import com.sunway.averychoke.studywifidirect3.model.Quiz;

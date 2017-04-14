@@ -12,11 +12,11 @@ import android.view.ViewGroup;
 
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
-import com.sunway.averychoke.studywifidirect3.controller.class_navigation.ClassFragment;
+import com.sunway.averychoke.studywifidirect3.controller.student_class.quiz.StudentQuizFragment;
+import com.sunway.averychoke.studywifidirect3.controller.student_class.study_material.StudentStudyMaterialFragment;
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassDetailsBinding;
 import com.sunway.averychoke.studywifidirect3.manager.StudentManager;
-import com.sunway.averychoke.studywifidirect3.model.StudyClass;
 
 /**
  * Created by AveryChoke on 29/1/2017.

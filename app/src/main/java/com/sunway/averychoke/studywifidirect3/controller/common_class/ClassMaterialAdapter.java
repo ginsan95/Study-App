@@ -1,4 +1,4 @@
-package com.sunway.averychoke.studywifidirect3.controller.class_details;
+package com.sunway.averychoke.studywifidirect3.controller.common_class;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,7 +9,6 @@ import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**

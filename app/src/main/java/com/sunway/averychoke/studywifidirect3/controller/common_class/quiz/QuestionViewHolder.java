@@ -1,4 +1,4 @@
-package com.sunway.averychoke.studywifidirect3.controller.common_class;
+package com.sunway.averychoke.studywifidirect3.controller.common_class.quiz;
 
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.AppCompatRadioButton;

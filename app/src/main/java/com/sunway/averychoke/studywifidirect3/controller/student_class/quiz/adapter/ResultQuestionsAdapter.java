@@ -1,6 +1,5 @@
 package com.sunway.averychoke.studywifidirect3.controller.student_class.quiz.adapter;
 
-import android.content.Context;
 import android.content.res.ColorStateList;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
@@ -10,11 +9,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
 
 import com.sunway.averychoke.studywifidirect3.R;
-import com.sunway.averychoke.studywifidirect3.controller.common_class.QuestionViewHolder;
-import com.sunway.averychoke.studywifidirect3.controller.common_class.QuestionsAdapter;
+import com.sunway.averychoke.studywifidirect3.controller.common_class.quiz.QuestionViewHolder;
+import com.sunway.averychoke.studywifidirect3.controller.common_class.quiz.QuestionsAdapter;
 import com.sunway.averychoke.studywifidirect3.databinding.CellResultBinding;
 import com.sunway.averychoke.studywifidirect3.model.ChoiceQuestion;
 import com.sunway.averychoke.studywifidirect3.model.Question;

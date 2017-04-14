@@ -1,4 +1,4 @@
-package com.sunway.averychoke.studywifidirect3.controller.student_class;
+package com.sunway.averychoke.studywifidirect3.controller.student_class.quiz;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,13 +17,12 @@ import android.widget.Toast;
 
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
-import com.sunway.averychoke.studywifidirect3.controller.class_details.ClassMaterialAdapter;
-import com.sunway.averychoke.studywifidirect3.controller.class_details.ClassMaterialViewHolder;
+import com.sunway.averychoke.studywifidirect3.controller.common_class.ClassMaterialAdapter;
+import com.sunway.averychoke.studywifidirect3.controller.common_class.ClassMaterialViewHolder;
 import com.sunway.averychoke.studywifidirect3.controller.connection.ClassMaterialsUpdaterListener;
 import com.sunway.averychoke.studywifidirect3.controller.connection.ClassMaterialsRequestTask;
 import com.sunway.averychoke.studywifidirect3.controller.connection.DownloadException;
 import com.sunway.averychoke.studywifidirect3.controller.connection.TeacherThread;
-import com.sunway.averychoke.studywifidirect3.controller.student_class.quiz.AnswerQuizActivity;
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassMaterialBinding;
 import com.sunway.averychoke.studywifidirect3.manager.StudentManager;

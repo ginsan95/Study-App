@@ -3,30 +3,23 @@ package com.sunway.averychoke.studywifidirect3.controller.teacher_class.study_ma
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.sunway.averychoke.studywifidirect3.R;
-import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
-import com.sunway.averychoke.studywifidirect3.controller.class_details.ClassMaterialAdapter;
-import com.sunway.averychoke.studywifidirect3.controller.class_details.ClassMaterialViewHolder;
-import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassMaterialBinding;
-import com.sunway.averychoke.studywifidirect3.manager.BaseManager;
+import com.sunway.averychoke.studywifidirect3.controller.common_class.ClassMaterialAdapter;
+import com.sunway.averychoke.studywifidirect3.controller.common_class.ClassMaterialViewHolder;
+import com.sunway.averychoke.studywifidirect3.controller.common_class.study_material.StudentMaterialFragment;
 import com.sunway.averychoke.studywifidirect3.manager.TeacherManager;
 import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
 import com.sunway.averychoke.studywifidirect3.model.StudyMaterial;
-import com.sunway.averychoke.studywifidirect3.util.FileUtil;
+import com.sunway.averychoke.studywifidirect3.util.PermissionUtil;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
@@ -35,18 +28,16 @@ import static android.app.Activity.RESULT_OK;
  * Created by AveryChoke on 30/1/2017.
  */
 
-public class TeacherStudyMaterialFragment extends SWDBaseFragment implements
+public class TeacherStudyMaterialFragment extends StudentMaterialFragment implements
         ClassMaterialViewHolder.OnClassMaterialSelectListener,
         UploadStudyMaterialTask.UploadListener {
 
     private static final int UPLOAD_STUDY_MATERIAL_CODE = 101;
-    private static final String TAG = TeacherStudyMaterialFragment.class.getSimpleName();
+
+    private ProgressDialog mProgressDialog;
 
     private TeacherManager sManager;
     private ClassMaterialAdapter mAdapter;
-
-    private FragmentClassMaterialBinding mBinding;
-    private ProgressDialog mProgressDialog;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,29 +48,18 @@ public class TeacherStudyMaterialFragment extends SWDBaseFragment implements
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_class_material, container, false);
-        mBinding = DataBindingUtil.bind(rootView);
-
-        return rootView;
-    }
-
-    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mBinding.materialsSwipeRefreshLayout.setEnabled(false);
+        getBinding().classMaterial.materialsSwipeRefreshLayout.setEnabled(false);
 
-        mBinding.materialsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mBinding.materialsRecyclerView.setAdapter(mAdapter);
+        getBinding().classMaterial.materialsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        getBinding().classMaterial.materialsRecyclerView.setAdapter(mAdapter);
         mAdapter.setClassMaterials(sManager.getStudyMaterials());
 
-        mBinding.addButton.setOnClickListener(new View.OnClickListener() {
+        getBinding().classMaterial.addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("*/*");
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                startActivityForResult(Intent.createChooser(intent, getString(R.string.add_study_material_message)), UPLOAD_STUDY_MATERIAL_CODE);
+                addStudyMaterial();
             }
         });
 
@@ -101,6 +81,18 @@ public class TeacherStudyMaterialFragment extends SWDBaseFragment implements
                     task.execute(uri);
                 }
                 break;
+        }
+    }
+
+    private void addStudyMaterial() {
+        if (!PermissionUtil.isPermissionGranted(this, PermissionUtil.Permission.WRITE_EXTERNAL_STORAGE)) {
+            // ask for permission
+            PermissionUtil.requestPermission(this, PermissionUtil.Permission.WRITE_EXTERNAL_STORAGE);
+        } else {
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("*/*");
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            startActivityForResult(Intent.createChooser(intent, getString(R.string.add_study_material_message)), UPLOAD_STUDY_MATERIAL_CODE);
         }
     }
 
