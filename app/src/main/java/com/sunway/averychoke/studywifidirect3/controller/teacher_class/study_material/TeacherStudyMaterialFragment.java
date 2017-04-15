@@ -1,6 +1,7 @@
 package com.sunway.averychoke.studywifidirect3.controller.teacher_class.study_material;
 
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -10,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
+import android.widget.Toast;
 
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.common_class.ClassMaterialAdapter;
@@ -18,6 +20,7 @@ import com.sunway.averychoke.studywifidirect3.controller.common_class.study_mate
 import com.sunway.averychoke.studywifidirect3.manager.TeacherManager;
 import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
 import com.sunway.averychoke.studywifidirect3.model.StudyMaterial;
+import com.sunway.averychoke.studywifidirect3.util.FileUtil;
 import com.sunway.averychoke.studywifidirect3.util.PermissionUtil;
 
 import java.util.List;
@@ -110,12 +113,20 @@ public class TeacherStudyMaterialFragment extends StudyMaterialFragment implemen
     // region class material view holder
     @Override
     public void onClassMaterialSelected(@NonNull ClassMaterial classMaterial) {
-
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        Uri uri = Uri.fromFile(((StudyMaterial)classMaterial).getFile());
+        String mimeType = FileUtil.getMimeType(getContext(), uri);
+        intent.setDataAndType(uri, mimeType);
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(getContext(), e.toString(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     public void onClassMaterialLongClicked(@NonNull final ClassMaterial classMaterial, @NonNull final int index) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(getContext())
+        new AlertDialog.Builder(getContext())
                 .setTitle(R.string.option_delete_study_material)
                 .setMessage(R.string.delete_study_material_message)
                 .setPositiveButton(R.string.dialog_confirm, new DialogInterface.OnClickListener() {
@@ -131,8 +142,8 @@ public class TeacherStudyMaterialFragment extends StudyMaterialFragment implemen
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
                     }
-                });
-        dialog.show();
+                })
+                .show();
     }
 
     @Override

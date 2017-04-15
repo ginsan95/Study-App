@@ -1,6 +1,9 @@
 package com.sunway.averychoke.studywifidirect3.controller.student_class.study_material;
 
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,6 +24,7 @@ import com.sunway.averychoke.studywifidirect3.controller.connection.TeacherThrea
 import com.sunway.averychoke.studywifidirect3.manager.StudentManager;
 import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
 import com.sunway.averychoke.studywifidirect3.model.StudyMaterial;
+import com.sunway.averychoke.studywifidirect3.util.FileUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +77,17 @@ public class StudentStudyMaterialFragment extends StudyMaterialFragment implemen
     // region class material view holder
     @Override
     public void onClassMaterialSelected(@NonNull ClassMaterial classMaterial) {
-        // // TODO: 14/4/2017 view study material
+        if (classMaterial.getStatus() == ClassMaterial.Status.NORMAL) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            Uri uri = Uri.fromFile(((StudyMaterial) classMaterial).getFile());
+            String mimeType = FileUtil.getMimeType(getContext(), uri);
+            intent.setDataAndType(uri, mimeType);
+            try {
+                startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                Toast.makeText(getContext(), e.toString(), Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     @Override

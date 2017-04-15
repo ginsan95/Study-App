@@ -131,6 +131,10 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
             case STUDY_MATERIAL:
                 if (mDownloadClassMaterial != null && mDownloadClassMaterial instanceof StudyMaterial) {
                     StudyMaterial studyMaterial = (StudyMaterial) mDownloadClassMaterial;
+                    File baseFile = new File(BaseManager.STUDY_MATERIALS_PATH + sManager.getClassName());
+                    if (!baseFile.exists()) {
+                        baseFile.mkdirs();
+                    }
 
                     // get partition size
                     int partitionSize = ois.readInt();
@@ -139,7 +143,7 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
                     BufferedOutputStream bos = null;
                     try {
                         byte[] buffer = new byte[BUFFER_SIZE];
-                        File file = new File(BaseManager.STUDY_MATERIALS_PATH + sManager.getClassName() + File.separator + studyMaterial.getName());
+                        File file = new File(baseFile, studyMaterial.getName());
                         bos = new BufferedOutputStream(new FileOutputStream(file));
                         int count = 0;
                         int partitionCount = 0;
