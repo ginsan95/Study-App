@@ -57,6 +57,7 @@ public class StudentStudyMaterialFragment extends StudyMaterialFragment implemen
 
         if (!sManager.isOffline()) {
             getBinding().classMaterial.materialsSwipeRefreshLayout.setOnRefreshListener(this);
+            onRefresh();
         } else {
             getBinding().classMaterial.materialsSwipeRefreshLayout.setEnabled(false);
         }
@@ -137,7 +138,7 @@ public class StudentStudyMaterialFragment extends StudyMaterialFragment implemen
             ClassMaterial classMaterial = ((DownloadException) e).getClassMaterial();
             if (classMaterial instanceof StudyMaterial) {
                 StudyMaterial studyMaterial = (StudyMaterial) classMaterial;
-                sManager.updateStudyMaterialStatus(studyMaterial, ClassMaterial.Status.NORMAL);
+                sManager.updateStudyMaterialStatus(studyMaterial, ClassMaterial.Status.PENDING);
                 mAdapter.replaceClassMaterial(studyMaterial);
             }
         }

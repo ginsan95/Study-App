@@ -30,6 +30,8 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
         QUIZZES, QUIZ, STUDY_MATERIALS, STUDY_MATERIAL, ERROR;
     }
 
+    private static final int BUFFER_SIZE = 1024;
+
     private String mAddress;
     private ClassMaterialsUpdaterListener mListener;
     private ClassMaterial mDownloadClassMaterial;  // the request material
@@ -77,7 +79,7 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
             ois.close();
 
             return result;
-        } catch (IOException | ClassNotFoundException | IllegalArgumentException e) {
+        } catch (IOException | ClassNotFoundException | IllegalArgumentException | DownloadException e) {
             return giveError(e);
         } finally {
             disconnect();
@@ -112,7 +114,7 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
         }
     }
 
-    private void updateManager(Result result, ObjectInputStream ois) throws IOException, ClassNotFoundException {
+    private void updateManager(Result result, ObjectInputStream ois) throws IOException, ClassNotFoundException, DownloadException {
         switch (result) {
             case QUIZZES:
                 List<Quiz> quizzes = (List<Quiz>) ois.readObject();
@@ -130,19 +132,32 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
                 if (mDownloadClassMaterial != null && mDownloadClassMaterial instanceof StudyMaterial) {
                     StudyMaterial studyMaterial = (StudyMaterial) mDownloadClassMaterial;
 
+                    // get partition size
+                    int partitionSize = ois.readInt();
+
                     // download the file from teacher
                     BufferedOutputStream bos = null;
                     try {
-                        byte[] buffer = new byte[4 * 1024];
+                        byte[] buffer = new byte[BUFFER_SIZE];
                         File file = new File(BaseManager.STUDY_MATERIALS_PATH + sManager.getClassName() + File.separator + studyMaterial.getName());
                         bos = new BufferedOutputStream(new FileOutputStream(file));
                         int count = 0;
+                        int partitionCount = 0;
                         while ((count = ois.read(buffer)) > 0) {
                             bos.write(buffer, 0, count);
+                            partitionCount++;
                         }
 
-                        studyMaterial.setFile(file);
-                        mClassMaterial = sManager.updateStudyMaterial(studyMaterial);
+                        // check if downloaded all partition of fil correctly
+                        if (partitionCount >= partitionSize) {
+                            studyMaterial.setFile(file);
+                            mClassMaterial = sManager.updateStudyMaterial(studyMaterial);
+                        } else {
+                            if (file.exists()) {
+                                file.delete();
+                            }
+                            throw new DownloadException(mDownloadClassMaterial);
+                        }
                     } finally {
                         if (bos != null) {
                             bos.close();

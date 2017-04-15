@@ -24,6 +24,8 @@ public class TeacherThread implements Runnable {
         QUIZZES, QUIZ, STUDY_MATERIALS, STUDY_MATERIAL;
     }
 
+    private static final int BUFFER_SIZE = 1024;
+
     private final ServerSocket mSocket;
     private TeacherManager sManager;
 
@@ -112,11 +114,13 @@ public class TeacherThread implements Runnable {
 
         if (studyMaterial != null) {
             oos.writeObject(ClassMaterialsRequestTask.Result.STUDY_MATERIAL);
+            int partitionSize = (int) Math.ceil(studyMaterial.getFile().length() * 1.0 / BUFFER_SIZE);
+            oos.writeInt(partitionSize);
 
             // send file
             BufferedInputStream bis = null;
             try {
-                byte[] buffer = new byte[4 * 1024];
+                byte[] buffer = new byte[BUFFER_SIZE];
                 bis = new BufferedInputStream(new FileInputStream(studyMaterial.getFile()));
                 int count = 0;
                 while ((count = bis.read(buffer)) > 0) {

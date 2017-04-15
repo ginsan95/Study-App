@@ -257,7 +257,7 @@ public class SearchClassFragment extends SWDBaseFragment implements
     public void onConnectedToHost(String address) {
         // start the necessary thread
         sManager.setTeacherAddress(address);
-        if (sManager.getDeviceClass().getClassName() != null) {
+        if (sManager.getDeviceClass() != null) {
             endConnectionHandler();
             if (mProgressDialog != null && mProgressDialog.isShowing()) {
                 mProgressDialog.dismiss();

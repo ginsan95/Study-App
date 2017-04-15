@@ -802,6 +802,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[] { String.valueOf(studyMaterial.getId()) });
     }
 
+    public boolean existStudyMaterial(StudyMaterial studyMaterial) {
+        return existInTable(studyMaterial.getId(), TABLE_STUDY_MATERIAL, STUDY_MATERIAL_ID);
+    }
+
     // delete all study materials that belong to the class
     private void clearClassStudyMaterials(String className) {
         SQLiteDatabase db = this.getWritableDatabase();

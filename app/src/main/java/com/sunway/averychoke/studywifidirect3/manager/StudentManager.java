@@ -132,7 +132,11 @@ public class StudentManager extends BaseManager {
         if (index != -1) {
             StudyMaterial myStudyMaterial = getStudyClass().getStudyMaterials().get(index);
             myStudyMaterial.update(studyMaterial);
-            getDatabase().updateStudyMaterial(myStudyMaterial);
+            if (getDatabase().existStudyMaterial(myStudyMaterial)) {
+                getDatabase().updateStudyMaterial(myStudyMaterial);
+            } else {
+                getDatabase().addStudyMaterial(myStudyMaterial, getClassName());
+            }
             return myStudyMaterial;
         }
         return studyMaterial;
