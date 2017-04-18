@@ -30,13 +30,11 @@ import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
 import com.sunway.averychoke.studywifidirect3.model.Question;
 import com.sunway.averychoke.studywifidirect3.model.StudyClass;
 
-import java.util.List;
-
 /**
  * Created by AveryChoke on 22/1/2017.
  */
 
-public class ClassFragment extends SWDBaseFragment implements
+public class ClassesFragment extends SWDBaseFragment implements
         ClassesNameAdapter.ClassViewHolder.OnClassSelectListener {
 
     private DatabaseHelper mDatabase;
@@ -86,7 +84,7 @@ public class ClassFragment extends SWDBaseFragment implements
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_class_fragment, menu);
+        inflater.inflate(R.menu.menu_classes_fragment, menu);
     }
 
     @Override
@@ -105,8 +103,7 @@ public class ClassFragment extends SWDBaseFragment implements
     public void onClassSelected(final String className) {
         final CharSequence[] choices = new CharSequence[] {
                 getString(R.string.option_host_class),
-                getString(R.string.option_participate_class),
-                getString(R.string.option_view_class)
+                getString(R.string.option_participate_class)
         };
 
         new AlertDialog.Builder(getContext())
@@ -121,9 +118,6 @@ public class ClassFragment extends SWDBaseFragment implements
                                 break;
                             case 1: // Participate class
                                 getBaseActivity().changeFragment(SearchClassFragment.newInstance(className));
-                                break;
-                            case 2: // View edit class
-
                                 break;
                         }
                     }
@@ -167,7 +161,6 @@ public class ClassFragment extends SWDBaseFragment implements
                     public void onClick(DialogInterface dialog, int which) {
                         String className = editText.getText().toString();
                         if (!TextUtils.isEmpty(className.trim())) {
-                            //// TODO: create Class object and save to database
                             StudyClass studyClass = new StudyClass(className);
                             long errorCode = mDatabase.addClass(studyClass);
                             if (errorCode != -1) {

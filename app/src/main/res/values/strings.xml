@@ -14,7 +14,6 @@
     <string name="create_class_failure_message">Failed to create class. Please try again.</string>
     <string name="option_host_class">Host Class</string>
     <string name="option_participate_class">Participate Class</string>
-    <string name="option_view_class">View/Edit Class</string>
     <string name="option_delete_quiz">Delete Quiz</string>
     <string name="delete_quiz_dialog_message">Are you sure you want to delete this quiz?</string>
     <string name="option_delete_study_material">Delete Study Material</string>
@@ -61,4 +60,9 @@
     <string name="external_storage_settings">Please go to settings and enable external storage permission.</string>
     <string name="retry">Retry</string>
     <string name="open_study_material_failed_message">You do not have any apps that can open this study material.</string>
+    <string name="menu_class_info">Class information</string>
+    <string name="dialog_class_info_title">Class information</string>
+    <string name="dialog_class_info_teacher_message">%1$s (Teacher)</string>
+    <string name="dialog_class_info_student_offline_message">%1$s (Student - Offline)</string>
+    <string name="dialog_class_info_student_online_message">%1$s (Student - %2$s)</string>
 </resources>

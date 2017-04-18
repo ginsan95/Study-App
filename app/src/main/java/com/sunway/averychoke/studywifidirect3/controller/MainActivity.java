@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.databinding.DataBindingUtil;
 
 import com.sunway.averychoke.studywifidirect3.R;
-import com.sunway.averychoke.studywifidirect3.controller.class_navigation.ClassFragment;
+import com.sunway.averychoke.studywifidirect3.controller.class_navigation.ClassesFragment;
 import com.sunway.averychoke.studywifidirect3.databinding.ActivityMainContainerBinding;
 
 public class MainActivity extends SWDBaseActivity implements FragmentManager.OnBackStackChangedListener {
@@ -25,7 +25,7 @@ public class MainActivity extends SWDBaseActivity implements FragmentManager.OnB
 
         // display Class Fragment
         getSupportFragmentManager().beginTransaction()
-                .add(mBinding.containerLayout.getId(), new ClassFragment(), ClassFragment.class.getSimpleName())
+                .add(mBinding.containerLayout.getId(), new ClassesFragment(), ClassesFragment.class.getSimpleName())
                 .commit();
     }
 

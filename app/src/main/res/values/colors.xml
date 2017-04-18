@@ -13,4 +13,5 @@
     <color name="text_disable_color">#bdbdbd</color>
     <color name="text_downloading_color">#64dd17</color>
     <color name="text_error_color">#ff1744</color>
+    <color name="hint_color">#cfd8dc</color>
 </resources>
