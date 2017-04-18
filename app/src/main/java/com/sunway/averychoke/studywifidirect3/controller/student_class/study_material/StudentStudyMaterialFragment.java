@@ -85,7 +85,7 @@ public class StudentStudyMaterialFragment extends StudyMaterialFragment implemen
             try {
                 startActivity(intent);
             } catch (ActivityNotFoundException e) {
-                Toast.makeText(getContext(), e.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.open_study_material_failed_message, Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -9,6 +9,7 @@ import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
 import com.sunway.averychoke.studywifidirect3.model.Quiz;
 import com.sunway.averychoke.studywifidirect3.model.StudyMaterial;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -30,7 +31,7 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
         QUIZZES, QUIZ, STUDY_MATERIALS, STUDY_MATERIAL, ERROR;
     }
 
-    private static final int BUFFER_SIZE = 1024;
+    private static final int BUFFER_SIZE = 4 * 1024;
 
     private String mAddress;
     private ClassMaterialsUpdaterListener mListener;
@@ -145,10 +146,11 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
                         byte[] buffer = new byte[BUFFER_SIZE];
                         File file = new File(baseFile, studyMaterial.getName());
                         bos = new BufferedOutputStream(new FileOutputStream(file));
-                        int count = 0;
+                        int len = 0;
                         int partitionCount = 0;
-                        while ((count = ois.read(buffer)) > 0) {
-                            bos.write(buffer, 0, count);
+                        BufferedInputStream bis = new BufferedInputStream(ois);
+                        while ((len = bis.read(buffer)) > 0) {
+                            bos.write(buffer, 0, len);
                             partitionCount++;
                         }
 

@@ -60,4 +60,5 @@
     <string name="external_storage_reason">To use the study materials section, please enable external storage access permission.</string>
     <string name="external_storage_settings">Please go to settings and enable external storage permission.</string>
     <string name="retry">Retry</string>
+    <string name="open_study_material_failed_message">You do not have any apps that can open this study material.</string>
 </resources>
