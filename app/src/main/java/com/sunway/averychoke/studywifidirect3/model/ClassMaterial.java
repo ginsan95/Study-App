@@ -1,12 +1,14 @@
 package com.sunway.averychoke.studywifidirect3.model;
 
+import android.support.annotation.NonNull;
+
 import java.io.Serializable;
 
 /**
  * Created by AveryChoke on 29/1/2017.
  */
 
-public class ClassMaterial implements Serializable {
+public class ClassMaterial implements Serializable, Comparable<ClassMaterial> {
     public enum Status {
         NORMAL, DOWNLOADING, PENDING, ERROR;
     }
@@ -51,6 +53,17 @@ public class ClassMaterial implements Serializable {
         }
         ClassMaterial classMaterial = (ClassMaterial) o;
         return classMaterial.mId == mId;
+    }
+
+    @Override
+    public int compareTo(@NonNull ClassMaterial classMaterial) {
+        if (mStatus == Status.PENDING && classMaterial.mStatus != Status.PENDING) {
+            return 1;
+        } else if (mStatus != Status.PENDING && classMaterial.mStatus == Status.PENDING) {
+            return -1;
+        } else {
+            return mName.toLowerCase().compareTo(classMaterial.mName.toLowerCase());
+        }
     }
 
     // region get set

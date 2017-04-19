@@ -23,7 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sunway.averychoke.studywifidirect3.R;
-import com.sunway.averychoke.studywifidirect3.controller.SWDBaseActivity;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
 import com.sunway.averychoke.studywifidirect3.controller.student_class.StudentClassActivity;
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
@@ -85,7 +84,7 @@ public class SearchClassFragment extends SWDBaseFragment implements
         mWifiManager = (WifiP2pManager) getActivity().getSystemService(Context.WIFI_P2P_SERVICE);
         mChannel = mWifiManager.initialize(getActivity(), getActivity().getMainLooper(), null);
         if (mWifiManager != null && mChannel != null) {
-            WifiDirectUtil.deletePersistentGroups(mWifiManager, mChannel);
+            WifiDirectUtil.deletePersistentGroup(mWifiManager, mChannel);
             mWifiManager.setDnsSdResponseListeners(mChannel, this, this);
         }
 

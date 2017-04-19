@@ -10,10 +10,10 @@ import java.lang.reflect.Method;
  */
 
 public class WifiDirectUtil {
-    public static void deletePersistentGroups(WifiP2pManager manager, WifiP2pManager.Channel channel) {
+    public static void deletePersistentGroup(WifiP2pManager manager, WifiP2pManager.Channel channel) {
         try {
             Method method = WifiP2pManager.class.getMethod("deletePersistentGroup",
-                    WifiP2pManager.Channel.class, Integer.class, WifiP2pManager.ActionListener.class);
+                    WifiP2pManager.Channel.class, int.class, WifiP2pManager.ActionListener.class);
 
             for (int netId = 0; netId < 32; netId++) {
                 method.invoke(manager, channel, netId, null);

@@ -9,6 +9,7 @@ import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -51,33 +52,35 @@ public class ClassMaterialAdapter extends RecyclerView.Adapter<ClassMaterialView
     public void setClassMaterials(List<? extends ClassMaterial> classMaterials) {
         mClassMaterials.clear();
         mClassMaterials.addAll(classMaterials);
-        // sort
-
+        Collections.sort(mClassMaterials);
         notifyDataSetChanged();
     }
 
     public void addClassMaterial(ClassMaterial classMaterial) {
         mClassMaterials.add(classMaterial);
-        notifyItemInserted(mClassMaterials.size()-1);
+        Collections.sort(mClassMaterials);
+        notifyItemInserted(mClassMaterials.indexOf(classMaterial));
     }
 
     public void replaceClassMaterial(ClassMaterial classMaterial) {
         int index = mClassMaterials.indexOf(classMaterial);
         if (index >= 0) {
             mClassMaterials.set(index, classMaterial);
-            notifyItemChanged(index);
+            Collections.sort(mClassMaterials);
+            int newIndex = mClassMaterials.indexOf(classMaterial);
+            if (newIndex != index) {
+                notifyItemMoved(index, newIndex);
+            }
+            notifyItemChanged(newIndex);
         } else {
-            mClassMaterials.add(classMaterial);
-            notifyItemInserted(mClassMaterials.size() - 1);
+            addClassMaterial(classMaterial);
         }
     }
 
     public void addClassMaterials(List<? extends ClassMaterial> classMaterials) {
-        int startIndex = mClassMaterials.size();
-
         mClassMaterials.addAll(classMaterials);
-
-        notifyItemRangeInserted(startIndex, classMaterials.size());
+        Collections.sort(mClassMaterials);
+        notifyDataSetChanged();
     }
 
     public void removeClassMaterial(int index) {

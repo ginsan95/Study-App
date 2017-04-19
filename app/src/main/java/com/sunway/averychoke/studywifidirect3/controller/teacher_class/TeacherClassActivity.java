@@ -17,6 +17,7 @@ import com.sunway.averychoke.studywifidirect3.controller.connection.TeacherThrea
 import com.sunway.averychoke.studywifidirect3.databinding.ActivityMainContainerBinding;
 import com.sunway.averychoke.studywifidirect3.manager.BaseManager;
 import com.sunway.averychoke.studywifidirect3.manager.TeacherManager;
+import com.sunway.averychoke.studywifidirect3.util.WifiDirectUtil;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -58,6 +59,8 @@ public class TeacherClassActivity extends SWDBaseActivity {
 
         // region setup wifi direct service
         if (mWifiManager != null && mChannel != null) {
+            WifiDirectUtil.deletePersistentGroup(mWifiManager, mChannel);
+
             Map<String, String> record = new HashMap<>();
             record.put("class_name", TeacherManager.getInstance().getClassName());
             final WifiP2pDnsSdServiceInfo serviceInfo = WifiP2pDnsSdServiceInfo.newInstance(BaseManager.APP_ID, "_presence._tcp", record);
