@@ -113,12 +113,27 @@ public class StudentManager extends BaseManager {
             return;
         }
 
+        // store list of pending study materials
+        List<StudyMaterial> pendingStudyMaterials = new ArrayList<>();
+        for (StudyMaterial studyMaterial : getStudyClass().getStudyMaterials()) {
+            if (studyMaterial.getStatus() == ClassMaterial.Status.PENDING) {
+                pendingStudyMaterials.add(studyMaterial);
+            }
+        }
+
         // update current data
         for (String name : studyMaterialsName) {
             int index = getStudyMaterialIndex(name);
-            if (index == -1) {
+            if (index >= 0) {
+                pendingStudyMaterials.remove(getStudyClass().getStudyMaterials().get(index));
+            } else {
                 getStudyClass().getStudyMaterials().add(new StudyMaterial(name));
             }
+        }
+
+        // remove old pending study materials
+        if (pendingStudyMaterials.size() > 0) {
+            getStudyClass().getStudyMaterials().removeAll(pendingStudyMaterials);
         }
     }
 

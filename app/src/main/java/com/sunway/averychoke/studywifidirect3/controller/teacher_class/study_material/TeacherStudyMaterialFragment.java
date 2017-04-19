@@ -113,14 +113,16 @@ public class TeacherStudyMaterialFragment extends StudyMaterialFragment implemen
     // region class material view holder
     @Override
     public void onClassMaterialSelected(@NonNull ClassMaterial classMaterial) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        Uri uri = Uri.fromFile(((StudyMaterial)classMaterial).getFile());
-        String mimeType = FileUtil.getMimeType(getContext(), uri);
-        intent.setDataAndType(uri, mimeType);
-        try {
-            startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(getContext(), R.string.open_study_material_failed_message, Toast.LENGTH_SHORT).show();
+        if (classMaterial.getStatus() == ClassMaterial.Status.NORMAL) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            Uri uri = Uri.fromFile(((StudyMaterial) classMaterial).getFile());
+            String mimeType = FileUtil.getMimeType(getContext(), uri);
+            intent.setDataAndType(uri, mimeType);
+            try {
+                startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                Toast.makeText(getContext(), R.string.open_study_material_failed_message, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
