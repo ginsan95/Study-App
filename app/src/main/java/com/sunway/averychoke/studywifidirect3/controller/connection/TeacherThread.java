@@ -14,6 +14,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by AveryChoke on 8/4/2017.
@@ -28,6 +30,7 @@ public class TeacherThread implements Runnable {
 
     private final ServerSocket mSocket;
     private TeacherManager sManager;
+    private ExecutorService mExecutor;
 
     public TeacherThread() throws IOException {
         mSocket = new ServerSocket(BaseManager.APP_PORT_NUMBER);
@@ -37,39 +40,45 @@ public class TeacherThread implements Runnable {
     @Override
     public void run() {
         try {
+            mExecutor = Executors.newCachedThreadPool();
             while (true) {
                 try {
                     // wait for student to connect
-                    Socket socket = mSocket.accept();
+                    final Socket socket = mSocket.accept();
 
-                    try {
-                        ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-                        Request requestCode = (Request) ois.readObject();
-
-                        switch (requestCode) {
-                            case QUIZZES:
-                                sendQuizzes(socket);
-                                break;
-                            case QUIZ:
-                                sendQuiz(socket, ois);
-                                break;
-                            case STUDY_MATERIALS:
-                                sendStudyMaterialsName(socket);
-                                break;
-                            case STUDY_MATERIAL:
-                                sendStudyMaterial(socket, ois);
-                                break;
-                        }
-                    } catch (IOException | ClassNotFoundException e) {
-                        e.printStackTrace();
-                        if (socket.isConnected()) {
+                    mExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
                             try {
-                                socket.close();
-                            } catch (IOException e1) {
-                                e1.printStackTrace();
+                                ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+                                Request requestCode = (Request) ois.readObject();
+
+                                switch (requestCode) {
+                                    case QUIZZES:
+                                        sendQuizzes(socket);
+                                        break;
+                                    case QUIZ:
+                                        sendQuiz(socket, ois);
+                                        break;
+                                    case STUDY_MATERIALS:
+                                        sendStudyMaterialsName(socket);
+                                        break;
+                                    case STUDY_MATERIAL:
+                                        sendStudyMaterial(socket, ois);
+                                        break;
+                                }
+                            } catch (IOException | ClassNotFoundException e) {
+                                e.printStackTrace();
+                                if (!socket.isClosed()) {
+                                    try {
+                                        socket.close();
+                                    } catch (IOException e1) {
+                                        e1.printStackTrace();
+                                    }
+                                }
                             }
                         }
-                    }
+                    });
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -78,6 +87,9 @@ public class TeacherThread implements Runnable {
             }
         } finally {
             disconnect();
+            if (mExecutor != null && !mExecutor.isShutdown()) {
+                mExecutor.shutdown();
+            }
         }
     }
 
@@ -142,7 +154,7 @@ public class TeacherThread implements Runnable {
     // endregion
 
     public void disconnect() {
-        if (mSocket != null) {
+        if (mSocket != null && !mSocket.isClosed()) {
             try {
                 mSocket.close();
             } catch (IOException e) {

@@ -185,7 +185,7 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
     }
 
     public void disconnect() {
-        if (mSocket != null && mSocket.isConnected()) {
+        if (mSocket != null && !mSocket.isClosed()) {
             try {
                 mSocket.close();
             } catch (IOException e) {

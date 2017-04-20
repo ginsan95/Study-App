@@ -3,16 +3,15 @@ package com.sunway.averychoke.studywifidirect3.manager;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
-import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
 import com.sunway.averychoke.studywifidirect3.model.Quiz;
-import com.sunway.averychoke.studywifidirect3.model.StudyClass;
 import com.sunway.averychoke.studywifidirect3.model.StudyMaterial;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Created by AveryChoke on 2/4/2017.
@@ -22,13 +21,17 @@ public class TeacherManager extends BaseManager {
 
     private static final TeacherManager sInstance = new TeacherManager();
 
-    private Map<String, Quiz> mQuizMap;
-    private Map<String, StudyMaterial> mStudyMaterialMap;
+    private final Map<String, Quiz> mQuizMap;
+    private final Map<String, StudyMaterial> mStudyMaterialMap;
+    private final ReentrantReadWriteLock mQuizLock;
+    private final ReentrantReadWriteLock mStudyMaterialLock;
 
     private TeacherManager() {
         super();
         mQuizMap = new HashMap<>();
         mStudyMaterialMap = new HashMap<>();
+        mQuizLock = new ReentrantReadWriteLock();
+        mStudyMaterialLock = new ReentrantReadWriteLock();
     }
 
     public static TeacherManager getInstance() {
@@ -50,21 +53,31 @@ public class TeacherManager extends BaseManager {
 
     // region Quiz
     public List<Quiz> getVisibleQuizzes() {
-        List<Quiz> visibleQuizzes = new ArrayList<>();
-        for (Quiz quiz : getQuizzes()) {
-            if (quiz.isVisible()) {
-                visibleQuizzes.add(quiz);
+        mQuizLock.readLock().lock();
+        try {
+            List<Quiz> visibleQuizzes = new ArrayList<>();
+            for (Quiz quiz : getQuizzes()) {
+                if (quiz.isVisible()) {
+                    visibleQuizzes.add(quiz);
+                }
             }
+            return visibleQuizzes;
+        } finally {
+            mQuizLock.readLock().unlock();
         }
-        return visibleQuizzes;
     }
 
     public Quiz findQuiz(String name) {
-        Quiz quiz = mQuizMap.get(name.toLowerCase());
-        if (quiz != null && quiz.isVisible()) {
-            return quiz;
-        } else {
-            return null;
+        mQuizLock.readLock().lock();
+        try {
+            Quiz quiz = mQuizMap.get(name.toLowerCase());
+            if (quiz != null && quiz.isVisible()) {
+                return quiz;
+            } else {
+                return null;
+            }
+        } finally {
+            mQuizLock.readLock().unlock();
         }
     }
 
@@ -75,10 +88,14 @@ public class TeacherManager extends BaseManager {
             return false;
         }
 
-        getStudyClass().getQuizzes().add(quiz);
-        mQuizMap.put(quiz.getName().toLowerCase(), quiz);
-
-        return true;
+        mQuizLock.writeLock().lock();
+        try {
+            getStudyClass().getQuizzes().add(quiz);
+            mQuizMap.put(quiz.getName().toLowerCase(), quiz);
+            return true;
+        } finally {
+            mQuizLock.writeLock().unlock();
+        }
     }
 
     public boolean updateQuiz(Quiz quiz, String oldName) {
@@ -89,34 +106,64 @@ public class TeacherManager extends BaseManager {
             return false;
         }
 
-        int index = getStudyClass().getQuizzes().indexOf(quiz);
-        getStudyClass().getQuizzes().set(index, quiz);
+        int index = -1;
+        mQuizLock.readLock().lock();
+        try {
+            index = getStudyClass().getQuizzes().indexOf(quiz);
+        } finally {
+            mQuizLock.readLock().unlock();
+        }
 
-        mQuizMap.remove(oldName);
-        mQuizMap.put(quiz.getName().toLowerCase(), quiz);
-
-        return true;
+        if (index >= 0) {
+            mQuizLock.writeLock().lock();
+            try {
+                getStudyClass().getQuizzes().set(index, quiz);
+                mQuizMap.remove(oldName);
+                mQuizMap.put(quiz.getName().toLowerCase(), quiz);
+                return true;
+            } finally {
+                mQuizLock.writeLock().unlock();
+            }
+        } else {
+            return false;
+        }
     }
 
     public void updateQuizVisible(Quiz quiz) {
         if (getStudyClass() != null && getDatabase() != null) {
-            int index = getStudyClass().getQuizzes().indexOf(quiz);
-            getStudyClass().getQuizzes().set(index, quiz);
-            mQuizMap.remove(quiz.getName());
-            mQuizMap.put(quiz.getName().toLowerCase(), quiz);
             getDatabase().updateClassMaterialVisible(quiz);
+
+            mQuizLock.readLock().lock();
+            try {
+                int index = getStudyClass().getQuizzes().indexOf(quiz);
+                getStudyClass().getQuizzes().set(index, quiz);
+                mQuizMap.remove(quiz.getName());
+                mQuizMap.put(quiz.getName().toLowerCase(), quiz);
+            } finally {
+                mQuizLock.readLock().unlock();
+            }
         }
     }
 
     @Override
     public void deleteQuiz(Quiz quiz) {
-        super.deleteQuiz(quiz);
-        mQuizMap.remove(quiz.getName().toLowerCase());
+        mQuizLock.writeLock().lock();
+        try {
+            super.deleteQuiz(quiz);
+            mQuizMap.remove(quiz.getName().toLowerCase());
+        } finally {
+            mQuizLock.writeLock().unlock();
+        }
     }
 
     public boolean isQuizNameConflicting(String newName, @Nullable String oldName) {
         if (oldName != null) {
-            return !newName.equalsIgnoreCase(oldName) && mQuizMap.containsKey(newName.toLowerCase());
+            mQuizLock.readLock().lock();
+            try {
+                return !newName.equalsIgnoreCase(oldName) && mQuizMap.containsKey(newName.toLowerCase());
+            } finally {
+                mQuizLock.readLock().unlock();
+            }
         } else {
             return mQuizMap.containsKey(newName.toLowerCase());
         }
@@ -125,21 +172,31 @@ public class TeacherManager extends BaseManager {
 
     // region Study Material
     public List<String> getVisibleStudyMaterialsName() {
-        List<String> visibleNames = new ArrayList<>();
-        for (StudyMaterial studyMaterial : getStudyMaterials()) {
-            if (studyMaterial.isVisible() && studyMaterial.getStatus() != ClassMaterial.Status.ERROR) {
-                visibleNames.add(studyMaterial.getName());
+        mStudyMaterialLock.readLock().lock();
+        try {
+            List<String> visibleNames = new ArrayList<>();
+            for (StudyMaterial studyMaterial : getStudyMaterials()) {
+                if (studyMaterial.isVisible() && studyMaterial.getStatus() != ClassMaterial.Status.ERROR) {
+                    visibleNames.add(studyMaterial.getName());
+                }
             }
+            return visibleNames;
+        } finally {
+            mStudyMaterialLock.readLock().unlock();
         }
-        return visibleNames;
     }
 
     public StudyMaterial findStudyMaterial(String name) {
-        StudyMaterial studyMaterial = mStudyMaterialMap.get(name.toLowerCase());
-        if (studyMaterial != null && studyMaterial.isVisible() && studyMaterial.getStatus() != ClassMaterial.Status.ERROR) {
-            return studyMaterial;
-        } else {
-            return null;
+        mStudyMaterialLock.readLock().lock();
+        try {
+            StudyMaterial studyMaterial = mStudyMaterialMap.get(name.toLowerCase());
+            if (studyMaterial != null && studyMaterial.isVisible() && studyMaterial.getStatus() != ClassMaterial.Status.ERROR) {
+                return studyMaterial;
+            } else {
+                return null;
+            }
+        } finally {
+            mStudyMaterialLock.readLock().unlock();
         }
     }
 
@@ -150,26 +207,43 @@ public class TeacherManager extends BaseManager {
             return false;
         }
 
-        getStudyClass().getStudyMaterials().add(studyMaterial);
-        mStudyMaterialMap.put(studyMaterial.getName().toLowerCase(), studyMaterial);
-
-        return true;
+        mStudyMaterialLock.writeLock().lock();
+        try {
+            getStudyClass().getStudyMaterials().add(studyMaterial);
+            mStudyMaterialMap.put(studyMaterial.getName().toLowerCase(), studyMaterial);
+            return true;
+        } finally {
+            mStudyMaterialLock.writeLock().unlock();
+        }
     }
 
     public void updateStudyMaterialVisible(StudyMaterial studyMaterial) {
         if (getStudyClass() != null && getDatabase() != null) {
-            int index = getStudyClass().getStudyMaterials().indexOf(studyMaterial);
-            getStudyClass().getStudyMaterials().set(index, studyMaterial);
-            mStudyMaterialMap.remove(studyMaterial.getName());
-            mStudyMaterialMap.put(studyMaterial.getName().toLowerCase(), studyMaterial);
             getDatabase().updateClassMaterialVisible(studyMaterial);
+
+            mStudyMaterialLock.readLock().lock();
+            try {
+                int index = getStudyClass().getStudyMaterials().indexOf(studyMaterial);
+                if (index >= 0) {
+                    getStudyClass().getStudyMaterials().set(index, studyMaterial);
+                    mStudyMaterialMap.remove(studyMaterial.getName());
+                    mStudyMaterialMap.put(studyMaterial.getName().toLowerCase(), studyMaterial);
+                }
+            } finally {
+                mStudyMaterialLock.readLock().unlock();
+            }
         }
     }
 
     @Override
     public void deleteStudyMaterial(StudyMaterial studyMaterial) {
-        super.deleteStudyMaterial(studyMaterial);
-        mStudyMaterialMap.remove(studyMaterial.getName().toLowerCase());
+        mStudyMaterialLock.writeLock().lock();
+        try {
+            super.deleteStudyMaterial(studyMaterial);
+            mStudyMaterialMap.remove(studyMaterial.getName().toLowerCase());
+        } finally {
+            mStudyMaterialLock.writeLock().unlock();
+        }
     }
     // endregion
 
