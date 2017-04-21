@@ -62,7 +62,14 @@
     <string name="open_study_material_failed_message">You do not have any apps that can open this study material.</string>
     <string name="menu_class_info">Class information</string>
     <string name="dialog_class_info_title">Class information</string>
-    <string name="dialog_class_info_teacher_message">%1$s (Teacher)</string>
+    <string name="dialog_class_info_teacher_online_message">%1$s (Teacher)</string>
+    <string name="dialog_class_info_teacher_offline_message">%1$s (Teacher - Offline)</string>
     <string name="dialog_class_info_student_offline_message">%1$s (Student - Offline)</string>
     <string name="dialog_class_info_student_online_message">%1$s (Student - %2$s)</string>
+    <string name="menu_restart">Restart</string>
+    <string name="restart_success">Restarted successfully</string>
+    <string name="student_class_connection_error_message">Failed to connect to teacher. You might have already lost connection. Please try again.</string>
+    <string name="restart_failed">Restart failed</string>
+    <string name="dialog_wifi_offline_title">WiFi Offline</string>
+    <string name="dialog_wifi_offline_message">Please turn on your WiFi in order to be discoverable by other devices.</string>
 </resources>

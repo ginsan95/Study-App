@@ -1,6 +1,8 @@
 package com.sunway.averychoke.studywifidirect3.controller.teacher_class;
 
+import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -26,6 +28,9 @@ import com.sunway.averychoke.studywifidirect3.manager.TeacherManager;
  */
 
 public class TeacherClassFragment extends SWDBaseFragment {
+    public interface OnTeacherRestartListener {
+        void onTeacherRestart();
+    }
 
     private TeacherManager sManager;
 
@@ -66,10 +71,22 @@ public class TeacherClassFragment extends SWDBaseFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.restart:
+                if (getActivity() instanceof OnTeacherRestartListener) {
+                    ((OnTeacherRestartListener) getActivity()).onTeacherRestart();
+                }
+                return true;
             case R.id.class_info:
+                WifiManager wifiManager = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                String message = "";
+                if (wifiManager != null && !wifiManager.isWifiEnabled()) {
+                    message += getString(R.string.dialog_class_info_teacher_offline_message, sManager.getClassName());
+                } else {
+                    message = getString(R.string.dialog_class_info_teacher_online_message, sManager.getClassName());
+                }
                 new AlertDialog.Builder(getContext())
                         .setTitle(R.string.dialog_class_info_title)
-                        .setMessage(getString(R.string.dialog_class_info_teacher_message, sManager.getClassName()))
+                        .setMessage(message)
                         .show();
                 return true;
             default:

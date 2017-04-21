@@ -65,6 +65,7 @@ public class StudentClassFragment extends SWDBaseFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_class_fragment, menu);
+        menu.findItem(R.id.restart).setVisible(false);
     }
 
     @Override

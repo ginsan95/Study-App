@@ -142,8 +142,8 @@ public class SearchClassFragment extends SWDBaseFragment implements
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onDestroyView() {
+        super.onDestroyView();
         mBinding.classesSwipeRefreshLayout.setRefreshing(false);
         try {
             getActivity().unregisterReceiver(mSearchReceiver);

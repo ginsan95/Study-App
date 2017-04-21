@@ -24,6 +24,8 @@ public class WifiDirectUtil {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
         }
     }
 }

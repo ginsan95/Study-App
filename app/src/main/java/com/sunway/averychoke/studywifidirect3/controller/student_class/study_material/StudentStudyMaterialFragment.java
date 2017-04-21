@@ -147,6 +147,9 @@ public class StudentStudyMaterialFragment extends StudyMaterialFragment implemen
     @Override
     public void onError(Exception e) {
         getBinding().classMaterial.materialsSwipeRefreshLayout.setRefreshing(false);
+        if (e != null) {
+            e.printStackTrace();
+        }
 
         if (e instanceof DownloadException) {
             ClassMaterial classMaterial = ((DownloadException) e).getClassMaterial();
@@ -155,10 +158,11 @@ public class StudentStudyMaterialFragment extends StudyMaterialFragment implemen
                 sManager.updateStudyMaterialStatus(studyMaterial, ClassMaterial.Status.PENDING);
                 mAdapter.replaceClassMaterial(studyMaterial);
             }
-        }
-
-        if (getContext() != null) {
-            Toast.makeText(getContext(), e != null ? e.toString() : "Error", Toast.LENGTH_SHORT).show();
+            if (getContext() != null) {
+                Toast.makeText(getContext(), e.toString(), Toast.LENGTH_SHORT).show();
+            }
+        } else if (getContext() != null) {
+            Toast.makeText(getContext(), R.string.student_class_connection_error_message, Toast.LENGTH_SHORT).show();
         }
     }
     // endregion
