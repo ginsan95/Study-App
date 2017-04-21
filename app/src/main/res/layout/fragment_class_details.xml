@@ -8,9 +8,10 @@
         android:id="@+id/class_view_pager">
 
         <android.support.design.widget.TabLayout
+            android:id="@+id/class_tab_layout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:id="@+id/class_tab_layout"
+            app:tabMaxWidth="0dp"
             android:layout_gravity="top"
             app:tabGravity="fill"/>
 

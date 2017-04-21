@@ -12,7 +12,7 @@
             android:layout_height="wrap_content"
             android:textSize="14sp"
             android:text="@string/go_offline_button"
-            android:background="?attr/selectableItemBackground"
+            style="@style/AppTheme.FullWidthButton"
             android:textAllCaps="false"
             android:visibility="gone"/>
 

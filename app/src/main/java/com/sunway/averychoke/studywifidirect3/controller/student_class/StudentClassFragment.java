@@ -29,7 +29,6 @@ import com.sunway.averychoke.studywifidirect3.manager.StudentManager;
 
 public class StudentClassFragment extends SWDBaseFragment {
     private StudentManager sManager;
-    private DatabaseHelper mDatabase;
 
     private FragmentClassDetailsBinding mBinding;
     private ClassPagerFragmentAdapter mClassPagerFragmentAdapter;
@@ -37,10 +36,7 @@ public class StudentClassFragment extends SWDBaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         sManager = StudentManager.getInstance();
-        mDatabase = new DatabaseHelper(getContext());
-
         mClassPagerFragmentAdapter = new ClassPagerFragmentAdapter(getChildFragmentManager());
     }
 

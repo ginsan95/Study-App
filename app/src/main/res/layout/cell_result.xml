@@ -5,7 +5,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center"
-        android:background="@drawable/border"
+        android:background="#4BADD4"
         android:padding="10dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
@@ -21,12 +21,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/total_marks"
-                android:textSize="14sp"/>
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/marks_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
                 android:textSize="14sp"
                 android:text="99/100"/>
 
@@ -36,6 +38,8 @@
             android:id="@+id/marks_percentage_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
             android:paddingTop="8dp"
             android:text="(99%)"/>
 

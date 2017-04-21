@@ -4,6 +4,7 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/color_background</item>
 
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
@@ -16,6 +17,15 @@
     <style name="AppTheme.AppBar" parent="ThemeOverlay.AppCompat.ActionBar">
         <item name="android:textColorPrimary">@android:color/white</item>
         <item name="android:textColorHint">@color/hint_color</item>
+    </style>
+
+    <style name="AppTheme.Button" parent="Base.Widget.AppCompat.Button.Colored">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme.FullWidthButton" parent="Base.Widget.AppCompat.Button">
+        <item name="android:background">@color/color_accent</item>
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
 </resources>

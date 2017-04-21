@@ -10,5 +10,6 @@
         android:layout_marginBottom="16dp"
         android:text="@string/submit_button"
         android:textAllCaps="false"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_gravity="center_horizontal"
+        style="@style/AppTheme.Button"/>
 </layout>

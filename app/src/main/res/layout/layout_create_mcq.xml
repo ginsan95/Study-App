@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <LinearLayout android:orientation="vertical"
+    <LinearLayout
+        android:id="@+id/container_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/container_layout">
+        android:orientation="vertical">
 
         <RadioGroup
+            android:id="@+id/choices_radio_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/choices_radio_group"/>
+            android:orientation="vertical" />
 
         <Button
+            android:id="@+id/add_choices_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minHeight="0dp"
@@ -20,7 +22,7 @@
             android:text="@string/add_choice_button"
             android:textAllCaps="false"
             android:textSize="14sp"
-            android:id="@+id/add_choices_button"/>
+            style="@style/AppTheme.Button"/>
     </LinearLayout>
 
 </layout>
