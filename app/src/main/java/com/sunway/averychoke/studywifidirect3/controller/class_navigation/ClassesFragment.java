@@ -164,7 +164,7 @@ public class ClassesFragment extends SWDBaseFragment implements
                             StudyClass studyClass = new StudyClass(className);
                             long errorCode = mDatabase.addClass(studyClass);
                             if (errorCode != -1) {
-                                mAdapter.addClassName(editText.getText().toString());
+                                mAdapter.addClassName(className);
                                 return; // successfully exited the method
                             }
                         }

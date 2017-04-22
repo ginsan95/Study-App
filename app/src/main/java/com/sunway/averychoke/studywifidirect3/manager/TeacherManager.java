@@ -7,6 +7,7 @@ import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
 import com.sunway.averychoke.studywifidirect3.model.Quiz;
 import com.sunway.averychoke.studywifidirect3.model.StudyMaterial;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -226,13 +227,50 @@ public class TeacherManager extends BaseManager {
                 int index = getStudyClass().getStudyMaterials().indexOf(studyMaterial);
                 if (index >= 0) {
                     getStudyClass().getStudyMaterials().set(index, studyMaterial);
-                    mStudyMaterialMap.remove(studyMaterial.getName());
                     mStudyMaterialMap.put(studyMaterial.getName().toLowerCase(), studyMaterial);
                 }
             } finally {
                 mStudyMaterialLock.readLock().unlock();
             }
         }
+    }
+
+    public boolean renameStudyMaterial(StudyMaterial studyMaterial, String newName) {
+        if (getStudyClass() != null && getDatabase() != null) {
+            // get index
+            int index = -1;
+            mStudyMaterialLock.readLock().lock();
+            try {
+                index = getStudyClass().getStudyMaterials().indexOf(studyMaterial);
+            } finally {
+                mStudyMaterialLock.readLock().unlock();
+            }
+
+            StudyMaterial existingStudyMaterial = mStudyMaterialMap.get(newName.toLowerCase());
+            File newFile = new File(studyMaterial.getFile().getParent(), newName);
+            boolean success = (existingStudyMaterial == null || studyMaterial.equals(existingStudyMaterial))
+                    && studyMaterial.getFile().renameTo(newFile);
+
+            if (index >= 0 && success) {
+                // rename
+                String oldName = studyMaterial.getName();
+                studyMaterial.setName(newName);
+                studyMaterial.setFile(newFile);
+
+                // change data
+                mStudyMaterialLock.writeLock().lock();
+                try {
+                    getDatabase().updateStudyMaterial(studyMaterial);
+                    getStudyClass().getStudyMaterials().set(index, studyMaterial);
+                    mStudyMaterialMap.remove(oldName.toLowerCase());
+                    mStudyMaterialMap.put(newName.toLowerCase(), studyMaterial);
+                    return true;
+                } finally {
+                    mStudyMaterialLock.writeLock().unlock();
+                }
+            }
+        }
+        return false;
     }
 
     @Override

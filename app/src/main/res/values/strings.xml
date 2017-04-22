@@ -14,9 +14,9 @@
     <string name="create_class_failure_message">Failed to create class. Please try again.</string>
     <string name="option_host_class">Host Class</string>
     <string name="option_participate_class">Participate Class</string>
-    <string name="option_delete_quiz">Delete Quiz</string>
+    <string name="dialog_delete_quiz_title">Delete Quiz</string>
     <string name="delete_quiz_dialog_message">Are you sure you want to delete this quiz?</string>
-    <string name="option_delete_study_material">Delete Study Material</string>
+    <string name="dialog_delete_study_material_title">Delete Study Material</string>
     <string name="delete_study_material_message">Are you sure you want to delete this study material?</string>
     <string name="create_question_question_hint">Write your question here</string>
     <string name="add_choice_button">Add choices</string>
@@ -72,4 +72,9 @@
     <string name="restart_failed">Restart failed</string>
     <string name="dialog_wifi_offline_title">WiFi Offline</string>
     <string name="dialog_wifi_offline_message">Please turn on your WiFi in order to be discoverable by other devices.</string>
+    <string name="option_delete">Delete</string>
+    <string name="option_rename">Rename</string>
+    <string name="dialog_rename_study_material_title">Rename Study Material</string>
+    <string name="dialog_rename_study_material_message">Enter new name</string>
+    <string name="rename_study_material_failure_message">Failed to rename. Please try to use a different name.</string>
 </resources>

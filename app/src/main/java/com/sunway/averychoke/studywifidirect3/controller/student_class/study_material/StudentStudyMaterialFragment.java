@@ -102,22 +102,26 @@ public class StudentStudyMaterialFragment extends StudyMaterialFragment implemen
         if (!sManager.isOffline()) {
             options.add(getString(R.string.option_download));
         }
-        options.add(getString(R.string.option_delete_study_material));
+        options.add(getString(R.string.option_delete));
         // endregion
 
-        new AlertDialog.Builder(getContext())
-                .setItems(options.toArray(new CharSequence[options.size()]), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String option = options.get(which).toString();
-                        if (option.equals(getString(R.string.option_download))) {
-                            downloadStudyMaterial(studyMaterial);
-                        } else if (option.equals(getString(R.string.option_delete_study_material))) {
-                            deleteStudyMaterial(studyMaterial, index);
+        if (options.size() > 1) {
+            new AlertDialog.Builder(getContext())
+                    .setItems(options.toArray(new CharSequence[options.size()]), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String option = options.get(which).toString();
+                            if (option.equals(getString(R.string.option_download))) {
+                                downloadStudyMaterial(studyMaterial);
+                            } else if (option.equals(getString(R.string.option_delete))) {
+                                deleteStudyMaterial(studyMaterial, index);
+                            }
                         }
-                    }
-                })
-                .show();
+                    })
+                    .show();
+        } else {
+            deleteStudyMaterial(studyMaterial, index);
+        }
     }
 
     @Override
@@ -178,7 +182,7 @@ public class StudentStudyMaterialFragment extends StudyMaterialFragment implemen
 
     private void deleteStudyMaterial(final StudyMaterial studyMaterial, final int index) {
         new AlertDialog.Builder(getContext())
-                .setTitle(R.string.option_delete_study_material)
+                .setTitle(R.string.dialog_delete_study_material_title)
                 .setMessage(R.string.delete_study_material_message)
                 .setPositiveButton(R.string.dialog_confirm, new DialogInterface.OnClickListener() {
                     @Override

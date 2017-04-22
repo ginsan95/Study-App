@@ -160,24 +160,28 @@ public class StudentQuizFragment extends SWDBaseFragment implements
         if (quiz.isAnswered()) {
             options.add(getString(R.string.option_reset_answer));
         }
-        options.add(getString(R.string.option_delete_quiz));
+        options.add(getString(R.string.option_delete));
         // endregion
 
-        new AlertDialog.Builder(getContext())
-                .setItems(options.toArray(new CharSequence[options.size()]), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String option = options.get(which).toString();
-                        if (option.equals(getString(R.string.option_download))) {
-                            downloadQuiz(quiz);
-                        } else if (option.equals(getString(R.string.option_reset_answer))) {
-                            resetAnswer(quiz, index);
-                        } else if (option.equals(getString(R.string.option_delete_quiz))) {
-                            deleteQuiz(quiz, index);
+        if (options.size() > 1) {
+            new AlertDialog.Builder(getContext())
+                    .setItems(options.toArray(new CharSequence[options.size()]), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String option = options.get(which).toString();
+                            if (option.equals(getString(R.string.option_download))) {
+                                downloadQuiz(quiz);
+                            } else if (option.equals(getString(R.string.option_reset_answer))) {
+                                resetAnswer(quiz, index);
+                            } else if (option.equals(getString(R.string.option_delete))) {
+                                deleteQuiz(quiz, index);
+                            }
                         }
-                    }
-                })
-                .show();
+                    })
+                    .show();
+        } else {
+            deleteQuiz(quiz, index);
+        }
     }
 
     @Override
@@ -269,7 +273,7 @@ public class StudentQuizFragment extends SWDBaseFragment implements
 
     private void deleteQuiz(final Quiz quiz, final int index) {
         new AlertDialog.Builder(getContext())
-                .setTitle(R.string.option_delete_quiz)
+                .setTitle(R.string.dialog_delete_quiz_title)
                 .setMessage(R.string.delete_quiz_dialog_message)
                 .setPositiveButton(R.string.dialog_confirm, new DialogInterface.OnClickListener() {
                     @Override

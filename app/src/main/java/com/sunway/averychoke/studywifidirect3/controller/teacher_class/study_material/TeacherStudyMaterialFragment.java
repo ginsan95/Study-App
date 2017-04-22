@@ -10,7 +10,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.sunway.averychoke.studywifidirect3.R;
@@ -23,6 +25,7 @@ import com.sunway.averychoke.studywifidirect3.model.StudyMaterial;
 import com.sunway.averychoke.studywifidirect3.util.FileUtil;
 import com.sunway.averychoke.studywifidirect3.util.PermissionUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
@@ -128,13 +131,81 @@ public class TeacherStudyMaterialFragment extends StudyMaterialFragment implemen
 
     @Override
     public void onClassMaterialLongClicked(@NonNull final ClassMaterial classMaterial, @NonNull final int index) {
+        // region setup options
+        final StudyMaterial studyMaterial = (StudyMaterial) classMaterial;
+        final List<CharSequence> options = new ArrayList<>();
+        if (classMaterial.getStatus() == ClassMaterial.Status.NORMAL) {
+            options.add(getString(R.string.option_rename));
+        }
+        options.add(getString(R.string.option_delete));
+        // endregion
+
+        if (options.size() > 1) {
+            new AlertDialog.Builder(getContext())
+                    .setItems(options.toArray(new CharSequence[options.size()]), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String option = options.get(which).toString();
+                            if (option.equals(getString(R.string.option_rename))) {
+                                renameStudyMaterial(studyMaterial);
+                            } else if (option.equals(getString(R.string.option_delete))) {
+                                deleteStudyMaterial(studyMaterial, index);
+                            }
+                        }
+                    })
+                    .show();
+        } else {
+            deleteStudyMaterial(studyMaterial, index);
+        }
+    }
+
+    @Override
+    public void onClassMaterialChecked(@NonNull ClassMaterial classMaterial, @NonNull boolean isChecked) {
+        StudyMaterial studyMaterial = (StudyMaterial) classMaterial;
+        studyMaterial.setVisible(isChecked);
+        sManager.updateStudyMaterialVisible(studyMaterial);
+    }
+    // endregion class material view holder
+
+    private void renameStudyMaterial(final StudyMaterial studyMaterial) {
+        final EditText editText = new EditText(getContext());
+        editText.setText(studyMaterial.getName());
+        editText.selectAll();
+
         new AlertDialog.Builder(getContext())
-                .setTitle(R.string.option_delete_study_material)
+                .setTitle(R.string.dialog_rename_study_material_title)
+                .setMessage(R.string.dialog_rename_study_material_message)
+                .setView(editText)
+                .setPositiveButton(R.string.option_rename, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String newName = editText.getText().toString();
+                        if (!TextUtils.isEmpty(newName.trim())
+                                && !studyMaterial.getName().equals(newName)
+                                && sManager.renameStudyMaterial(studyMaterial, newName)) {
+                            mAdapter.replaceClassMaterial(studyMaterial);
+                            return; // successfully exited the method
+                        }
+                        // return not called, means got error
+                        Toast.makeText(getContext(), R.string.rename_study_material_failure_message, Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .show();
+    }
+
+    private void deleteStudyMaterial(final StudyMaterial studyMaterial, final int index) {
+        new AlertDialog.Builder(getContext())
+                .setTitle(R.string.dialog_delete_study_material_title)
                 .setMessage(R.string.delete_study_material_message)
                 .setPositiveButton(R.string.dialog_confirm, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        StudyMaterial studyMaterial = (StudyMaterial) classMaterial;
                         mAdapter.removeClassMaterial(index);
                         sManager.deleteStudyMaterial(studyMaterial);
                     }
@@ -147,12 +218,4 @@ public class TeacherStudyMaterialFragment extends StudyMaterialFragment implemen
                 })
                 .show();
     }
-
-    @Override
-    public void onClassMaterialChecked(@NonNull ClassMaterial classMaterial, @NonNull boolean isChecked) {
-        StudyMaterial studyMaterial = (StudyMaterial) classMaterial;
-        studyMaterial.setVisible(isChecked);
-        sManager.updateStudyMaterialVisible(studyMaterial);
-    }
-    // endregion class material view holder
 }
