@@ -10,8 +10,7 @@ import android.support.v7.app.AlertDialog;
 
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseActivity;
-import com.sunway.averychoke.studywifidirect3.controller.teacher_class.TeacherReceiver;
-import com.sunway.averychoke.studywifidirect3.databinding.ActivityMainContainerBinding;
+import com.sunway.averychoke.studywifidirect3.databinding.ActivityClassBinding;
 import com.sunway.averychoke.studywifidirect3.manager.StudentManager;
 
 /**
@@ -19,7 +18,7 @@ import com.sunway.averychoke.studywifidirect3.manager.StudentManager;
  */
 
 public class StudentClassActivity extends SWDBaseActivity {
-    private ActivityMainContainerBinding mBinding;
+    private ActivityClassBinding mBinding;
 
     private WifiP2pManager mWifiManager;
     private WifiP2pManager.Channel mChannel;
@@ -27,7 +26,7 @@ public class StudentClassActivity extends SWDBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main_container);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_class);
 
         setSupportActionBar(mBinding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

@@ -1,9 +1,9 @@
 package com.sunway.averychoke.studywifidirect3.controller.student_class;
 
-import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -19,8 +19,7 @@ import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
 import com.sunway.averychoke.studywifidirect3.controller.student_class.quiz.StudentQuizFragment;
 import com.sunway.averychoke.studywifidirect3.controller.student_class.study_material.StudentStudyMaterialFragment;
-import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
-import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassDetailsBinding;
+import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassBinding;
 import com.sunway.averychoke.studywifidirect3.manager.StudentManager;
 
 /**
@@ -30,7 +29,7 @@ import com.sunway.averychoke.studywifidirect3.manager.StudentManager;
 public class StudentClassFragment extends SWDBaseFragment {
     private StudentManager sManager;
 
-    private FragmentClassDetailsBinding mBinding;
+    private FragmentClassBinding mBinding;
     private ClassPagerFragmentAdapter mClassPagerFragmentAdapter;
 
     @Override
@@ -42,7 +41,7 @@ public class StudentClassFragment extends SWDBaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_class_details, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_class, container, false);
         mBinding = DataBindingUtil.bind(rootView);
         getActivity().setTitle("(S) " + sManager.getClassName());
         return rootView;
@@ -53,7 +52,7 @@ public class StudentClassFragment extends SWDBaseFragment {
         super.onViewCreated(view, savedInstanceState);
         setHasOptionsMenu(true);
 
-        mBinding.classTabLayout.setupWithViewPager(mBinding.classViewPager);
+        ((TabLayout) getActivity().findViewById(R.id.class_tab_layout)).setupWithViewPager(mBinding.classViewPager);
         mBinding.classViewPager.setAdapter(mClassPagerFragmentAdapter);
     }
 

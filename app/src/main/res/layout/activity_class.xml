@@ -14,24 +14,27 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize">
+                android:layout_height="?attr/actionBarSize"/>
 
-                <EditText
-                    android:id="@+id/title_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Quiz Title"
-                    android:inputType="textCapWords"/>
-
-            </android.support.v7.widget.Toolbar>
+            <android.support.design.widget.TabLayout
+                android:id="@+id/class_tab_layout"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="top"
+                app:tabTextColor="@color/text_disable_color"
+                app:tabIndicatorColor="@android:color/white"
+                app:tabSelectedTextColor="@android:color/white"
+                app:tabGravity="fill"
+                app:tabMaxWidth="0dp"/>
 
         </android.support.design.widget.AppBarLayout>
 
         <FrameLayout
             android:id="@+id/container_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:animateLayoutChanges="true"
+            android:focusableInTouchMode="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     </android.support.design.widget.CoordinatorLayout>

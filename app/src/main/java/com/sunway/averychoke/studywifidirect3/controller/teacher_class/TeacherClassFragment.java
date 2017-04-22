@@ -5,6 +5,7 @@ import android.databinding.DataBindingUtil;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -20,7 +21,7 @@ import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
 import com.sunway.averychoke.studywifidirect3.controller.teacher_class.quiz.TeacherQuizFragment;
 import com.sunway.averychoke.studywifidirect3.controller.teacher_class.study_material.TeacherStudyMaterialFragment;
-import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassDetailsBinding;
+import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassBinding;
 import com.sunway.averychoke.studywifidirect3.manager.TeacherManager;
 
 /**
@@ -34,7 +35,7 @@ public class TeacherClassFragment extends SWDBaseFragment {
 
     private TeacherManager sManager;
 
-    private FragmentClassDetailsBinding mBinding;
+    private FragmentClassBinding mBinding;
     private ClassPagerFragmentAdapter mClassPagerFragmentAdapter;
 
     @Override
@@ -47,7 +48,7 @@ public class TeacherClassFragment extends SWDBaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_class_details, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_class, container, false);
         mBinding = DataBindingUtil.bind(rootView);
         getActivity().setTitle("(T) " + sManager.getClassName());
         return rootView;
@@ -58,7 +59,7 @@ public class TeacherClassFragment extends SWDBaseFragment {
         super.onViewCreated(view, savedInstanceState);
         setHasOptionsMenu(true);
 
-        mBinding.classTabLayout.setupWithViewPager(mBinding.classViewPager);
+        ((TabLayout) getActivity().findViewById(R.id.class_tab_layout)).setupWithViewPager(mBinding.classViewPager);
         mBinding.classViewPager.setAdapter(mClassPagerFragmentAdapter);
     }
 

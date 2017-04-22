@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseActivity;
 import com.sunway.averychoke.studywifidirect3.controller.connection.TeacherThread;
+import com.sunway.averychoke.studywifidirect3.databinding.ActivityClassBinding;
 import com.sunway.averychoke.studywifidirect3.databinding.ActivityMainContainerBinding;
 import com.sunway.averychoke.studywifidirect3.manager.BaseManager;
 import com.sunway.averychoke.studywifidirect3.manager.TeacherManager;
@@ -34,7 +35,7 @@ public class TeacherClassActivity extends SWDBaseActivity implements
         TeacherClassFragment.OnTeacherRestartListener,
         TeacherReceiver.OnWifiStateChangedListener {
 
-    private ActivityMainContainerBinding mBinding;
+    private ActivityClassBinding mBinding;
 
     private WifiP2pManager mWifiManager;
     private WifiP2pManager.Channel mChannel;
@@ -45,7 +46,7 @@ public class TeacherClassActivity extends SWDBaseActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main_container);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_class);
 
         setSupportActionBar(mBinding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

@@ -23,7 +23,7 @@ import com.sunway.averychoke.studywifidirect3.controller.SWDBaseFragment;
 import com.sunway.averychoke.studywifidirect3.controller.class_navigation.search.SearchClassFragment;
 import com.sunway.averychoke.studywifidirect3.controller.teacher_class.TeacherClassActivity;
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
-import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassBinding;
+import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassesBinding;
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.manager.TeacherManager;
 import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
@@ -40,7 +40,7 @@ public class ClassesFragment extends SWDBaseFragment implements
     private DatabaseHelper mDatabase;
     private ClassesNameAdapter mAdapter;
 
-    private FragmentClassBinding mBinding;
+    private FragmentClassesBinding mBinding;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,7 +56,7 @@ public class ClassesFragment extends SWDBaseFragment implements
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_class, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_classes, container, false);
         mBinding = DataBindingUtil.bind(rootView);
         return rootView;
     }
