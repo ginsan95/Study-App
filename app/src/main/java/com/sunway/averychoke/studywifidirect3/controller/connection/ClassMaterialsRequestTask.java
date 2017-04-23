@@ -36,6 +36,7 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
     private String mAddress;
     private ClassMaterialsUpdaterListener mListener;
     private ClassMaterial mDownloadClassMaterial;  // the request material
+    private ClassMaterial.Status mDownloadClassMaterialStatus; // status for download exception
     private Socket mSocket;
     private StudentManager sManager;
 
@@ -50,6 +51,9 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
         mAddress = address;
         mListener = listener;
         mDownloadClassMaterial = downloadClassMaterial;
+        if (downloadClassMaterial != null) {
+            mDownloadClassMaterialStatus = downloadClassMaterial.getStatus();
+        }
         sManager = StudentManager.getInstance();
     }
 
@@ -103,7 +107,7 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
                     if (mClassMaterial != null) {
                         mListener.onClassMaterialUpdated(mClassMaterial);
                     } else if (mDownloadClassMaterial != null) {
-                        mListener.onError(new DownloadException(mDownloadClassMaterial));
+                        mListener.onError(new DownloadException(mDownloadClassMaterial, mDownloadClassMaterialStatus));
                     } else {
                         mListener.onError(mError);
                     }
@@ -162,7 +166,7 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
                             if (file.exists()) {
                                 file.delete();
                             }
-                            throw new DownloadException(mDownloadClassMaterial);
+                            throw new DownloadException(mDownloadClassMaterial, mDownloadClassMaterialStatus);
                         }
                     } finally {
                         if (bos != null) {
@@ -173,14 +177,14 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
                 break;
             case ERROR:
                 if (mDownloadClassMaterial != null) {
-                    mError = new DownloadException(mDownloadClassMaterial);
+                    mError = new DownloadException(mDownloadClassMaterial, mDownloadClassMaterialStatus);
                 }
                 break;
         }
     }
 
     private Result giveError(Exception e) {
-        mError = mDownloadClassMaterial != null ? new DownloadException(mDownloadClassMaterial) : e;
+        mError = mDownloadClassMaterial != null ? new DownloadException(mDownloadClassMaterial, mDownloadClassMaterialStatus) : e;
         return Result.ERROR;
     }
 

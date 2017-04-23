@@ -156,10 +156,11 @@ public class StudentStudyMaterialFragment extends StudyMaterialFragment implemen
         }
 
         if (e instanceof DownloadException) {
-            ClassMaterial classMaterial = ((DownloadException) e).getClassMaterial();
+            DownloadException downloadException = (DownloadException) e;
+            ClassMaterial classMaterial = downloadException.getClassMaterial();
             if (classMaterial instanceof StudyMaterial) {
                 StudyMaterial studyMaterial = (StudyMaterial) classMaterial;
-                sManager.updateStudyMaterialStatus(studyMaterial, ClassMaterial.Status.PENDING);
+                sManager.updateStudyMaterialStatus(studyMaterial, downloadException.getInitialStatus());
                 mAdapter.replaceClassMaterial(studyMaterial);
             }
             if (getContext() != null) {
@@ -173,10 +174,10 @@ public class StudentStudyMaterialFragment extends StudyMaterialFragment implemen
 
     private void downloadStudyMaterial(StudyMaterial studyMaterial) {
         if (!sManager.isOffline()) {
-            sManager.updateStudyMaterialStatus(studyMaterial, ClassMaterial.Status.DOWNLOADING);
-            mAdapter.replaceClassMaterial(studyMaterial);
             ClassMaterialsRequestTask task = new ClassMaterialsRequestTask(sManager.getTeacherAddress(), this, studyMaterial);
             task.execute(TeacherThread.Request.STUDY_MATERIAL, studyMaterial.getName());
+            sManager.updateStudyMaterialStatus(studyMaterial, ClassMaterial.Status.DOWNLOADING);
+            mAdapter.replaceClassMaterial(studyMaterial);
         }
     }
 

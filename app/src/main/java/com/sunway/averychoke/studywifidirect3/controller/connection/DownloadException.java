@@ -9,10 +9,12 @@ import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
 public class DownloadException extends Exception {
 
     private ClassMaterial mClassMaterial;
+    private ClassMaterial.Status mInitialStatus;
 
-    public DownloadException(ClassMaterial classMaterial) {
+    public DownloadException(ClassMaterial classMaterial, ClassMaterial.Status initialStatus) {
         super();
         mClassMaterial = classMaterial;
+        mInitialStatus = initialStatus;
     }
 
     @Override
@@ -27,6 +29,14 @@ public class DownloadException extends Exception {
 
     public void setClassMaterial(ClassMaterial classMaterial) {
         mClassMaterial = classMaterial;
+    }
+
+    public ClassMaterial.Status getInitialStatus() {
+        return mInitialStatus;
+    }
+
+    public void setInitialStatus(ClassMaterial.Status initialStatus) {
+        mInitialStatus = initialStatus;
     }
     // endregion
 }

@@ -216,10 +216,11 @@ public class StudentQuizFragment extends SWDBaseFragment implements
         }
 
         if (e instanceof DownloadException) {
-            ClassMaterial classMaterial = ((DownloadException) e).getClassMaterial();
+            DownloadException downloadException = (DownloadException) e;
+            ClassMaterial classMaterial = downloadException.getClassMaterial();
             if (classMaterial instanceof Quiz) {
                 Quiz quiz = (Quiz) classMaterial;
-                sManager.updateQuizStatus(quiz, ClassMaterial.Status.NORMAL);
+                sManager.updateQuizStatus(quiz, downloadException.getInitialStatus());
                 mAdapter.replaceClassMaterial(quiz);
             }
             if (getContext() != null) {
@@ -240,10 +241,10 @@ public class StudentQuizFragment extends SWDBaseFragment implements
 
     private void downloadQuiz(Quiz quiz) {
         if (!sManager.isOffline()) {
-            sManager.updateQuizStatus(quiz, ClassMaterial.Status.DOWNLOADING);
-            mAdapter.replaceClassMaterial(quiz);
             ClassMaterialsRequestTask task = new ClassMaterialsRequestTask(sManager.getTeacherAddress(), this, quiz);
             task.execute(TeacherThread.Request.QUIZ, quiz.getName());
+            sManager.updateQuizStatus(quiz, ClassMaterial.Status.DOWNLOADING);
+            mAdapter.replaceClassMaterial(quiz);
         }
     }
 
