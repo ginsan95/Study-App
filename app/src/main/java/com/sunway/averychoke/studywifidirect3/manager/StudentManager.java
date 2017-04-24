@@ -78,7 +78,7 @@ public class StudentManager extends BaseManager {
         for (Quiz quiz : quizzes) {
             int index = getQuizIndex(quiz);
             if (index == -1) {
-                quiz.updateId();
+                quiz.resetId();
                 getStudyClass().getQuizzes().add(quiz);
             } else if(getStudyClass().getQuizzes().get(index).getVersion() != quiz.getVersion()) {
                 getStudyClass().getQuizzes().get(index).setStatus(ClassMaterial.Status.ERROR);

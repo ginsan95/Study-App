@@ -31,25 +31,24 @@ public class Quiz extends ClassMaterial implements Parcelable, Serializable {
         mVersion = version;
     }
 
-    @Override
-    public void updateId() {
-        super.updateId();
-        updateQuestionsId();
-    }
-
     public void update(Quiz quiz) {
         mQuestions.clear();
         mQuestions.addAll(quiz.getQuestions());
-        updateQuestionsId();
+        resetQuestionsId();
 
         setStatus(Status.NORMAL);
         mVersion = quiz.mVersion;
-        mAnswered = false;
     }
 
-    private void updateQuestionsId() {
+    public void resetId() {
+        updateId();
+        resetQuestionsId();
+    }
+
+    private void resetQuestionsId() {
+        mAnswered = false;
         for (Question question : mQuestions) {
-            question.updateId();
+            question.resetId();
         }
     }
 

@@ -130,8 +130,8 @@ public class CreateQuizFragment extends SWDBaseFragment implements
             // error checking
             if (mCreateQuestionAdapter.getQuestions().size() <= 0) {
                 new AlertDialog.Builder(getContext())
-                        .setTitle("Error")
-                        .setMessage("Please ensure that there is at least 1 question.")
+                        .setTitle(R.string.dialog_error_tittle)
+                        .setMessage(R.string.dialog_no_question_error_message)
                         .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -143,8 +143,8 @@ public class CreateQuizFragment extends SWDBaseFragment implements
             }
             if (sManager.isQuizNameConflicting(title, mOldName)) {
                 new AlertDialog.Builder(getContext())
-                        .setTitle("Invalid quiz name")
-                        .setMessage("The quiz name is already used by other quizzes. Please use a different name.")
+                        .setTitle(R.string.dialog_invalid_quiz_name_title)
+                        .setMessage(R.string.dialog_invalid_quiz_name_message)
                         .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -170,8 +170,8 @@ public class CreateQuizFragment extends SWDBaseFragment implements
                 getActivity().finish();
             } else {
                 new AlertDialog.Builder(getContext())
-                        .setTitle("Save failed")
-                        .setMessage("Failed to save the quiz into the database. Please try again later.")
+                        .setTitle(R.string.dialog_save_quiz_fail_title)
+                        .setMessage(R.string.dialog_save_quiz_fail_message)
                         .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

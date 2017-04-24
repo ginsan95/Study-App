@@ -56,8 +56,9 @@ public class Question implements Parcelable, Serializable {
         return mCorrectAnswer.equalsIgnoreCase(userAnswer);
     }
 
-    public void updateId() {
+    public void resetId() {
         mId = ++mCounter;
+        mUserAnswer = "";
     }
 
     // region get set

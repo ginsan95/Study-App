@@ -195,7 +195,7 @@ public class StudentQuizFragment extends SWDBaseFragment implements
         mAdapter.replaceClassMaterial(classMaterial);
 
         if (getContext() != null) {
-            Toast.makeText(getContext(), "Downloaded " + classMaterial.getName() + "successfully", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.download_success_message, classMaterial.getName()), Toast.LENGTH_SHORT).show();
         }
     }
 

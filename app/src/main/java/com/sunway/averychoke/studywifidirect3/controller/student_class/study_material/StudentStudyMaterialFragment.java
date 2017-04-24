@@ -76,17 +76,37 @@ public class StudentStudyMaterialFragment extends StudyMaterialFragment implemen
 
     // region class material view holder
     @Override
-    public void onClassMaterialSelected(@NonNull ClassMaterial classMaterial) {
-        if (classMaterial.getStatus() == ClassMaterial.Status.NORMAL) {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            Uri uri = Uri.fromFile(((StudyMaterial) classMaterial).getFile());
-            String mimeType = FileUtil.getMimeType(getContext(), uri);
-            intent.setDataAndType(uri, mimeType);
-            try {
-                startActivity(intent);
-            } catch (ActivityNotFoundException e) {
-                Toast.makeText(getContext(), R.string.open_study_material_failed_message, Toast.LENGTH_SHORT).show();
-            }
+    public void onClassMaterialSelected(@NonNull final ClassMaterial classMaterial) {
+        switch (classMaterial.getStatus()) {
+            case NORMAL:
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                Uri uri = Uri.fromFile(((StudyMaterial) classMaterial).getFile());
+                String mimeType = FileUtil.getMimeType(getContext(), uri);
+                intent.setDataAndType(uri, mimeType);
+                try {
+                    startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(getContext(), R.string.open_study_material_failed_message, Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case PENDING:
+                new AlertDialog.Builder(getContext())
+                        .setTitle(R.string.option_download)
+                        .setMessage(getString(R.string.dialog_download_study_material_message, classMaterial.getName()))
+                        .setPositiveButton(R.string.dialog_yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                downloadStudyMaterial((StudyMaterial) classMaterial);
+                            }
+                        })
+                        .setNegativeButton(R.string.dialog_no, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .show();
+                break;
         }
     }
 
@@ -138,7 +158,7 @@ public class StudentStudyMaterialFragment extends StudyMaterialFragment implemen
         mAdapter.replaceClassMaterial(classMaterial);
 
         if (getContext() != null) {
-            Toast.makeText(getContext(), "Downloaded " + classMaterial.getName() + "successfully", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.download_success_message, classMaterial.getName()), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -190,7 +210,6 @@ public class StudentStudyMaterialFragment extends StudyMaterialFragment implemen
                     public void onClick(DialogInterface dialog, int which) {
                         mAdapter.removeClassMaterial(index);
                         sManager.deleteStudyMaterial(studyMaterial);
-
                     }
                 })
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
