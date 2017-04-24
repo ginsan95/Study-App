@@ -25,14 +25,16 @@
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
                 android:layout_weight="1"
-                android:text="What is inheritance inheritance?"/>
+                android:text="What is inheritance?"/>
 
             <TextView
                 android:id="@+id/marks_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
-                android:text="0.0/1.0"/>
+                android:layout_marginLeft="4dp"
+                android:layout_marginStart="4dp"
+                android:text="0/1"/>
         </LinearLayout>
 
         <FrameLayout

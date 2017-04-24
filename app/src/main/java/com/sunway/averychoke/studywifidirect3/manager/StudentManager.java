@@ -40,7 +40,7 @@ public class StudentManager extends BaseManager {
     }
 
     // region Quiz
-    public void updateQuizAnswer(Quiz quiz) {
+    public void updateQuizAnswers(Quiz quiz) {
         if (getDatabase() == null || getStudyClass() == null
                 || getDatabase().updateQuizAnswers(quiz) == -1) {
             return;

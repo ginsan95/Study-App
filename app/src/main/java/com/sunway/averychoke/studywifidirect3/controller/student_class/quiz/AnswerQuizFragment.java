@@ -87,7 +87,7 @@ public class AnswerQuizFragment extends SWDBaseFragment implements AnswerQuestio
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mQuiz.setAnswered(true);
-                        sManager.updateQuizAnswer(mQuiz);
+                        sManager.updateQuizAnswers(mQuiz);
 
                         // return data to activity
                         Intent intent = new Intent();
