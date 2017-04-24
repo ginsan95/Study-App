@@ -13,7 +13,7 @@ public class Question implements Parcelable, Serializable {
 
     public static long mCounter = 0;
 
-    private long mQuestionId;
+    private long mId;
     private String mQuestion;
     private String mCorrectAnswer;
     private int mTotalMarks;
@@ -24,8 +24,8 @@ public class Question implements Parcelable, Serializable {
     }
 
     //for database
-    public Question(long questionId, String question, String correctAnswer, int totalMarks, String userAnswer) {
-        mQuestionId = questionId;
+    public Question(long id, String question, String correctAnswer, int totalMarks, String userAnswer) {
+        mId = id;
         mQuestion = question;
         mCorrectAnswer = correctAnswer;
         mTotalMarks = totalMarks;
@@ -40,7 +40,7 @@ public class Question implements Parcelable, Serializable {
     // convert to question
     public static Question cloneFrom(Question question) {
         Question cloneQuestion = new Question(
-                question.getQuestionId(),
+                question.getId(),
                 question.getQuestion(),
                 "",
                 question.getTotalMarks(),
@@ -57,13 +57,13 @@ public class Question implements Parcelable, Serializable {
     }
 
     public void updateId() {
-        mQuestionId = ++mCounter;
+        mId = ++mCounter;
     }
 
     // region get set
-    public long getQuestionId()
+    public long getId()
     {
-        return mQuestionId;
+        return mId;
     }
 
     public String getQuestion()
@@ -111,7 +111,7 @@ public class Question implements Parcelable, Serializable {
     }
 
     public void writeToParcel(Parcel out, int flags) {
-        out.writeLong(mQuestionId);
+        out.writeLong(mId);
         out.writeString(mQuestion);
         out.writeString(mCorrectAnswer);
         out.writeInt(mTotalMarks);
@@ -130,7 +130,7 @@ public class Question implements Parcelable, Serializable {
     };
 
     protected Question(Parcel in) {
-        mQuestionId = in.readLong();
+        mId = in.readLong();
         mQuestion = in.readString();
         mCorrectAnswer = in.readString();
         mTotalMarks = in.readInt();

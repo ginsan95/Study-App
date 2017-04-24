@@ -46,7 +46,6 @@ public class StudentQuizFragment extends SWDBaseFragment implements
     public static final int ANSWER_QUIZ_CODE = 101;
 
     private StudentManager sManager;
-    private DatabaseHelper mDatabase;
     private ClassMaterialAdapter mAdapter;
 
     private FragmentClassMaterialBinding mBinding;
@@ -56,7 +55,6 @@ public class StudentQuizFragment extends SWDBaseFragment implements
         super.onCreate(savedInstanceState);
 
         sManager = StudentManager.getInstance();
-        mDatabase = new DatabaseHelper(getContext());
         mAdapter = new ClassMaterialAdapter(false, this);
     }
 
@@ -64,7 +62,6 @@ public class StudentQuizFragment extends SWDBaseFragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_class_material, container, false);
         mBinding = DataBindingUtil.bind(rootView);
-
         return rootView;
     }
 
@@ -255,12 +252,8 @@ public class StudentQuizFragment extends SWDBaseFragment implements
                 .setPositiveButton(R.string.dialog_confirm, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        quiz.setAnswered(false);
-                        for (Question question : quiz.getQuestions()) {
-                            question.setUserAnswer("");
-                        }
+                        sManager.resetQuizAnswer(quiz);
                         mAdapter.notifyItemChanged(index);
-                        mDatabase.updateQuizAnswers(quiz);
                     }
                 })
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {

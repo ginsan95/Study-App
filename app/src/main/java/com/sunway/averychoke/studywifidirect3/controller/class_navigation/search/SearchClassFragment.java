@@ -61,7 +61,6 @@ public class SearchClassFragment extends SWDBaseFragment implements
     private Runnable mEndConnectionThread;
 
     private StudentManager sManager;
-    private DatabaseHelper mDatabase;
     private DeviceClassesAdapter mAdapter;
     private String mClassName;
 
@@ -94,15 +93,10 @@ public class SearchClassFragment extends SWDBaseFragment implements
         mReceiverIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
         // endregion
 
-        mDatabase = new DatabaseHelper(getContext());
         mAdapter = new DeviceClassesAdapter(this);
         mClassesName = new HashMap<>();
         mConnectionHandler = new Handler();
         sManager = StudentManager.getInstance();
-
-        // set the id counter for the model objects
-        ClassMaterial.mCounter = mDatabase.getClassMaterialMaxId();
-        Question.mCounter = mDatabase.getQuestionMaxId();
     }
 
     @Override

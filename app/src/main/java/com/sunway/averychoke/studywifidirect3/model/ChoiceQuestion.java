@@ -14,11 +14,6 @@ public class ChoiceQuestion extends Question implements Serializable {
 
     private List<String> mChoices;
 
-    public ChoiceQuestion(String question, String answer, int totalMarks, List<String> choices) {
-        super(question, answer, totalMarks);
-        mChoices = choices;
-    }
-
     //for database
     public ChoiceQuestion(long questionId, String question, String correctAnswer, int totalMarks, String userAnswer, List<String> choices) {
         super(questionId, question, correctAnswer, totalMarks, userAnswer);
@@ -28,7 +23,7 @@ public class ChoiceQuestion extends Question implements Serializable {
     // convert to choice question
     public static ChoiceQuestion cloneFrom(Question question) {
         ChoiceQuestion cloneQuestion = new ChoiceQuestion(
-                question.getQuestionId(),
+                question.getId(),
                 question.getQuestion(),
                 "",
                 question.getTotalMarks(),

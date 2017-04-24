@@ -5,6 +5,7 @@ import android.content.Context;
 import com.sunway.averychoke.studywifidirect3.controller.connection.ClassMaterialsRequestTask;
 import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
 import com.sunway.averychoke.studywifidirect3.model.DeviceClass;
+import com.sunway.averychoke.studywifidirect3.model.Question;
 import com.sunway.averychoke.studywifidirect3.model.Quiz;
 import com.sunway.averychoke.studywifidirect3.model.StudyMaterial;
 
@@ -39,16 +40,25 @@ public class StudentManager extends BaseManager {
     }
 
     // region Quiz
-    public boolean updateQuizAnswer(Quiz quiz) {
+    public void updateQuizAnswer(Quiz quiz) {
         if (getDatabase() == null || getStudyClass() == null
                 || getDatabase().updateQuizAnswers(quiz) == -1) {
-            return false;
+            return;
         }
 
         int index = getStudyClass().getQuizzes().indexOf(quiz);
         getStudyClass().getQuizzes().set(index, quiz);
+    }
 
-        return true;
+    public void resetQuizAnswer(Quiz quiz) {
+        quiz.setAnswered(false);
+        for (Question question : quiz.getQuestions()) {
+            question.setUserAnswer("");
+        }
+
+        if (getDatabase() != null) {
+            getDatabase().updateQuizAnswers(quiz);
+        }
     }
 
     public void updateQuizStatus(Quiz quiz, ClassMaterial.Status status) {
