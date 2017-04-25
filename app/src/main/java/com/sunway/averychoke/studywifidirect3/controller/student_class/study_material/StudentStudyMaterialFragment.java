@@ -61,6 +61,7 @@ public class StudentStudyMaterialFragment extends StudyMaterialFragment implemen
 
         if (!sManager.isOffline()) {
             getBinding().classMaterial.materialsSwipeRefreshLayout.setOnRefreshListener(this);
+            getBinding().classMaterial.materialsRecyclerView.setNestedScrollingEnabled(false);
             onRefresh();
         } else {
             getBinding().classMaterial.materialsSwipeRefreshLayout.setEnabled(false);

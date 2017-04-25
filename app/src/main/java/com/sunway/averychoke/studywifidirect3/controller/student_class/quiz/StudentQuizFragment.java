@@ -77,6 +77,7 @@ public class StudentQuizFragment extends SWDBaseFragment implements
 
         if (!sManager.isOffline()) {
             mBinding.materialsSwipeRefreshLayout.setOnRefreshListener(this);
+            mBinding.materialsRecyclerView.setNestedScrollingEnabled(false);
             onRefresh();
         } else {
             mBinding.materialsSwipeRefreshLayout.setEnabled(false);
