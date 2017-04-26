@@ -85,4 +85,5 @@
     <string name="dialog_invalid_quiz_name_message">The quiz name is already used by other quizzes. Please use a different name.</string>
     <string name="dialog_save_quiz_fail_title">Save failed</string>
     <string name="dialog_save_quiz_fail_message">Failed to save the quiz into the database. Please try again later.</string>
+    <string name="open_file_permission_error_message">You do not have the permission to open this file</string>
 </resources>

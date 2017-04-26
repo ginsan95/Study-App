@@ -5,14 +5,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.FileUriExposedException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.FileProvider;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.Toast;
 
+import com.sunway.averychoke.studywifidirect3.BuildConfig;
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.common_class.ClassMaterialAdapter;
 import com.sunway.averychoke.studywifidirect3.controller.common_class.ClassMaterialViewHolder;
@@ -28,6 +31,8 @@ import com.sunway.averychoke.studywifidirect3.util.FileUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 
 /**
  * Created by AveryChoke on 30/1/2017.
@@ -81,13 +86,21 @@ public class StudentStudyMaterialFragment extends StudyMaterialFragment implemen
         switch (classMaterial.getStatus()) {
             case NORMAL:
                 Intent intent = new Intent(Intent.ACTION_VIEW);
-                Uri uri = Uri.fromFile(((StudyMaterial) classMaterial).getFile());
-                String mimeType = FileUtil.getMimeType(getContext(), uri);
-                intent.setDataAndType(uri, mimeType);
                 try {
-                    startActivity(intent);
-                } catch (ActivityNotFoundException e) {
-                    Toast.makeText(getContext(), R.string.open_study_material_failed_message, Toast.LENGTH_SHORT).show();
+                    Uri uri = FileProvider.getUriForFile(getContext(), BuildConfig.APPLICATION_ID + ".provider", ((StudyMaterial) classMaterial).getFile());
+                    String mimeType = FileUtil.getMimeType(getContext(), uri);
+                    intent.setDataAndType(uri, mimeType);
+                    intent.setFlags(FLAG_GRANT_READ_URI_PERMISSION);
+                    try {
+                        startActivity(intent);
+                    } catch (ActivityNotFoundException e) {
+                        Toast.makeText(getContext(), R.string.open_study_material_failed_message, Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    if (e instanceof IllegalArgumentException || e instanceof FileUriExposedException) {
+                        Toast.makeText(getContext(), R.string.open_file_permission_error_message, Toast.LENGTH_SHORT).show();
+                    }
                 }
                 break;
             case PENDING:
