@@ -43,6 +43,10 @@ public class TeacherManager extends BaseManager {
     public void initialize(String className, Context context) {
         super.initialize(className, context);
 
+        // clear data
+        mQuizMap.clear();
+        mStudyMaterialMap.clear();
+
         // change the list into map
         for (Quiz quiz : getStudyClass().getQuizzes()) {
             mQuizMap.put(quiz.getName().toLowerCase(), quiz);
