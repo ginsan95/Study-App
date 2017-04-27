@@ -84,7 +84,7 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
             ois.close();
 
             return result;
-        } catch (IOException | ClassNotFoundException | IllegalArgumentException | DownloadException e) {
+        } catch (IOException | ClassNotFoundException | IllegalArgumentException | DownloadException | NullPointerException e) {
             return giveError(e);
         } finally {
             disconnect();
@@ -119,7 +119,7 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
         }
     }
 
-    private void updateManager(Result result, ObjectInputStream ois) throws IOException, ClassNotFoundException, DownloadException {
+    private void updateManager(Result result, ObjectInputStream ois) throws IOException, ClassNotFoundException, DownloadException, NullPointerException {
         switch (result) {
             case QUIZZES:
                 List<Quiz> quizzes = (List<Quiz>) ois.readObject();
@@ -141,37 +141,36 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
                         baseFile.mkdirs();
                     }
 
-                    // get partition size
-                    int partitionSize = ois.readInt();
+                    // get file size
+                    long fileSize = ois.readLong();
 
                     // download the file from teacher
                     BufferedOutputStream bos = null;
+                    File file = null;
                     try {
                         byte[] buffer = new byte[BUFFER_SIZE];
-                        File file = new File(baseFile, studyMaterial.getName());
+                        file = new File(baseFile, studyMaterial.getName());
                         bos = new BufferedOutputStream(new FileOutputStream(file));
                         int len = 0;
-                        int partitionCount = 0;
                         BufferedInputStream bis = new BufferedInputStream(ois);
                         while ((len = bis.read(buffer)) > 0) {
                             bos.write(buffer, 0, len);
-                            partitionCount++;
-                        }
-
-                        // check if downloaded all partition of fil correctly
-                        if (partitionCount >= partitionSize) {
-                            studyMaterial.setFile(file);
-                            mClassMaterial = sManager.updateStudyMaterial(studyMaterial);
-                        } else {
-                            if (file.exists()) {
-                                file.delete();
-                            }
-                            throw new DownloadException(mDownloadClassMaterial, mDownloadClassMaterialStatus);
                         }
                     } finally {
                         if (bos != null) {
                             bos.close();
                         }
+                    }
+
+                    // check if downloaded the file correctly
+                    if (file != null && file.length() == fileSize) {
+                        studyMaterial.setFile(file);
+                        mClassMaterial = sManager.updateStudyMaterial(studyMaterial);
+                    } else {
+                        if (file.exists()) {
+                            file.delete();
+                        }
+                        throw new DownloadException(mDownloadClassMaterial, mDownloadClassMaterialStatus);
                     }
                 }
                 break;

@@ -31,6 +31,8 @@ import com.sunway.averychoke.studywifidirect3.util.FileUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 
@@ -45,6 +47,7 @@ public class StudentStudyMaterialFragment extends StudyMaterialFragment implemen
 
     private StudentManager sManager;
     private ClassMaterialAdapter mAdapter;
+    private ExecutorService mExecutor;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,6 +55,8 @@ public class StudentStudyMaterialFragment extends StudyMaterialFragment implemen
 
         sManager = StudentManager.getInstance();
         mAdapter = new ClassMaterialAdapter(false, this);
+        int bestThreadCount = Runtime.getRuntime().availableProcessors() + 1;
+        mExecutor = Executors.newFixedThreadPool(bestThreadCount > 4 ? bestThreadCount : 4);
     }
 
     @Override
@@ -66,6 +71,7 @@ public class StudentStudyMaterialFragment extends StudyMaterialFragment implemen
 
         if (!sManager.isOffline()) {
             getBinding().classMaterial.materialsSwipeRefreshLayout.setOnRefreshListener(this);
+            getBinding().classMaterial.materialsSwipeRefreshLayout.setColorSchemeResources(R.color.color_primary);
             getBinding().classMaterial.materialsRecyclerView.setNestedScrollingEnabled(false);
             onRefresh();
         } else {
@@ -74,10 +80,18 @@ public class StudentStudyMaterialFragment extends StudyMaterialFragment implemen
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mExecutor != null && !mExecutor.isShutdown()) {
+            mExecutor.shutdown();
+        }
+    }
+
+    @Override
     public void onRefresh() {
         getBinding().classMaterial.materialsSwipeRefreshLayout.setRefreshing(true);
         ClassMaterialsRequestTask task = new ClassMaterialsRequestTask(sManager.getTeacherAddress(), this);
-        task.execute(TeacherThread.Request.STUDY_MATERIALS);
+        task.executeOnExecutor(mExecutor, TeacherThread.Request.STUDY_MATERIALS);
     }
 
     // region class material view holder
@@ -209,7 +223,7 @@ public class StudentStudyMaterialFragment extends StudyMaterialFragment implemen
     private void downloadStudyMaterial(StudyMaterial studyMaterial) {
         if (!sManager.isOffline()) {
             ClassMaterialsRequestTask task = new ClassMaterialsRequestTask(sManager.getTeacherAddress(), this, studyMaterial);
-            task.execute(TeacherThread.Request.STUDY_MATERIAL, studyMaterial.getName());
+            task.executeOnExecutor(mExecutor, TeacherThread.Request.STUDY_MATERIAL, studyMaterial.getName());
             sManager.updateStudyMaterialStatus(studyMaterial, ClassMaterial.Status.DOWNLOADING);
             mAdapter.replaceClassMaterial(studyMaterial);
         }

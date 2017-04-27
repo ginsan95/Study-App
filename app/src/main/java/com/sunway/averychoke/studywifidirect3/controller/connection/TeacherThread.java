@@ -126,8 +126,8 @@ public class TeacherThread implements Runnable {
 
         if (studyMaterial != null) {
             oos.writeObject(ClassMaterialsRequestTask.Result.STUDY_MATERIAL);
-            int partitionSize = (int) Math.ceil(studyMaterial.getFile().length() * 1.0 / BUFFER_SIZE);
-            oos.writeInt(partitionSize);
+            long fileSize = studyMaterial.getFile().length();
+            oos.writeLong(fileSize);
 
             // send file
             BufferedInputStream bis = null;

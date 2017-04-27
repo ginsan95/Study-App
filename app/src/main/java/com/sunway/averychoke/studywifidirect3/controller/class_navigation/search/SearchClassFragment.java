@@ -112,9 +112,11 @@ public class SearchClassFragment extends SWDBaseFragment implements
         getActivity().setTitle(mClassName != null ? getString(R.string.title_search_class, mClassName) : getString(R.string.title_search_classes));
 
         mBinding.classesSwipeRefreshLayout.setOnRefreshListener(this);
+        mBinding.classesSwipeRefreshLayout.setColorSchemeResources(R.color.color_primary);
 
         mBinding.classesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mBinding.classesRecyclerView.setAdapter(mAdapter);
+        mBinding.classesRecyclerView.setNestedScrollingEnabled(false);
 
         if (mClassName != null) {
             mBinding.goOfflineButton.setVisibility(View.VISIBLE);
@@ -275,7 +277,7 @@ public class SearchClassFragment extends SWDBaseFragment implements
                     showWifiDirectError(-1);
                 }
             };
-            mConnectionHandler.postDelayed(mEndConnectionThread, 15000);
+            mConnectionHandler.postDelayed(mEndConnectionThread, 18000);
         }
     }
 
