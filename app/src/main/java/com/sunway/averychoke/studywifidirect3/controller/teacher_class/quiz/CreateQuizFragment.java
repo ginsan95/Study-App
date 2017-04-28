@@ -1,6 +1,7 @@
 package com.sunway.averychoke.studywifidirect3.controller.teacher_class.quiz;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -18,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.sunway.averychoke.studywifidirect3.R;
@@ -209,7 +211,7 @@ public class CreateQuizFragment extends SWDBaseFragment implements
         final EditText editText = new EditText(getContext());
         editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
 
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(getContext())
+        final Dialog dialog = new AlertDialog.Builder(getContext())
                 .setTitle(R.string.add_choice_dialog_title)
                 .setView(editText)
                 .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
@@ -230,16 +232,19 @@ public class CreateQuizFragment extends SWDBaseFragment implements
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
                     }
-                });
-        dialog.show();
+                })
+                .show();
+        dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }
 
     @Override
     public void onEditChoiceClicked(final ChoiceQuestion choiceQuestion, final int index, final int choiceIndex) {
         final EditText editText = new EditText(getContext());
         editText.setText(choiceQuestion.getChoices().get(choiceIndex));
+        editText.selectAll();
 
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(getContext())
+        final Dialog dialog = new AlertDialog.Builder(getContext())
                 .setTitle(R.string.edit_choice_dialog_title)
                 .setView(editText)
                 .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
@@ -260,8 +265,10 @@ public class CreateQuizFragment extends SWDBaseFragment implements
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
                     }
-                });
-        dialog.show();
+                })
+                .show();
+        dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }
 
     @Override

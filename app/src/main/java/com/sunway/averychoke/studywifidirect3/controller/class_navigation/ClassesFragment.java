@@ -1,5 +1,6 @@
 package com.sunway.averychoke.studywifidirect3.controller.class_navigation;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.databinding.DataBindingUtil;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -152,7 +154,7 @@ public class ClassesFragment extends SWDBaseFragment implements
         final EditText editText = new EditText(getContext());
         editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
 
-        new AlertDialog.Builder(getContext())
+        final Dialog dialog = new AlertDialog.Builder(getContext())
                 .setTitle(R.string.create_class_dialog_title)
                 .setMessage(R.string.create_class_dialog_message)
                 .setView(editText)
@@ -179,5 +181,7 @@ public class ClassesFragment extends SWDBaseFragment implements
                     }
                 })
                 .show();
+        dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }
 }

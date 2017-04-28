@@ -1,5 +1,6 @@
 package com.sunway.averychoke.studywifidirect3.controller.teacher_class.study_material;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
@@ -14,6 +15,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -184,7 +186,7 @@ public class TeacherStudyMaterialFragment extends StudyMaterialFragment implemen
         editText.setText(studyMaterial.getName());
         editText.selectAll();
 
-        new AlertDialog.Builder(getContext())
+        final Dialog dialog = new AlertDialog.Builder(getContext())
                 .setTitle(R.string.dialog_rename_study_material_title)
                 .setMessage(R.string.dialog_rename_study_material_message)
                 .setView(editText)
@@ -209,6 +211,8 @@ public class TeacherStudyMaterialFragment extends StudyMaterialFragment implemen
                     }
                 })
                 .show();
+        dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }
 
     private void deleteStudyMaterial(final StudyMaterial studyMaterial, final int index) {
