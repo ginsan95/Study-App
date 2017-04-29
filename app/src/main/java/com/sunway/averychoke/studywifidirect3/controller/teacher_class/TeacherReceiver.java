@@ -3,6 +3,7 @@ package com.sunway.averychoke.studywifidirect3.controller.teacher_class;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.NetworkInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 
 /**
@@ -10,16 +11,16 @@ import android.net.wifi.p2p.WifiP2pManager;
  */
 
 public class TeacherReceiver extends BroadcastReceiver {
-
-    public interface OnWifiStateChangedListener {
+    public interface WifiDirectListener {
         void onWifiStateChanged(boolean isOn);
+        void onWifiDirectDisconnection();
     }
 
     private WifiP2pManager mManager;
     private WifiP2pManager.Channel mChannel;
-    private OnWifiStateChangedListener mListener;
+    private WifiDirectListener mListener;
 
-    public TeacherReceiver(WifiP2pManager manager, WifiP2pManager.Channel channel, OnWifiStateChangedListener listener) {
+    public TeacherReceiver(WifiP2pManager manager, WifiP2pManager.Channel channel, WifiDirectListener listener) {
         mManager = manager;
         mChannel = channel;
         mListener = listener;
@@ -42,6 +43,13 @@ public class TeacherReceiver extends BroadcastReceiver {
             int discoveryState = intent.getIntExtra(WifiP2pManager.EXTRA_DISCOVERY_STATE, -1);
             if (discoveryState == WifiP2pManager.WIFI_P2P_DISCOVERY_STOPPED) {
                 mManager.discoverPeers(mChannel, null);
+            }
+
+        } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
+            // get calls the first time
+            NetworkInfo networkInfo = intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
+            if (!networkInfo.isConnected()) {
+                mListener.onWifiDirectDisconnection();
             }
         }
     }

@@ -18,7 +18,6 @@ import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseActivity;
 import com.sunway.averychoke.studywifidirect3.controller.connection.TeacherThread;
 import com.sunway.averychoke.studywifidirect3.databinding.ActivityClassBinding;
-import com.sunway.averychoke.studywifidirect3.databinding.ActivityMainContainerBinding;
 import com.sunway.averychoke.studywifidirect3.manager.BaseManager;
 import com.sunway.averychoke.studywifidirect3.manager.TeacherManager;
 import com.sunway.averychoke.studywifidirect3.util.WifiDirectUtil;
@@ -33,7 +32,7 @@ import java.util.Map;
 
 public class TeacherClassActivity extends SWDBaseActivity implements
         TeacherClassFragment.OnTeacherRestartListener,
-        TeacherReceiver.OnWifiStateChangedListener {
+        TeacherReceiver.WifiDirectListener {
 
     private ActivityClassBinding mBinding;
 
@@ -61,13 +60,14 @@ public class TeacherClassActivity extends SWDBaseActivity implements
         mReceiverIntentFilter = new IntentFilter();
         mReceiverIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
         mReceiverIntentFilter.addAction(WifiP2pManager.WIFI_P2P_DISCOVERY_CHANGED_ACTION);
+        mReceiverIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
+        // this automatically help us to broadcast the wifi direct service - call restartService() when registered
         registerReceiver(mTeacherReceiver, mReceiverIntentFilter);
         // endregion
 
         // region setup wifi direct service
         if (mWifiManager != null && mChannel != null) {
             WifiDirectUtil.deletePersistentGroup(mWifiManager, mChannel);
-            restartService();
         }
         // endregion
 
@@ -182,6 +182,12 @@ public class TeacherClassActivity extends SWDBaseActivity implements
             mBinding.toolbar.setTitleTextColor(Color.RED);
         }
     }
+
+    @Override
+    public void onWifiDirectDisconnection() {
+        restartService();
+    }
+
     // endregion
 
     @Override
