@@ -36,14 +36,16 @@ public class StudentClassActivity extends SWDBaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        // wifi direct initialization
-        mWifiManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
-        mChannel = mWifiManager.initialize(this, getMainLooper(), null);
+        if (!StudentManager.getInstance().isOffline()) {
+            // wifi direct initialization
+            mWifiManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
+            mChannel = mWifiManager.initialize(this, getMainLooper(), null);
 
-        // start disconnection service
-        BaseManager.getInstance().setChannel(mChannel);
-        mConnectionServiceIntent = new Intent(this, CloseConnectionService.class);
-        startService(mConnectionServiceIntent);
+            // start disconnection service
+            BaseManager.getInstance().setChannel(mChannel);
+            mConnectionServiceIntent = new Intent(this, CloseConnectionService.class);
+            startService(mConnectionServiceIntent);
+        }
 
         getSupportFragmentManager().beginTransaction()
                 .add(mBinding.containerLayout.getId(), new StudentClassFragment(), StudentClassFragment.class.getSimpleName())
@@ -56,7 +58,9 @@ public class StudentClassActivity extends SWDBaseActivity {
         // kills the tasks
         StudentManager.getInstance().killAllTasks();
         // kills wifi direct
-        stopService(mConnectionServiceIntent);
+        if (mConnectionServiceIntent != null) {
+            stopService(mConnectionServiceIntent);
+        }
     }
 
     @Override
