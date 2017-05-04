@@ -79,8 +79,8 @@ public class ResultQuestionsAdapter extends QuestionsAdapter {
         }
 
         @Override
-        public void setQuestion(Question question) {
-            super.setQuestion(question);
+        public void setQuestion(Question question, int lastIndex) {
+            super.setQuestion(question, lastIndex);
 
             if (question != null) {
                 getBinding().marksTextView.setText(String.format("%d/%d",

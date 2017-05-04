@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -68,7 +69,7 @@ public class QuestionViewHolder extends RecyclerView.ViewHolder implements HasQu
     }
 
     @Override
-    public void setQuestion(Question question) {
+    public void setQuestion(Question question, int lastIndex) {
         mQuestion = question;
         mBinding.numberTextView.setText((getAdapterPosition()+1) + ") ");
 
@@ -81,6 +82,7 @@ public class QuestionViewHolder extends RecyclerView.ViewHolder implements HasQu
             // check if is short question or mcq
             if (question instanceof ChoiceQuestion) {
                 mBinding.mcq.containerLayout.setVisibility(View.VISIBLE);
+                mBinding.shortQuestion.answerEditText.setImeOptions(EditorInfo.IME_ACTION_NONE);
 
                 mBinding.mcq.choicesRadioGroup.removeAllViews();
                 ChoiceQuestion choiceQuestion = (ChoiceQuestion) question;
@@ -89,6 +91,7 @@ public class QuestionViewHolder extends RecyclerView.ViewHolder implements HasQu
                 }
             } else {
                 mBinding.shortQuestion.containerLayout.setVisibility(View.VISIBLE);
+                mBinding.shortQuestion.answerEditText.setImeOptions(lastIndex == getAdapterPosition() ? EditorInfo.IME_ACTION_DONE : EditorInfo.IME_ACTION_UNSPECIFIED);
 
                 mBinding.shortQuestion.answerEditText.setText(question.getUserAnswer());
             }

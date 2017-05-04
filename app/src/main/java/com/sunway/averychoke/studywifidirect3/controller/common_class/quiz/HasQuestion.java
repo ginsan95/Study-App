@@ -8,5 +8,5 @@ import com.sunway.averychoke.studywifidirect3.model.Question;
 
 // interface for view holder that contains a question
 public interface HasQuestion {
-    void setQuestion(Question question);
+    void setQuestion(Question question, int lastIndex);
 }

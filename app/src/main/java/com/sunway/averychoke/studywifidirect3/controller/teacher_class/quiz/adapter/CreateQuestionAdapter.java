@@ -200,7 +200,7 @@ public class CreateQuestionAdapter extends QuestionsAdapter {
         }
 
         @Override
-        public void setQuestion(Question question) {
+        public void setQuestion(Question question, int lastIndex) {
             mQuestion = question;
 
             mBinding.questionEditText.setText(question.getQuestion());

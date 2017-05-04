@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sunway.averychoke.studywifidirect3.R;
+import com.sunway.averychoke.studywifidirect3.model.ChoiceQuestion;
 import com.sunway.averychoke.studywifidirect3.model.Question;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import java.util.List;
 public class QuestionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final List<Question> mQuestions;
+    private int mLastShortQuestionIndex = -1;
 
     public QuestionsAdapter() {
         mQuestions = new ArrayList<>();
@@ -33,7 +35,8 @@ public class QuestionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof HasQuestion) {
-            ((HasQuestion) holder).setQuestion(mQuestions.get(position));
+            HasQuestion questionVH = ((HasQuestion) holder);
+            questionVH.setQuestion(mQuestions.get(position), mLastShortQuestionIndex);
         }
     }
 
@@ -45,7 +48,16 @@ public class QuestionsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public void setQuestions(List<Question> questions) {
         mQuestions.clear();
         mQuestions.addAll(questions);
+        findLastShortQuestionIndex();
         notifyDataSetChanged();
+    }
+
+    private void findLastShortQuestionIndex() {
+        for (int i = 0; i < mQuestions.size(); i++) {
+            if (!(mQuestions.get(i) instanceof ChoiceQuestion)) {
+                mLastShortQuestionIndex = i;
+            }
+        }
     }
 
     // region get set
