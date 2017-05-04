@@ -162,7 +162,7 @@ public class SearchClassFragment extends SWDBaseFragment implements
         mWifiManager.clearServiceRequests(mChannel, null);
 
         // register broadcast receiver to identify connection
-        getActivity().registerReceiver(mSearchReceiver, mReceiverIntentFilter);
+        //getActivity().registerReceiver(mSearchReceiver, mReceiverIntentFilter);
 
         // start new search
         WifiP2pDnsSdServiceRequest serviceRequest = WifiP2pDnsSdServiceRequest.newInstance();
@@ -223,10 +223,13 @@ public class SearchClassFragment extends SWDBaseFragment implements
         mProgressDialog.show();
         sManager.setDeviceClass(deviceClass);
 
+        // register broadcast receiver to identify connection
+        getActivity().registerReceiver(mSearchReceiver, mReceiverIntentFilter);
+
         WifiP2pConfig config = new WifiP2pConfig();
         config.deviceAddress = deviceClass.getDevice().deviceAddress;
         config.wps.setup = WpsInfo.PBC;
-        config.groupOwnerIntent = 0 ;
+        config.groupOwnerIntent = 0;
 
         if (mWifiManager != null && mChannel != null) {
             mWifiManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
@@ -261,6 +264,9 @@ public class SearchClassFragment extends SWDBaseFragment implements
             sManager.initialize(sManager.getDeviceClass().getClassName(), getContext(), false);
             Intent studentIntent = new Intent(getActivity(), StudentClassActivity.class);
             startActivity(studentIntent);
+
+            // clear my adapter
+            mAdapter.clearDeviceClasses();
         }
     }
     // endregion

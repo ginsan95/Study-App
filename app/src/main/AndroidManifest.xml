@@ -34,6 +34,9 @@
         <activity android:name=".controller.student_class.quiz.AnswerQuizActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"/>
 
+        <!-- Service -->
+        <service android:name=".controller.connection.CloseConnectionService" android:stopWithTask="false"/>
+
         <!--File provider-->
         <provider
             android:name="android.support.v4.content.FileProvider"

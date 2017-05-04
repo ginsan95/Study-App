@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseActivity;
+import com.sunway.averychoke.studywifidirect3.controller.connection.CloseConnectionService;
 import com.sunway.averychoke.studywifidirect3.controller.connection.TeacherThread;
 import com.sunway.averychoke.studywifidirect3.databinding.ActivityClassBinding;
 import com.sunway.averychoke.studywifidirect3.manager.BaseManager;
@@ -41,6 +42,7 @@ public class TeacherClassActivity extends SWDBaseActivity implements
     private TeacherReceiver mTeacherReceiver;
     private IntentFilter mReceiverIntentFilter;
     private TeacherThread mTeacherThread;
+    private Intent mConnectionServiceIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +82,11 @@ public class TeacherClassActivity extends SWDBaseActivity implements
             return;
         }
 
+        // start disconnection service
+        BaseManager.getInstance().setChannel(mChannel);
+        mConnectionServiceIntent = new Intent(this, CloseConnectionService.class);
+        startService(mConnectionServiceIntent);
+
         getSupportFragmentManager().beginTransaction()
                 .add(mBinding.containerLayout.getId(), new TeacherClassFragment(), TeacherClassFragment.class.getSimpleName())
                 .commit();
@@ -92,12 +99,9 @@ public class TeacherClassActivity extends SWDBaseActivity implements
         if (mTeacherThread != null) {
             mTeacherThread.disconnect();
         }
+
         // kills wifi direct
-        if (mWifiManager != null && mChannel != null) {
-            mWifiManager.clearLocalServices(mChannel, null);
-            mWifiManager.stopPeerDiscovery(mChannel, null);
-            mWifiManager.removeGroup(mChannel, null);
-        }
+        stopService(mConnectionServiceIntent);
         unregisterReceiver(mTeacherReceiver);
     }
 

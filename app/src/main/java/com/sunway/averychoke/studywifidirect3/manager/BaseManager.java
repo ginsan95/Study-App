@@ -1,6 +1,7 @@
 package com.sunway.averychoke.studywifidirect3.manager;
 
 import android.content.Context;
+import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Environment;
 
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
@@ -26,6 +27,7 @@ public class BaseManager {
     private DatabaseHelper mDatabase;
     private StudyClass mStudyClass;
     private Context mContext;
+    private WifiP2pManager.Channel mChannel;
 
     protected BaseManager() {}
 
@@ -100,6 +102,14 @@ public class BaseManager {
 
     protected void setContext(Context context) {
         mContext = context;
+    }
+
+    public WifiP2pManager.Channel getChannel() {
+        return mChannel;
+    }
+
+    public void setChannel(WifiP2pManager.Channel channel) {
+        mChannel = channel;
     }
     // endregion
 }

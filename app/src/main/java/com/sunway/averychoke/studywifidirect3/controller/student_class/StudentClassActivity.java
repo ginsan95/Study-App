@@ -2,6 +2,7 @@ package com.sunway.averychoke.studywifidirect3.controller.student_class;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
@@ -10,7 +11,9 @@ import android.support.v7.app.AlertDialog;
 
 import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.SWDBaseActivity;
+import com.sunway.averychoke.studywifidirect3.controller.connection.CloseConnectionService;
 import com.sunway.averychoke.studywifidirect3.databinding.ActivityClassBinding;
+import com.sunway.averychoke.studywifidirect3.manager.BaseManager;
 import com.sunway.averychoke.studywifidirect3.manager.StudentManager;
 
 /**
@@ -22,6 +25,7 @@ public class StudentClassActivity extends SWDBaseActivity {
 
     private WifiP2pManager mWifiManager;
     private WifiP2pManager.Channel mChannel;
+    private Intent mConnectionServiceIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,11 @@ public class StudentClassActivity extends SWDBaseActivity {
         mWifiManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
         mChannel = mWifiManager.initialize(this, getMainLooper(), null);
 
+        // start disconnection service
+        BaseManager.getInstance().setChannel(mChannel);
+        mConnectionServiceIntent = new Intent(this, CloseConnectionService.class);
+        startService(mConnectionServiceIntent);
+
         getSupportFragmentManager().beginTransaction()
                 .add(mBinding.containerLayout.getId(), new StudentClassFragment(), StudentClassFragment.class.getSimpleName())
                 .commit();
@@ -47,9 +56,7 @@ public class StudentClassActivity extends SWDBaseActivity {
         // kills the tasks
         StudentManager.getInstance().killAllTasks();
         // kills wifi direct
-        if (mWifiManager != null && mChannel != null) {
-            mWifiManager.removeGroup(mChannel, null);
-        }
+        stopService(mConnectionServiceIntent);
     }
 
     @Override
