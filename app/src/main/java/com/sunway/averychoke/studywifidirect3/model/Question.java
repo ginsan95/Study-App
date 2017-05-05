@@ -42,7 +42,7 @@ public class Question implements Parcelable, Serializable {
         Question cloneQuestion = new Question(
                 question.getId(),
                 question.getQuestion(),
-                "",
+                question.getCorrectAnswer(),
                 question.getTotalMarks(),
                 "");
         return cloneQuestion;

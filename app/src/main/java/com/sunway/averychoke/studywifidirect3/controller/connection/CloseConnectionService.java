@@ -25,7 +25,7 @@ public class CloseConnectionService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, "Service stated");
+        Log.d(TAG, "Service started");
         return START_NOT_STICKY;
     }
 
@@ -40,5 +40,12 @@ public class CloseConnectionService extends Service {
             wifiManager.removeGroup(BaseManager.getInstance().getChannel(), null);
         }
         Log.d(TAG, "Service destroy");
+    }
+
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        super.onTaskRemoved(rootIntent);
+        stopSelf();
+        Log.d(TAG, "Service removed");
     }
 }

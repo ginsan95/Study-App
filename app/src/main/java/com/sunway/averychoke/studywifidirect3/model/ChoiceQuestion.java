@@ -22,13 +22,16 @@ public class ChoiceQuestion extends Question implements Serializable {
 
     // convert to choice question
     public static ChoiceQuestion cloneFrom(Question question) {
+        List<String> choices = new ArrayList<>();
+        choices.add(question.getCorrectAnswer());
+
         ChoiceQuestion cloneQuestion = new ChoiceQuestion(
                 question.getId(),
                 question.getQuestion(),
-                "",
+                question.getCorrectAnswer(),
                 question.getTotalMarks(),
                 "",
-                new ArrayList<String>());
+                choices);
         return cloneQuestion;
     }
 

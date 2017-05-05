@@ -241,6 +241,7 @@ public class CreateQuizFragment extends SWDBaseFragment implements
     @Override
     public void onEditChoiceClicked(final ChoiceQuestion choiceQuestion, final int index, final int choiceIndex) {
         final EditText editText = new EditText(getContext());
+        editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         editText.setText(choiceQuestion.getChoices().get(choiceIndex));
         editText.selectAll();
 
@@ -273,29 +274,29 @@ public class CreateQuizFragment extends SWDBaseFragment implements
 
     @Override
     public void onChoiceLongClicked(final ChoiceQuestion choiceQuestion, final int index, final int choiceIndex) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(getContext())
-                .setTitle(R.string.delete_choice_dialog_title)
-                .setMessage(R.string.delete_choice_dialog_message)
-                .setPositiveButton(R.string.dialog_confirm, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String choice = choiceQuestion.getChoices().get(choiceIndex);
-                        choiceQuestion.getChoices().remove(choiceIndex);
-                        if (choiceQuestion.getChoices().size() <= 0) {
-                            choiceQuestion.setCorrectAnswer("");
-                        } else if (choiceQuestion.checkAnswer(choice)) {
-                            choiceQuestion.setCorrectAnswer(choiceQuestion.getChoices().get(0));
+        if (choiceQuestion.getChoices().size() > 1) {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(getContext())
+                    .setTitle(R.string.delete_choice_dialog_title)
+                    .setMessage(R.string.delete_choice_dialog_message)
+                    .setPositiveButton(R.string.dialog_confirm, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String choice = choiceQuestion.getChoices().get(choiceIndex);
+                            choiceQuestion.getChoices().remove(choiceIndex);
+                            if (choiceQuestion.checkAnswer(choice)) {
+                                choiceQuestion.setCorrectAnswer(choiceQuestion.getChoices().get(0));
+                            }
+                            mCreateQuestionAdapter.notifyItemChanged(index);
                         }
-                        mCreateQuestionAdapter.notifyItemChanged(index);
-                    }
-                })
-                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-        dialog.show();
+                    })
+                    .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+            dialog.show();
+        }
     }
     // endregion create question view holder
 }

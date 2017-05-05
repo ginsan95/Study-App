@@ -20,7 +20,7 @@
                     android:id="@+id/title_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Quiz Title"
+                    android:hint="@string/hint_quiz_title"
                     android:inputType="textCapWords"/>
 
             </android.support.v7.widget.Toolbar>
@@ -30,7 +30,7 @@
         <FrameLayout
             android:id="@+id/container_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:animateLayoutChanges="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
