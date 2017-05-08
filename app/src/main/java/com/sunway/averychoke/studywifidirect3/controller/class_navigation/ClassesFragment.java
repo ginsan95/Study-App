@@ -66,7 +66,7 @@ public class ClassesFragment extends SWDBaseFragment implements
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getActivity().setTitle("Classes");
+        getActivity().setTitle(getString(R.string.title_classes));
         setHasOptionsMenu(true);
 
         mBinding.classesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

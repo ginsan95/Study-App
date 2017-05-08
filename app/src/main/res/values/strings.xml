@@ -87,4 +87,5 @@
     <string name="dialog_save_quiz_fail_message">Failed to save the quiz into the database. Please try again later.</string>
     <string name="open_file_permission_error_message">You do not have the permission to open this file</string>
     <string name="hint_quiz_title">Quiz Title</string>
+    <string name="title_classes">Classes</string>
 </resources>
