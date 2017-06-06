@@ -4,6 +4,7 @@ import android.databinding.DataBindingUtil;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -35,6 +36,8 @@ public class QuestionViewHolder extends RecyclerView.ViewHolder implements HasQu
     protected void setupShortQuestionView() {
         mBinding.shortQuestion.correctAnswerTextView.setVisibility(View.GONE);
         mBinding.shortQuestion.answerEditText.setText("");
+        mBinding.shortQuestion.answerEditText.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+        mBinding.shortQuestion.answerEditText.setRawInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         mBinding.shortQuestion.answerEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -91,7 +94,7 @@ public class QuestionViewHolder extends RecyclerView.ViewHolder implements HasQu
                 }
             } else {
                 mBinding.shortQuestion.containerLayout.setVisibility(View.VISIBLE);
-                mBinding.shortQuestion.answerEditText.setImeOptions(lastIndex == getAdapterPosition() ? EditorInfo.IME_ACTION_DONE : EditorInfo.IME_ACTION_UNSPECIFIED);
+                mBinding.shortQuestion.answerEditText.setImeOptions(lastIndex == getAdapterPosition() ? EditorInfo.IME_ACTION_DONE : EditorInfo.IME_ACTION_NEXT);
 
                 mBinding.shortQuestion.answerEditText.setText(question.getUserAnswer());
             }

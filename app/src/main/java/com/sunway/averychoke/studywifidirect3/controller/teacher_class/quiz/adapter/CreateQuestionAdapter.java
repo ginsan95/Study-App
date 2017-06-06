@@ -5,12 +5,14 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.RadioButton;
@@ -111,6 +113,8 @@ public class CreateQuestionAdapter extends QuestionsAdapter {
                 }
             });
 
+            mBinding.questionEditText.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+            mBinding.questionEditText.setRawInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
             mBinding.questionEditText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -157,6 +161,8 @@ public class CreateQuestionAdapter extends QuestionsAdapter {
 
         private void setupShortQuestionView() {
             mBinding.shortQuestion.answerEditText.setText("");
+            mBinding.shortQuestion.answerEditText.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+            mBinding.shortQuestion.answerEditText.setRawInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
             mBinding.shortQuestion.answerEditText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
