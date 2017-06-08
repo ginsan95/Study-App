@@ -113,8 +113,8 @@ public class CreateQuestionAdapter extends QuestionsAdapter {
                 }
             });
 
-            mBinding.questionEditText.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-            mBinding.questionEditText.setRawInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+            mBinding.questionEditText.setMaxLines(Integer.MAX_VALUE);
+            mBinding.questionEditText.setHorizontallyScrolling(false);
             mBinding.questionEditText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -161,8 +161,8 @@ public class CreateQuestionAdapter extends QuestionsAdapter {
 
         private void setupShortQuestionView() {
             mBinding.shortQuestion.answerEditText.setText("");
-            mBinding.shortQuestion.answerEditText.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-            mBinding.shortQuestion.answerEditText.setRawInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+            mBinding.shortQuestion.answerEditText.setMaxLines(Integer.MAX_VALUE);
+            mBinding.shortQuestion.answerEditText.setHorizontallyScrolling(false);
             mBinding.shortQuestion.answerEditText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {

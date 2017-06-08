@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
@@ -183,6 +184,7 @@ public class TeacherStudyMaterialFragment extends StudyMaterialFragment implemen
 
     private void renameStudyMaterial(final StudyMaterial studyMaterial) {
         final EditText editText = new EditText(getContext());
+        editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         editText.setText(studyMaterial.getName());
         editText.selectAll();
 
