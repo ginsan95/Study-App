@@ -25,7 +25,7 @@ import java.util.List;
  * Created by AveryChoke on 9/4/2017.
  */
 
-public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, ClassMaterialsRequestTask.Result> {
+public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Long, ClassMaterialsRequestTask.Result> {
 
     public enum Result {
         QUIZZES, QUIZ, STUDY_MATERIALS, STUDY_MATERIAL, ERROR;
@@ -35,6 +35,7 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
 
     private String mAddress;
     private ClassMaterialsUpdaterListener mListener;
+    private ClassMaterialProgressListener mProgressListener;
     private ClassMaterial mDownloadClassMaterial;  // the request material
     private ClassMaterial.Status mDownloadClassMaterialStatus; // status for download exception
     private Socket mSocket;
@@ -44,10 +45,15 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
     private ClassMaterial mClassMaterial;
 
     public ClassMaterialsRequestTask(String address, ClassMaterialsUpdaterListener listener) {
-        this(address, listener, null);
+        this(address, listener, null, null);
     }
 
     public ClassMaterialsRequestTask(String address, ClassMaterialsUpdaterListener listener, ClassMaterial downloadClassMaterial) {
+        this(address, listener, downloadClassMaterial, null);
+    }
+
+    public ClassMaterialsRequestTask(String address, ClassMaterialsUpdaterListener listener, ClassMaterial downloadClassMaterial,
+                                     ClassMaterialProgressListener progressListener) {
         mAddress = address;
         mListener = listener;
         mDownloadClassMaterial = downloadClassMaterial;
@@ -55,6 +61,7 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
             mDownloadClassMaterialStatus = downloadClassMaterial.getStatus();
         }
         sManager = StudentManager.getInstance();
+        mProgressListener = progressListener;
     }
 
     @Override
@@ -89,6 +96,15 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
         } finally {
             disconnect();
             sManager.removeTask(this);
+        }
+    }
+
+    @Override
+    protected void onProgressUpdate(Long... values) {
+        super.onProgressUpdate(values);
+        if (mProgressListener != null && values.length == 2) {
+            Double progress = values[1] * 100.0 / values[0];
+            mProgressListener.onClassMaterialProgress(progress.intValue());
         }
     }
 
@@ -155,6 +171,8 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
                         BufferedInputStream bis = new BufferedInputStream(ois);
                         while ((len = bis.read(buffer)) > 0) {
                             bos.write(buffer, 0, len);
+                            // publish progress
+                            publishProgress(fileSize, file.length());
                         }
                     } finally {
                         if (bos != null) {
@@ -164,6 +182,7 @@ public class ClassMaterialsRequestTask extends AsyncTask<Serializable, Void, Cla
 
                     // check if downloaded the file correctly
                     if (file != null && file.length() == fileSize) {
+                        publishProgress(fileSize, file.length());
                         studyMaterial.setFile(file);
                         mClassMaterial = sManager.updateStudyMaterial(studyMaterial);
                     } else {

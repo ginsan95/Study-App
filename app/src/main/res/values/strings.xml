@@ -88,4 +88,6 @@
     <string name="open_file_permission_error_message">You do not have the permission to open this file</string>
     <string name="hint_quiz_title">Quiz Title</string>
     <string name="title_classes">Classes</string>
+    <string name="dialog_download_progress_title">Download Progress</string>
+    <string name="dialog_download_progress_message">Downloading %1$s</string>
 </resources>

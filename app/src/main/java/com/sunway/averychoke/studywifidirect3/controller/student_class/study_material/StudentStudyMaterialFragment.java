@@ -1,5 +1,6 @@
 package com.sunway.averychoke.studywifidirect3.controller.student_class.study_material;
 
+import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,6 +14,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.sunway.averychoke.studywifidirect3.BuildConfig;
@@ -20,6 +24,7 @@ import com.sunway.averychoke.studywifidirect3.R;
 import com.sunway.averychoke.studywifidirect3.controller.common_class.ClassMaterialAdapter;
 import com.sunway.averychoke.studywifidirect3.controller.common_class.ClassMaterialViewHolder;
 import com.sunway.averychoke.studywifidirect3.controller.common_class.study_material.StudyMaterialFragment;
+import com.sunway.averychoke.studywifidirect3.controller.connection.ClassMaterialProgressListener;
 import com.sunway.averychoke.studywifidirect3.controller.connection.ClassMaterialsRequestTask;
 import com.sunway.averychoke.studywifidirect3.controller.connection.ClassMaterialsUpdaterListener;
 import com.sunway.averychoke.studywifidirect3.controller.connection.DownloadException;
@@ -30,7 +35,9 @@ import com.sunway.averychoke.studywifidirect3.model.StudyMaterial;
 import com.sunway.averychoke.studywifidirect3.util.FileUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -49,6 +56,11 @@ public class StudentStudyMaterialFragment extends StudyMaterialFragment implemen
     private ClassMaterialAdapter mAdapter;
     private ExecutorService mExecutor;
 
+    private Map<String, ProgressBar> mProgressMap;
+    private enum ProgressBarState {
+        INVISIBLE, VISIBLE
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +69,7 @@ public class StudentStudyMaterialFragment extends StudyMaterialFragment implemen
         mAdapter = new ClassMaterialAdapter(false, this);
         int bestThreadCount = Runtime.getRuntime().availableProcessors() + 1;
         mExecutor = Executors.newFixedThreadPool(bestThreadCount > 4 ? bestThreadCount : 4);
+        mProgressMap = new HashMap<>();
     }
 
     @Override
@@ -135,6 +148,24 @@ public class StudentStudyMaterialFragment extends StudyMaterialFragment implemen
                         })
                         .show();
                 break;
+            case DOWNLOADING:
+                final ProgressBar progressBar = mProgressMap.get(classMaterial.getName());
+                final LinearLayout linearLayout = new LinearLayout(getContext());
+                linearLayout.addView(progressBar);
+                progressBar.setTag(ProgressBarState.VISIBLE);
+
+                new AlertDialog.Builder(getContext())
+                        .setTitle(R.string.dialog_download_progress_title)
+                        .setMessage(getString(R.string.dialog_download_progress_message, classMaterial.getName()))
+                        .setView(linearLayout)
+                        .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                            @Override
+                            public void onDismiss(DialogInterface dialog) {
+                                progressBar.setTag(ProgressBarState.INVISIBLE);
+                                linearLayout.removeAllViews();
+                            }
+                        })
+                        .show();
         }
     }
 
@@ -184,6 +215,7 @@ public class StudentStudyMaterialFragment extends StudyMaterialFragment implemen
         getBinding().classMaterial.materialsSwipeRefreshLayout.setRefreshing(false);
 
         mAdapter.replaceClassMaterial(classMaterial);
+        mProgressMap.remove(classMaterial.getName());
 
         if (getContext() != null) {
             Toast.makeText(getContext(), getString(R.string.download_success_message, classMaterial.getName()), Toast.LENGTH_SHORT).show();
@@ -210,6 +242,7 @@ public class StudentStudyMaterialFragment extends StudyMaterialFragment implemen
                 StudyMaterial studyMaterial = (StudyMaterial) classMaterial;
                 sManager.updateStudyMaterialStatus(studyMaterial, downloadException.getInitialStatus());
                 mAdapter.replaceClassMaterial(studyMaterial);
+                mProgressMap.remove(studyMaterial.getName());
             }
             if (getContext() != null) {
                 Toast.makeText(getContext(), e.toString(), Toast.LENGTH_SHORT).show();
@@ -222,7 +255,20 @@ public class StudentStudyMaterialFragment extends StudyMaterialFragment implemen
 
     private void downloadStudyMaterial(StudyMaterial studyMaterial) {
         if (!sManager.isOffline()) {
-            ClassMaterialsRequestTask task = new ClassMaterialsRequestTask(sManager.getTeacherAddress(), this, studyMaterial);
+            final ProgressBar progressBar = new ProgressBar(getContext(), null, android.R.attr.progressBarStyleHorizontal);
+            progressBar.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            progressBar.setTag(ProgressBarState.INVISIBLE);
+            mProgressMap.put(studyMaterial.getName(), progressBar);
+
+            ClassMaterialsRequestTask task = new ClassMaterialsRequestTask(sManager.getTeacherAddress(), this, studyMaterial,
+                    new ClassMaterialProgressListener() {
+                        @Override
+                        public void onClassMaterialProgress(int progress) {
+                            if (progressBar.getTag() != ProgressBarState.INVISIBLE) {
+                                progressBar.setProgress(progress);
+                            }
+                        }
+                    });
             task.executeOnExecutor(mExecutor, TeacherThread.Request.STUDY_MATERIAL, studyMaterial.getName());
             sManager.updateStudyMaterialStatus(studyMaterial, ClassMaterial.Status.DOWNLOADING);
             mAdapter.replaceClassMaterial(studyMaterial);
