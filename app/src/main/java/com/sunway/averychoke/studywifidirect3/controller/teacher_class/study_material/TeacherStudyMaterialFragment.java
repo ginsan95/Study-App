@@ -6,6 +6,7 @@ import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.FileUriExposedException;
 import android.support.annotation.NonNull;
@@ -89,9 +90,19 @@ public class TeacherStudyMaterialFragment extends StudyMaterialFragment implemen
             case UPLOAD_STUDY_MATERIAL_CODE:
                 if (resultCode == RESULT_OK && data != null) {
                     mProgressDialog.show();
-                    Uri uri = data.getData();
                     UploadStudyMaterialTask task = new UploadStudyMaterialTask(getContext(), this);
-                    task.execute(uri);
+                    if (data.getData() != null) {
+                        Uri uri = data.getData();
+                        task.execute(uri);
+                    } else if (data.getClipData() != null) {
+                        Uri[] uris = new Uri[data.getClipData().getItemCount()];
+                        for (int i = 0; i < uris.length; i++) {
+                            uris[i] = data.getClipData().getItemAt(i).getUri();
+                        }
+                        task.execute(uris);
+                    } else {
+                        mProgressDialog.dismiss();
+                    }
                 }
                 break;
         }
@@ -105,6 +116,9 @@ public class TeacherStudyMaterialFragment extends StudyMaterialFragment implemen
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("*/*");
             intent.addCategory(Intent.CATEGORY_OPENABLE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            }
             startActivityForResult(Intent.createChooser(intent, getString(R.string.add_study_material_message)), UPLOAD_STUDY_MATERIAL_CODE);
         }
     }
