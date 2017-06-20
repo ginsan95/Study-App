@@ -27,10 +27,13 @@ import com.sunway.averychoke.studywifidirect3.controller.teacher_class.TeacherCl
 import com.sunway.averychoke.studywifidirect3.database.DatabaseHelper;
 import com.sunway.averychoke.studywifidirect3.databinding.FragmentClassesBinding;
 import com.sunway.averychoke.studywifidirect3.R;
+import com.sunway.averychoke.studywifidirect3.manager.BaseManager;
 import com.sunway.averychoke.studywifidirect3.manager.TeacherManager;
 import com.sunway.averychoke.studywifidirect3.model.ClassMaterial;
 import com.sunway.averychoke.studywifidirect3.model.Question;
 import com.sunway.averychoke.studywifidirect3.model.StudyClass;
+
+import java.io.File;
 
 /**
  * Created by AveryChoke on 22/1/2017.
@@ -137,6 +140,16 @@ public class ClassesFragment extends SWDBaseFragment implements
                     public void onClick(DialogInterface dialog, int which) {
                         mAdapter.removeClassName(index);
                         mDatabase.deleteClass(className);
+
+                        // delete directory
+                        File file = new File(BaseManager.STUDY_MATERIALS_PATH + className);
+                        File[] subFiles = file.listFiles();
+                        if (subFiles != null) {
+                            for (File subFile : subFiles) {
+                                subFile.delete();
+                            }
+                        }
+                        file.delete();
                     }
                 })
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
