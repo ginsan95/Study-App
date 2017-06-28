@@ -56,6 +56,9 @@ public class StudentManager extends BaseManager {
             question.setUserAnswer("");
         }
 
+        int index = getStudyClass().getQuizzes().indexOf(quiz);
+        getStudyClass().getQuizzes().set(index, quiz);
+
         if (getDatabase() != null) {
             getDatabase().updateQuizAnswers(quiz);
         }
